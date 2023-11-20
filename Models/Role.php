@@ -5,80 +5,84 @@ namespace Models;
 class Role
 {
     private int $roleId = -1;
-    private string $firstName = "";
-    private string $lastName = "";
-    private string $email = "";
-    private string $password = "";
-    private string $phoneNumber = "";
-    private string $companyName = "";
-    private string $registeredDate = "";
-    private string $lastLogin = "";
-    private int $roleId = -1;
+    private string $roleName = "";
 
     function __construct(
-        $pUserId = -1,
-        $pFirstName = "",
-        $pLastName = "",
-        $pEmail = "",
-        $pPassword = "",
-        $pPhoneNumber = "",
-        $pCompanyName = "",
-        $pRegisteredDate = "",
-        $pLastLogin = "",
-        $pRoleId = -1
+        $pRoleId = -1,
+        $pRoleName = ""
     ) {
         $this->initializeProperties(
-            $pUserId,
-            $pFirstName,
-            $pLastName,
-            $pEmail,
-            $pPassword,
-            $pPhoneNumber,
-            $pCompanyName,
-            $pRegisteredDate,
-            $pLastLogin,
-            $pRoleId
+            $pRoleId,
+            $pRoleName
         );
     }
 
     private function initializeProperties(
-        $pUserId,
-        $pFirstName,
-        $pLastName,
-        $pEmail,
-        $pPassword,
-        $pPhoneNumber,
-        $pCompanyName,
-        $pRegisteredDate,
-        $pLastLogin,
-        $pRoleId
+        $pRoleId,
+        $pRoleName
     ): void
     {
-        if ($pUserId < 0) return;
+        if ($pRoleId < 0) return;
         else if (
-            $pUserId > 0
-            && strlen($pFirstName) > 0
-            && strlen($pLastName) > 0
-            && strlen($pEmail) > 0
-            && strlen($pPassword) > 0
-            && strlen($pPhoneNumber) > 0
-            && strlen($pCompanyName) > 0
-            && strlen($pRegisteredDate) > 0
-            && strlen($pLastLogin) > 0
-            && $pRoleId > 0
+            $pRoleId > 0
+            && strlen($pRoleName) > 0
         ) {
-            $this->userId = $pUserId;
-            $this->firstName = $pFirstName;
-            $this->lastName = $pLastName;
-            $this->email = $pEmail;
-            $this->password = $pPassword;
-            $this->phoneNumber = $pPhoneNumber;
-            $this->companyName = $pCompanyName;
-            $this->registeredDate = $pRegisteredDate;
-            $this->lastLogin = $pLastLogin;
             $this->roleId = $pRoleId;
-        } else if ($pUserId > 0) {
-            $this->getUserById($pUserId);
+            $this->roleName = $pRoleName;
+        } else if ($pRoleId > 0) {
+            $this->getRoleById($pRoleId);
         }
     }
+
+    private function getRoleById($pRoleId): void
+    {
+        $dBConnection = openDatabaseConnection();
+        $sql = "SELECT * FROM role WHERE role_id = :role_id";
+        $stmt = $dBConnection->prepare($sql);
+        $stmt->bind_param('i', $pRoleId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $result = $result->fetch_assoc();
+            $this->roleId = $pRoleId;
+            $this->roleName = $result['role_name'];
+        }
+    }
+    public static function getRoleByName($pRoleName): Role
+    {
+        $role = new Role();
+        $dBConnection = openDatabaseConnection();
+        $sql = "SELECT * FROM role WHERE $pRoleName = ?";
+        $stmt = $dBConnection->prepare($sql);
+        $stmt->bind_param('i', $pRoleId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $result = $result->fetch_assoc();
+            $role->roleId = $result['role_id'];
+            $role->roleName = $pRoleName;
+        }
+        return $role;
+    }
+
+    public function getRoleId(): int
+    {
+        return $this->roleId;
+    }
+
+    public function setRoleId(int $roleId): void
+    {
+        $this->roleId = $roleId;
+    }
+
+    public function getRoleName(): string
+    {
+        return $this->roleName;
+    }
+
+    public function setRoleName(string $roleName): void
+    {
+        $this->roleName = $roleName;
+    }
+
 }
