@@ -38,7 +38,7 @@ class Role
     private function getRoleById($pRoleId): void
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM role WHERE role_id = :role_id";
+        $sql = "SELECT * FROM role WHERE role_id = ?";
         $stmt = $dBConnection->prepare($sql);
         $stmt->bind_param('i', $pRoleId);
         $stmt->execute();
@@ -53,9 +53,9 @@ class Role
     {
         $role = new Role();
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM role WHERE $pRoleName = ?";
+        $sql = "SELECT * FROM role WHERE role_name = ?";
         $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('i', $pRoleId);
+        $stmt->bind_param('s', $pRoleName);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {

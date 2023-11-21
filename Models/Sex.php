@@ -1,6 +1,7 @@
 <?php
 
 namespace Models;
+include_once 'database.php';
 
 class Sex
 {
@@ -30,14 +31,14 @@ class Sex
             $this->sexId = $pSexId;
             $this->sexName = $pSexName;
         } else if ($pSexId > 0) {
-            $this->getRoleById($pSexId);
+            $this->getSexById($pSexId);
         }
     }
 
-    private function getRoleById($pSexId): void
+    private function getSexById($pSexId): void
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM sex WHERE sex_id = :sex_id";
+        $sql = "SELECT * FROM sex WHERE sex_id = ?";
         $stmt = $dBConnection->prepare($sql);
         $stmt->bind_param('i', $pSexId);
         $stmt->execute();
@@ -48,21 +49,21 @@ class Sex
             $this->sexName = $result['sex_name'];
         }
     }
-    public static function getRoleByName($pRoleName): Role
+    public static function geSexByName($pSexName): Sex
     {
         $sex = new Sex();
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM sex WHERE $pRoleName = ?";
+        $sql = "SELECT * FROM sex WHERE sex_name = ?";
         $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('i', $pRoleId);
+        $stmt->bind_param('s', $pSexName);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
             $result = $result->fetch_assoc();
-            $role->roleId = $result['role_id'];
-            $role->roleName = $pRoleName;
+            $sex->sexId = $result['sex_id'];
+            $sex->sexName = $pSexName;
         }
-        return $role;
+        return $sex;
     }
 
     public function getSexId(): int

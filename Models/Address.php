@@ -75,7 +75,7 @@ class Address
     private function getAddressByUserId($pUserId): void
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM address WHERE user_id = :user_id";
+        $sql = "SELECT * FROM address WHERE user_id = ?";
         $stmt = $dBConnection->prepare($sql);
         $stmt->bind_param('i', $pUserId);
         $stmt->execute();
