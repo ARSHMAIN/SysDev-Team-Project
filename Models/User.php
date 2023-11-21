@@ -82,7 +82,7 @@ class User
             $this->getUserById($pUserId);
         }
     }
-    private function getUserById($pUserId): void
+    private function getUserById(int $pUserId): void
     {
         $dBConnection = openDatabaseConnection();
         $sql = "SELECT * FROM user WHERE user_id = ?";
@@ -104,8 +104,203 @@ class User
             $this->roleId = $result['role_id'];
         }
     }
-    private function getUserById($pUserId): void {
+    public static function getUserByCredentials(string $pEmail, string $pPassword): User
+    {
+        $user = new User();
+        $dBConnection = openDatabaseConnection();
+        $sql = "SELECT * FROM user WHERE email = ? AND password = ?";
+        $stmt = $dBConnection->prepare($sql);
+        $stmt->bind_param('ss', $pEmail, $pPassword);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $result = $result->fetch_assoc();
+            $user->userId = $result['user_id'];
+            $user->firstName = $result['first_name'];
+            $user->lastName = $result['last_name'];
+            $user->email = $pEmail;
+            $user->password = $pPassword;
+            $user->phoneNumber = $result['phone_number'] || null;
+            $user->companyName = $result['company_name'] || null;
+            $user->registeredDate = $result['registration_date'];
+            $user->lastLogin = $result['last_login'] || null;
+            $user->roleId = $result['role_id'];
+        }
+        return $user;
+    }
+    public static function getUserByRoleName(string $pRoleName): User
+    {
+        $user = new User();
+        $dBConnection = openDatabaseConnection();
+        $sql = "SELECT * FROM user WHERE role_id = ?";
+        $stmt = $dBConnection->prepare($sql);
+        $roleId = Role::getRoleByName($pRoleName)->getRoleId();
+        $stmt->bind_param('s', $roleId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $result = $result->fetch_assoc();
+            $user->userId = $result['user_id'];
+            $user->firstName = $result['first_name'];
+            $user->lastName = $result['last_name'];
+            $user->email = $result['email'];
+            $user->password = $result['password'];
+            $user->phoneNumber = $result['phone_number'] || null;
+            $user->companyName = $result['company_name'] || null;
+            $user->registeredDate = $result['registration_date'];
+            $user->lastLogin = $result['last_login'] || null;
+            $user->roleId = $result['role_id'];
+        }
+        return $user;
+    }
+    public static function createUserByRoleName(array $postFields): array
+    {
+        $dBConnection = openDatabaseConnection();
 
+        foreach ($postFields as $key => $value) {
+            if ($value === '') {
+                $postFields[$key] = null;
+            }
+        }
+
+        $sql = "INSERT INTO user (first_name, last_name, email, password, phone_number, company_name, role_id) VALUES (?, ?, ?, md5(?), ?, ?, ?)";
+        $stmt = $dBConnection->prepare($sql);
+        $stmt->bind_param('sssssssi', $postFields['firstName'], $postFields['lastName'], $postFields['email'], $postFields['password'], $postFields['phoneNumber'], $postFields['companyName'], $postFields['roleId']);
+        $isSuccessful = $stmt->execute();
+        $userId = $dBConnection->insert_id;
+        $stmt->close();
+        $dBConnection->close();
+        return [
+            'isSuccessful' => $isSuccessful,
+            'newRegisteredUserId' => $userId
+        ];
+    }
+    public static function updatePersonalInfo(int $pUserId, array $postFields): void
+    {
+        $dBConnection = openDatabaseConnection();
+
+        foreach ($postFields as $key => $value) {
+            if ($value === '') {
+                $postFields[$key] = null;
+            }
+        }
+
+        $sql = "UPDATE user SET first_name = ?, last_name = ?, password = ?, phone_number = ?, company_name = ?, role_id = ? WHERE user_id = ?";
+        $stmt = $dBConnection->prepare($sql);
+        $stmt->bind_param('sssssii', $postFields['firstName'], $postFields['lastName'], $postFields['password'], $postFields['phoneNumber'], $postFields['companyName'], $postFields['roleId'], $pUserId);
+        $stmt->execute();
+        $stmt->close();
+        $dBConnection->close();
+    }
+    public static function deleteUserById(int $pUserId): void
+    {
+        $dBConnection = openDatabaseConnection();
+        $sql = "DELETE FROM user WHERE user_id = ?";
+        $stmt = $dBConnection->prepare($sql);
+        $stmt->bind_param('i', $pUserId);
+        $stmt->execute();
+        $stmt->close();
+        $dBConnection->close();
+    }
+
+    public function getUserId(): int
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(int $userId): void
+    {
+        $this->userId = $userId;
+    }
+
+    public function getFirstName(): string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(string $firstName): void
+    {
+        $this->firstName = $firstName;
+    }
+
+    public function getLastName(): string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(string $lastName): void
+    {
+        $this->lastName = $lastName;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
+    }
+
+    public function getPhoneNumber(): string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(string $phoneNumber): void
+    {
+        $this->phoneNumber = $phoneNumber;
+    }
+
+    public function getCompanyName(): string
+    {
+        return $this->companyName;
+    }
+
+    public function setCompanyName(string $companyName): void
+    {
+        $this->companyName = $companyName;
+    }
+
+    public function getRegisteredDate(): string
+    {
+        return $this->registeredDate;
+    }
+
+    public function setRegisteredDate(string $registeredDate): void
+    {
+        $this->registeredDate = $registeredDate;
+    }
+
+    public function getLastLogin(): string
+    {
+        return $this->lastLogin;
+    }
+
+    public function setLastLogin(string $lastLogin): void
+    {
+        $this->lastLogin = $lastLogin;
+    }
+
+    public function getRoleId(): int
+    {
+        return $this->roleId;
+    }
+
+    public function setRoleId(int $roleId): void
+    {
+        $this->roleId = $roleId;
     }
 
 }
