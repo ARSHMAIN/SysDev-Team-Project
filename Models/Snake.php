@@ -83,7 +83,46 @@ class Snake
         }
         return $snakes;
     }
-
+    public static function createSnake($pUserId, $pSexId, $pSnakeOrigin): array
+    {
+        $dBConnection = openDatabaseConnection();
+        $sql = "INSERT INTO snake (user_id, sex_id, snake_origin) VALUES (?, ?, ?)";
+        $stmt = $dBConnection->prepare($sql);
+        $stmt->bind_param('iis', $pUserId, $pSexId, $pSnakeOrigin);
+        $isSuccessful = $stmt->execute();
+        $snakeId = $dBConnection->insert_id;
+        $stmt->close();
+        $dBConnection->close();
+        return [
+            'isSuccessful' => $isSuccessful,
+            'newSnakeId' => $snakeId
+        ];
+    }
+    public static function updateSnake($pUserId, $pSexId, $pSnakeOrigin, $pSnakeId): array
+    {
+        $dBConnection = openDatabaseConnection();
+        $sql = "UPDATE snake SET user_id = ?, sex_id = ?, snake_origin = ? WHERE snake_id = ?";
+        $stmt = $dBConnection->prepare($sql);
+        $stmt->bind_param('iisi', $pUserId, $pSexId, $pSnakeOrigin, $pSnakeId);
+        $isSuccessful = $stmt->execute();
+        $stmt->close();
+        $dBConnection->close();
+        return [
+            'isSuccessful' => $isSuccessful,
+            'updatedSnakeId' => $pSnakeId
+        ];
+    }
+    //TODO delete only if test and donation do not have a record of snake_id
+    public static function deleteSnakeById(int $pSnakeId): void
+    {
+        $dBConnection = openDatabaseConnection();
+        $sql = "DELETE FROM snake WHERE snake_id = ?";
+        $stmt = $dBConnection->prepare($sql);
+        $stmt->bind_param('i', $pSnakeId);
+        $stmt->execute();
+        $stmt->close();
+        $dBConnection->close();
+    }
     public function getSnakeId(): int
     {
         return $this->snakeId;
