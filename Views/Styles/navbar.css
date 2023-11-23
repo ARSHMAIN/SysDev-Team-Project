@@ -11,6 +11,11 @@
     max-height: 100%; /* Add this line */
 }
 
+.profileSection img {
+    max-width: 100%; /* Add this line */
+    max-height: 100%; /* Add this line */
+}
+
 .navBar {
     height: 100px;
     background-color: #9F9E9E;
@@ -20,24 +25,25 @@
 
 .navBar section {
     display: flex;
+    flex-wrap: wrap;
 }
 
 
 .navBar section div {
     padding: 10px;
+    flex: 1;
 }
 
 .navBar section div h2 {
-    padding-right: 140px;
-    padding-left: 140px;
+    padding: 8em;
     color: white;
-    font-size: 24px;
+    font-size: 1.5em;
 }
 
-.navBar section div button {
+.navBar section div a button {
     background-color: #FCC458;
     margin-right: 20px;
-    padding: 25px 50px;
+    padding: 1.5em 3.5em;
     border-style: none;
     border-radius: 10px; /* Adjust the value to control the roundness */
     text-align: center;
@@ -50,4 +56,13 @@
     display: flex; /* Add this line for flexbox */
     align-items: center; /* Add this line to center the text vertically */
     justify-content: center;
+}
+
+.navBar section div a {
+    text-decoration: none;
+}
+
+.navBar section div a button:hover {
+    cursor: pointer;
+    background-color: #D9AA4C;
 }
