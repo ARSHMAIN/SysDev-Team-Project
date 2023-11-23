@@ -1,7 +1,8 @@
-width100Percent {
-    width: 100%;
+body {
+    margin: 0;
+    background-color: #95ACFF;
 }
 
-body {
-    margin: 0px;
+#width100Percent {
+    width: 100%;
 }
