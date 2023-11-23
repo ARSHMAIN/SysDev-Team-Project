@@ -1,17 +1,18 @@
 <?php
-class RegistrationController
+
+class Order_historyController
 {
     function route(): void
     {
         global $controller, $action;
-        if ($action == "registration"){
+        if ($action == "order_history"){ // TODO : rename as u wish
             $this->render($action);
         }
     }
     function render($action, $data = []): void
     {
         extract($data);
-        include_once "Views/Register/$action.php";
+        include_once "Views/OrderHistory/$action.php";
     }
 }
 

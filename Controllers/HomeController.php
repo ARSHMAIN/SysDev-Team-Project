@@ -15,3 +15,5 @@ class HomeController
         include_once "Views/Home/$action.php";
     }
 }
+
+?>

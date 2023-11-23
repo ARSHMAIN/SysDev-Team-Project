@@ -1,17 +1,18 @@
 <?php
-class RegistrationController
+
+class ServicesController
 {
     function route(): void
     {
         global $controller, $action;
-        if ($action == "registration"){
+        if ($action == "services"){
             $this->render($action);
         }
     }
     function render($action, $data = []): void
     {
         extract($data);
-        include_once "Views/Register/$action.php";
+        include_once "Views/Services/$action.php";
     }
 }
 

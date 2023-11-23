@@ -1,17 +1,18 @@
 <?php
-class RegistrationController
+
+class Admin_panelController
 {
     function route(): void
     {
         global $controller, $action;
-        if ($action == "registration"){
+        if ($action == "admin"){
             $this->render($action);
         }
     }
     function render($action, $data = []): void
     {
         extract($data);
-        include_once "Views/Register/$action.php";
+        include_once "Views/Admin/$action.php";
     }
 }
 
