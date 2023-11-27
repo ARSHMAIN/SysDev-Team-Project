@@ -45,6 +45,9 @@ include_once 'Views/Shared/navbar.php';
         <h2>News</h2>
         <div class="vertical-scroll">
             <!-- there lies the news facebook thing. need API -->
+            <!-- APP NAME: Sysdev-team-project-->
+            <!-- APP ID: 1053124639146771 -->
+            <!-- ACCESS TOKEN: -->
         </div>
     </div>
 </body>

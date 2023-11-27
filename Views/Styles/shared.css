@@ -15,19 +15,18 @@ body {
     padding-left: 30px;
 }
 
-p, h1, h2, h3, li, label
+p, h1, h2, h3, h5, li, label, div
 {
-    font-family: sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
-p, li
+p, li, button
 {
     font-size: large;
 }
 
-input
-{
-    
+.input_figma_styling > input
+{ 
     width: 434px;
     height: 36px;
     left: 194px;
@@ -35,6 +34,4 @@ input
 
     background: #FFFFFF;
     border: 1px solid #000000;
-
 }
-

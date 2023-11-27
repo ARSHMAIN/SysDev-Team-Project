@@ -1,0 +1,89 @@
+
+.container
+{
+    margin-top: 5rem;
+}
+
+.accordion
+{
+    width: 90%;
+    max-width: 1000px;
+    max-width: 2rem auto;
+}
+
+.box
+{
+    background-color: #b0c1ff;
+    color: #111;
+    margin: 2rem 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px 0 rbga(0, 0, 0, 0.25);
+}
+
+.question
+{
+    padding: 2rem 4rem 2rem 2rem;
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.question h5
+{
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+.icon 
+{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #111;
+    right: 1.5rem;
+}
+
+.icon::after, .icon::before
+{
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 15px;
+    height: 2px;
+    background: #d5dbf0;
+    border-radius: 2px;
+}
+
+.icon::after
+{
+    transform: translate(-50%, -50%);
+}
+
+.icon::before
+{
+    transform: translate(-50%, -50%) rotate(90deg);
+    transition: all 0.3s ease-in-out;
+}
+
+.question.active .icon::before
+{
+    transform: translate(-50%, -50%) rotate(0);
+}
+
+.content
+{
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+}
+
+.content-text
+{
+    font-size: 1.6rem;
+    padding: 2rem;
+    border-top: 1px, solid;
+    border-image: linear-gradient(to right, transparent, black, transparent) 1;
+}

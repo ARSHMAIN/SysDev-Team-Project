@@ -19,12 +19,12 @@ include_once 'Views/Shared/navbar.php';
     <h2>Contact Us</h2>
     </hr>
 
-    <form action="">
+    <form action="" class="input_figma_styling">
         <label for="email">Your email address</label> </br>
         <input type="text" id="email"> </br> 
         <label for="inquiry">Inquiry</label>
         <br>
-        <textarea name="inquiry" id="inquiry" cols="30" rows="10" placeholder="inquiry">
+        <textarea name="inquiry" id="inquiry" cols="53.5" rows="10">
         </textarea> </br>
         <button type="submit">Contact Us</button>
     </form>

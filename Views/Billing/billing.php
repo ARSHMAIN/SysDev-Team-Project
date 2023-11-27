@@ -16,7 +16,7 @@
 include_once 'Views/Shared/navbar.php';
 ?>
 
-    <div>
+    <div class="padding">
         <form action="">
             <label for="firstName">First Name</label> </br> 
             <input type="text" id="firstName"> </br> 
