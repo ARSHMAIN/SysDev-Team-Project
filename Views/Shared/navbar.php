@@ -10,16 +10,18 @@
         </section>
         <section>
             <div>
-                <a href="/?controller=home&action=home"><button>Home</button></a>
+                <a href="index.php?controller=home&action=home"><button>Home</button></a>
             </div>
             <div>
-                <a><button>Services</button></a>
+                <a href="index.php?controller=services&action=services"><button>Services</button></a>
+
+                <!-- <a><button>Services</button></a> -->
             </div>
             <div>
-                <a><button>FAQ</button></a>
+                <a href="index.php?controller=faq&action=faq"><button>FAQ</button></a>
             </div>
             <div>
-                <a><button>Contact</button></a>
+                <a href="index.php?controller=contact&action=contact"><button>Contact Us</button></a>
             </div>
             <div>
                 <a><button>***</button></a>

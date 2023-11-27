@@ -6,3 +6,35 @@ body {
 #width100Percent {
     width: 100%;
 }
+
+.padding
+{
+    padding-top: 30px;
+    padding-right: 30px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+}
+
+p, h1, h2, h3, li, label
+{
+    font-family: sans-serif;
+}
+
+p, li
+{
+    font-size: large;
+}
+
+input
+{
+    
+    width: 434px;
+    height: 36px;
+    left: 194px;
+    top: 91px;
+
+    background: #FFFFFF;
+    border: 1px solid #000000;
+
+}
+
