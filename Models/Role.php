@@ -1,8 +1,5 @@
 <?php
-
-namespace Models;
 include_once 'database.php';
-
 class Role
 {
     private int $roleId = -1;

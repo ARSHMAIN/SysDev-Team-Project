@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="10">
-    <title>Order a test</title>
+    <title>Home</title>
     <link rel="stylesheet" type="text/css" href="Views/Styles/shared.css">
     <link rel="stylesheet" type="text/css" href="Views/Styles/navbar.css">
     <link rel="stylesheet" type="text/css" href="Views/Styles/home.css">
+    <link rel="stylesheet" type="text/css" href="Views/Styles/test.css">
     <script src="Views/Shared/Scripts/addRemoveInputs.js" defer></script>
     <script src="Views/Shared/Scripts/toggleGender.js" defer></script>
     <script src="Views/Shared/Scripts/searchDropdown.js" defer></script>
@@ -16,7 +16,11 @@
 <?php
 include_once 'Views/Shared/navbar.php';
 ?>
-
-
+<h1>Orders</h1>
+<h3></h3>
+<a href="/?controller=order&action=test">Snake Testing</a>
+<a href="/?controller=order&action=donation">Donation</a>
+<a href="/?controller=order&action=history">Order History</a>
+<a href="/?controller=cart&action=cart">Cart</a>
 </body>
 </html>

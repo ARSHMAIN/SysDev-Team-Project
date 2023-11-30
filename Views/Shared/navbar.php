@@ -15,8 +15,6 @@
             </div>
             <div>
                 <a href="index.php?controller=services&action=services"><button>Services</button></a>
-
-                <!-- <a><button>Services</button></a> -->
             </div>
             <div>
                 <a href="index.php?controller=faq&action=faq"><button>FAQ</button></a>
@@ -25,7 +23,14 @@
                 <a href="index.php?controller=contact&action=contact"><button>Contact Us</button></a>
             </div>
             <div>
-                <a><button>***</button></a>
+                <?php
+                if (!isset($_SESSION['user_id'])) {
+                    echo "<a href='/?controller=login&action=login'><button>Sign In</button></a>";
+                }
+                if (isset($_SESSION['user_id'])) {
+                    echo "<a href='/?controller=order&action=order'><button>Order</button></a>";
+                }
+                ?>
             </div>
         </section>
     </section>

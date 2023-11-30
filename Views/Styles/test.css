@@ -1,0 +1,17 @@
+body {
+    margin: 0;
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column; /* Added to stack forms vertically */
+
+}
+
+.form-container form {
+    text-align: center;
+    margin-bottom: 20px; /* Added to create some space between forms */
+}

@@ -1,19 +1,17 @@
 <?php
-
-class Admin_panelController
+class UserController
 {
     function route(): void
     {
-        global $controller, $action;
-        if ($action == "admin"){
+        global $action;
+        if ($action == "admin") {
             $this->render($action);
         }
     }
+
     function render($action, $data = []): void
     {
         extract($data);
-        include_once "Views/Admin/$action.php";
+        include_once "Views/User/$action.php";
     }
 }
-
-?>

@@ -1,8 +1,5 @@
 <?php
-
-namespace Models;
 include_once 'database.php';
-
 class User
 {
     private int $userId = -1;
@@ -10,10 +7,10 @@ class User
     private string $lastName = "";
     private string $email = "";
     private string $password = "";
-    private string $phoneNumber = "";
-    private string $companyName = "";
+    private ?string $phoneNumber = null;
+    private ?string $companyName = null;
     private string $registeredDate = "";
-    private string $lastLogin = "";
+    private ?string $lastLogin = null;
     private int $roleId = -1;
 
     function __construct(
@@ -22,10 +19,10 @@ class User
         $pLastName = "",
         $pEmail = "",
         $pPassword = "",
-        $pPhoneNumber = "",
-        $pCompanyName = "",
+        $pPhoneNumber = null,
+        $pCompanyName = null,
         $pRegisteredDate = "",
-        $pLastLogin = "",
+        $pLastLogin = null,
         $pRoleId = -1
     ) {
         $this->initializeProperties(
@@ -97,16 +94,15 @@ class User
             $this->lastName = $result['last_name'];
             $this->email = $result['email'];
             $this->password = $result['password'];
-            $this->phoneNumber = $result['phone_number'] || null;
-            $this->companyName = $result['company_name'] || null;
+            $this->phoneNumber = $result['phone_number'];
+            $this->companyName = $result['company_name'];
             $this->registeredDate = $result['registration_date'];
-            $this->lastLogin = $result['last_login'] || null;
+            $this->lastLogin = $result['last_login'];
             $this->roleId = $result['role_id'];
         }
     }
-    public static function getUserByCredentials(string $pEmail, string $pPassword): User
+    public static function getUserByCredentials(string $pEmail, string $pPassword): ?User
     {
-        $user = new User();
         $dBConnection = openDatabaseConnection();
         $sql = "SELECT * FROM user WHERE email = ? AND password = ?";
         $stmt = $dBConnection->prepare($sql);
@@ -114,19 +110,21 @@ class User
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
+            $user = new User();
             $result = $result->fetch_assoc();
             $user->userId = $result['user_id'];
             $user->firstName = $result['first_name'];
             $user->lastName = $result['last_name'];
             $user->email = $pEmail;
             $user->password = $pPassword;
-            $user->phoneNumber = $result['phone_number'] || null;
-            $user->companyName = $result['company_name'] || null;
+            $user->phoneNumber = $result['phone_number'];
+            $user->companyName = $result['company_name'];
             $user->registeredDate = $result['registration_date'];
-            $user->lastLogin = $result['last_login'] || null;
+            $user->lastLogin = $result['last_login'];
             $user->roleId = $result['role_id'];
+            return $user;
         }
-        return $user;
+        return null;
     }
     public static function getUserByRoleName(string $pRoleName): User
     {
@@ -145,10 +143,10 @@ class User
             $user->lastName = $result['last_name'];
             $user->email = $result['email'];
             $user->password = $result['password'];
-            $user->phoneNumber = $result['phone_number'] || null;
-            $user->companyName = $result['company_name'] || null;
+            $user->phoneNumber = $result['phone_number'];
+            $user->companyName = $result['company_name'];
             $user->registeredDate = $result['registration_date'];
-            $user->lastLogin = $result['last_login'] || null;
+            $user->lastLogin = $result['last_login'];
             $user->roleId = $result['role_id'];
         }
         return $user;

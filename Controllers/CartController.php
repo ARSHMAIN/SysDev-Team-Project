@@ -1,18 +1,18 @@
 <?php
-class LoginController
+
+class CartController
 {
     function route(): void
     {
-        global $controller, $action;
-        if ($action == "login" || $action == "validation"){
+        global $action;
+        if ($action == "cart") {
             $this->render($action);
         }
     }
+
     function render($action, $data = []): void
     {
         extract($data);
-        include_once "Views/Login/$action.php";
+        include_once "Views/Cart/$action.php";
     }
 }
-
-?>

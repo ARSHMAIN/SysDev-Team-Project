@@ -1,6 +1,6 @@
 <?php
 
-namespace Models;
+
 include_once 'database.php';
 class Snake
 {
