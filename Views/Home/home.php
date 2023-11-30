@@ -15,6 +15,7 @@
 <?php
 include_once 'Views/Shared/navbar.php';
 ?>
+<!--
     <form id="order" name="order"  method="post">
         <img id="addBtn" src="Views/Images/addSign.png" style="width: 2%; height: 2%" alt="removeSign">
         <img id="removeBtn" src="Views/Images/removeSign.png" style="width: 2.25%; height: 2.25%" alt="removeSign">
@@ -34,7 +35,7 @@ include_once 'Views/Shared/navbar.php';
         </div>
         <input id="submit" type="submit" name="submit">
     </form>
-
+-->
     <div class="padding">
         <h1>Slogan</h1>
         <center>

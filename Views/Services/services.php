@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="10">
     <title>Services</title>
     <link rel="stylesheet" type="text/css" href="Views/Styles/shared.css">
     <link rel="stylesheet" type="text/css" href="Views/Styles/navbar.css">

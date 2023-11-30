@@ -24,26 +24,31 @@
 }
 
 .navBar section {
-    display: flex;
-    flex-wrap: wrap;
 }
 
 
 .navBar section div {
-    padding: 10px;
     flex: 1;
-    
+}
+
+.logoSection {
+    padding: 10px 9%;
 }
 
 .navBar section div h2 {
-    padding: 8em;
     color: white;
     font-size: 1.5em;
 }
 
+.navBarButtons div{
+    padding: 10px 2%;
+}
+
+.navBarButtons {
+    flex-direction: row;
+}
 .navBar section div a button {
     background-color: #FCC458;
-    margin-right: 20px;
     padding: 1.5em 3.5em;
     border-style: none;
     border-radius: 10px; /* Adjust the value to control the roundness */
@@ -66,4 +71,9 @@
 .navBar section div a button:hover {
     cursor: pointer;
     background-color: #D9AA4C;
+}
+
+/*Color the last button in the navbar*/
+.navBar div:last-child button {
+    background-color: #3C5BFF;
 }

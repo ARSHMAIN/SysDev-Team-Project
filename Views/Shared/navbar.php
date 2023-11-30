@@ -1,14 +1,15 @@
+
 <nav>
     <section class="profileSection">
         <img src="Views/Images/profile.png" alt="account">
     </section>
     <section class="navBar">
-        <section>
+        <section class="logoSection">
             <div>
                 <h2>LOGO</h2>
             </div>
         </section>
-        <section>
+        <section class="navBarButtons displayFlex">
             <div>
                 <a href="index.php?controller=home&action=home"><button>Home</button></a>
             </div>
