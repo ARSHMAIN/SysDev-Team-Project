@@ -81,3 +81,12 @@ p, li, button
 .width100Percent {
     width: 100%;
 }
+
+.requiredAsterisk {
+    color: red;
+}
+
+.errorLabelText {
+    color: #ff3d3d;
+    margin-top: 2%;
+}

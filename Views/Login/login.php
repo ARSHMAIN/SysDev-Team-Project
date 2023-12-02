@@ -8,30 +8,29 @@ session_destroy();
         <title>Login</title>
         <link rel="stylesheet" type="text/css" href="Views/Styles/shared.css">
         <link rel="stylesheet" type="text/css" href="Views/Styles/navbar.css">
-        <link rel="stylesheet" type="text/css" href="Views/Styles/login.css">
+        <link rel="stylesheet" type="text/css" href="Views/Styles/loginRegister.css">
     </head>
     <body>
     <?php
         include_once 'Views/Shared/navbar.php';
     ?>
 
-    <section class="loginWrapper marginAuto">
-        <div class="loginRegisterHeader textAlignCenter">
-            <header>
+    <section class="loginRegisterWrapper marginAuto">
+        <div>
+            <header class="loginRegisterHeader textAlignCenter">
                 <label>Login</label>
             </header>
 
             <form action="/?controller=login&action=validation" method="POST">
-                <section>
-                    <div>
-                        <div class="loginRegisterInputLabelText textAlignStart widthMinContent marginAuto">
+                <section class="textAlignStart">
+                        <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                             <div>
                                 <label for="email">Email</label> <br/>
                             </div>
 
                             <input id="email" type="text" name="email" class="width100Percent" required><br>
                         </div>
-                        <div class="loginRegisterInputLabelText textAlignStart widthMinContent marginAuto">
+                        <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                             <div>
                                 <label for="password">Password</label> <br/>
                             </div>
@@ -39,7 +38,7 @@ session_destroy();
                         </div>
 
                         <footer>
-                            <div class="forgotPassword">
+                            <div class="forgotPassword textAlignCenter">
                                 <a href="" >Forgot Password?</a>
                             </div>
                             <div class="signButtons widthMinContent marginAuto">
@@ -48,13 +47,12 @@ session_destroy();
                                 </div>
 
                                 <div class="loginSignUpButton">
-                                    <a href="">
+                                    <a href="/?controller=registration&action=registration">
                                         <input type="button" class="cursorPointer width100Percent" name="submit" value="Sign up">
                                     </a>
                                 </div>
                             </div>
                         </footer>
-                    </div>
                 </section>
             </form>
         </div>
