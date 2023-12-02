@@ -29,3 +29,8 @@ const addSuggestion = product => {
     unorderedList.insertBefore(listElement, unorderedList.firstChild);
     listElement.insertBefore(link, listElement.firstChild);
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Your code to run when the DOM is ready
+    console.log('DOM is ready!');
+});

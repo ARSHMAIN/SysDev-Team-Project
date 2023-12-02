@@ -1,13 +1,14 @@
 <?php
 include_once 'database.php';
+
 class Role
 {
     private int $roleId = -1;
     private string $roleName = "";
 
-    function __construct(
-        $pRoleId = -1,
-        $pRoleName = ""
+    public function __construct(
+        int $pRoleId = -1,
+        string $pRoleName = ""
     ) {
         $this->initializeProperties(
             $pRoleId,
@@ -16,10 +17,9 @@ class Role
     }
 
     private function initializeProperties(
-        $pRoleId,
-        $pRoleName
-    ): void
-    {
+        int $pRoleId,
+        string $pRoleName
+    ): void {
         if ($pRoleId < 0) return;
         else if (
             $pRoleId > 0
@@ -32,34 +32,54 @@ class Role
         }
     }
 
-    private function getRoleById($pRoleId): void
+    private function getRoleById(int $pRoleId): void
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM role WHERE role_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('i', $pRoleId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            $result = $result->fetch_assoc();
-            $this->roleId = $pRoleId;
-            $this->roleName = $result['role_name'];
+
+        try {
+            $sql = "SELECT * FROM role WHERE role_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pRoleId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                $this->roleId = $pRoleId;
+                $this->roleName = $result['role_name'];
+            }
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
         }
     }
-    public static function getRoleByName($pRoleName): Role
+
+    public static function getRoleByName(string $pRoleName): Role
     {
         $role = new Role();
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM role WHERE role_name = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('s', $pRoleName);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            $result = $result->fetch_assoc();
-            $role->roleId = $result['role_id'];
-            $role->roleName = $pRoleName;
+
+        try {
+            $sql = "SELECT * FROM role WHERE role_name = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pRoleName, PDO::PARAM_STR);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                $role->roleId = $result['role_id'];
+                $role->roleName = $pRoleName;
+            }
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
         }
+
         return $role;
     }
 
@@ -82,5 +102,4 @@ class Role
     {
         $this->roleName = $roleName;
     }
-
 }

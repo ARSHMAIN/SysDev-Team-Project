@@ -12,17 +12,16 @@ class Address
     private string $country = "";
     private int $userId = -1;
 
-    function __construct(
-        $pAddressId = -1,
-        $pStreetNumber = "",
-        $pStreetName = "",
-        $pCity = "",
-        $pStateOrRegion = "",
-        $pPostalCode = "",
-        $pCountry = "",
-        $pUserId = -1
-    )
-    {
+    public function __construct(
+        int $pAddressId = -1,
+        string $pStreetNumber = "",
+        string $pStreetName = "",
+        string $pCity = "",
+        string $pStateOrRegion = "",
+        string $pPostalCode = "",
+        string $pCountry = "",
+        int $pUserId = -1
+    ) {
         $this->initializeProperties(
             $pAddressId,
             $pStreetNumber,
@@ -36,16 +35,15 @@ class Address
     }
 
     private function initializeProperties(
-        $pAddressId,
-        $pStreetNumber,
-        $pStreetName,
-        $pCity,
-        $pStateOrRegion,
-        $pPostalCode,
-        $pCountry,
-        $pUserId
-    ): void
-    {
+        int $pAddressId,
+        string $pStreetNumber,
+        string $pStreetName,
+        string $pCity,
+        string $pStateOrRegion,
+        string $pPostalCode,
+        string $pCountry,
+        int $pUserId
+    ): void {
         if ($pUserId < 0) return;
         else if (
             $pAddressId > 0
@@ -66,65 +64,113 @@ class Address
             $this->country = $pCountry;
             $this->userId = $pUserId;
         } else if ($pUserId > 0) {
-            $this->getAddressByUserId($pUserId);
+            $this->getByUserId($pUserId);
         }
     }
 
-    private function getAddressByUserId($pUserId): void
+    private function getByUserId(int $pUserId): void
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM address WHERE user_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('i', $pUserId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            $result = $result->fetch_assoc();
-            $this->addressId = $result['address_id'];
-            $this->streetNumber = $result['street_number'];
-            $this->streetName = $result['street_name'];
-            $this->city = $result['city'];
-            $this->stateOrRegion = $result['state_or_region'];
-            $this->postalCode = $result['postal_code'];
-            $this->country = $result['country'];
-            $this->userId = $pUserId;
+
+        try {
+            $sql = "SELECT * FROM address WHERE user_id = :user_id";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(':user_id', $pUserId, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result) {
+                $this->addressId = $result['address_id'];
+                $this->streetNumber = $result['street_number'];
+                $this->streetName = $result['street_name'];
+                $this->city = $result['city'];
+                $this->stateOrRegion = $result['state_or_region'];
+                $this->postalCode = $result['postal_code'];
+                $this->country = $result['country'];
+                $this->userId = $pUserId;
+            }
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt?->closeCursor();
+            $dBConnection = null;
         }
     }
+
     public static function createAddress(int $pUserId, array $postFields): bool
     {
         $dBConnection = openDatabaseConnection();
 
-        foreach ($postFields as $key => $value) {
-            if ($value === '') {
-                $postFields[$key] = null;
+        try {
+            foreach ($postFields as $key => $value) {
+                if ($value === '') {
+                    $postFields[$key] = null;
+                }
             }
+
+            $sql = "INSERT INTO address (street_number, street_name, city, state_or_region, postal_code, country, user_id) 
+                    VALUES (:street_number, :street_name, :city, :state_or_region, :postal_code, :country, :user_id)";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(':street_number', $postFields['street_number'], PDO::PARAM_STR);
+            $stmt->bindParam(':street_name', $postFields['street_name'], PDO::PARAM_STR);
+            $stmt->bindParam(':city', $postFields['city'], PDO::PARAM_STR);
+            $stmt->bindParam(':state_or_region', $postFields['state_or_region'], PDO::PARAM_STR);
+            $stmt->bindParam(':postal_code', $postFields['postal_code'], PDO::PARAM_STR);
+            $stmt->bindParam(':country', $postFields['country'], PDO::PARAM_STR);
+            $stmt->bindParam(':user_id', $pUserId, PDO::PARAM_INT);
+
+            $isSuccessful = $stmt->execute();
+            $addressId = $dBConnection->lastInsertId();
+        } catch (PDOException $e) {
+            // Handle specific error conditions
+            if ($e->getCode() == '23000') {
+                // Handle duplicate key error or other specific error
+                die("Error: " . $e->getMessage());
+            }
+        } finally {
+            $stmt?->closeCursor();
+            $dBConnection = null;
         }
 
-        $sql = "INSERT INTO address (street_number, street_name, city, state_or_region, postal_code, country, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('ssssssi', $postFields['street_number'], $postFields['street_name'], $postFields['city'], $postFields['state_or_region'], $postFields['postal_code'], $postFields['country'], $pUserId);
-        $isSuccessful = $stmt->execute();
-        $addressId = $dBConnection->insert_id;
-        $stmt->close();
-        $dBConnection->close();
         return $isSuccessful;
     }
+
     public static function updateAddress(int $pUserId, array $postFields): void
     {
         $dBConnection = openDatabaseConnection();
 
-        foreach ($postFields as $key => $value) {
-            if ($value === '') {
-                $postFields[$key] = null;
+        try {
+            foreach ($postFields as $key => $value) {
+                if ($value === '') {
+                    $postFields[$key] = null;
+                }
             }
-        }
 
-        $sql = "UPDATE address SET street_number = ?, street_name = ?, city = ?, state_or_region = ?, postal_code = ?, country = ? WHERE user_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('ssssssi', $postFields['street_number'], $postFields['street_name'], $postFields['city'], $postFields['state_or_region'], $postFields['postal_code'], $postFields['country'], $pUserId);
-        $stmt->execute();
-        $stmt->close();
-        $dBConnection->close();
+            $sql = "UPDATE address 
+                    SET street_number = :street_number, street_name = :street_name, city = :city, 
+                        state_or_region = :state_or_region, postal_code = :postal_code, country = :country 
+                    WHERE user_id = :user_id";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(':street_number', $postFields['street_number'], PDO::PARAM_STR);
+            $stmt->bindParam(':street_name', $postFields['street_name'], PDO::PARAM_STR);
+            $stmt->bindParam(':city', $postFields['city'], PDO::PARAM_STR);
+            $stmt->bindParam(':state_or_region', $postFields['state_or_region'], PDO::PARAM_STR);
+            $stmt->bindParam(':postal_code', $postFields['postal_code'], PDO::PARAM_STR);
+            $stmt->bindParam(':country', $postFields['country'], PDO::PARAM_STR);
+            $stmt->bindParam(':user_id', $pUserId, PDO::PARAM_INT);
+
+            $stmt->execute();
+        } catch (PDOException $e) {
+            // Handle specific error conditions
+            if ($e->getCode() == '23000') {
+                // Handle duplicate key error or other specific error
+                die("Error: " . $e->getMessage());
+            }
+        } finally {
+            $stmt?->closeCursor();
+            $dBConnection = null;
+        }
     }
 
     public function getAddressId(): int

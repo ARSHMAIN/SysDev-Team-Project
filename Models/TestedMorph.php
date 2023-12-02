@@ -1,7 +1,6 @@
 <?php
-
-
 include_once 'database.php';
+
 class TestedMorph
 {
     private int $testId = -1;
@@ -9,12 +8,13 @@ class TestedMorph
     private string $result = "";
     private string $comment = "";
     private string $resultImagePath = "";
-    function __construct(
-        $pTestId = -1,
-        $pMorphId = -1,
-        $pResult = "",
-        $pComment = "",
-        $pResultImagePath = "",
+
+    public function __construct(
+        int $pTestId = -1,
+        int $pMorphId = -1,
+        string $pResult = "",
+        string $pComment = "",
+        string $pResultImagePath = ""
     ) {
         $this->initializeProperties(
             $pTestId,
@@ -26,13 +26,12 @@ class TestedMorph
     }
 
     private function initializeProperties(
-        $pTestId,
-        $pMorphId,
-        $pResult,
-        $pComment,
-        $pResultImagePath
-    ): void
-    {
+        int $pTestId,
+        int $pMorphId,
+        string $pResult,
+        string $pComment,
+        string $pResultImagePath
+    ): void {
         if ($pTestId < 0) return;
         else if (
             $pTestId > 0
@@ -48,30 +47,41 @@ class TestedMorph
             $this->resultImagePath = $pResultImagePath;
         }
     }
+
     public static function getAllTestedMorphById(int $pTestId): ?array
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM testedmorph WHERE test_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('i', $pTestId);
-        $stmt->execute();
-        $results = $stmt->get_result();
-        if ($results->num_rows > 0) {
+
+        try {
+            $sql = "SELECT * FROM testedmorph WHERE test_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pTestId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $testedMorphs = [];
-            while ($row = $results->fetch_assoc()){
-                $testedMorph = new TestedMorph();
-                $testedMorph->testId = $pTestId;
-                $testedMorph->morphId = $row['morph_id'];
-                $testedMorph->result = $row['result'] || null;
-                $testedMorph->comment = $row['comment'] || null;
-                $testedMorph->resultImagePath = $row['result_image_path'] || null;
+            foreach ($results as $row) {
+                $testedMorph = new TestedMorph(
+                    $pTestId,
+                    $row['morph_id'],
+                    $row['result'],
+                    $row['comment'],
+                    $row['result_image_path']
+                );
                 $testedMorphs[] = $testedMorph;
             }
+
             return $testedMorphs;
+        } catch (PDOException $e) {
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
         }
-        return null;
+
     }
-    public static function createTestedMorph(array ...$postFields): bool
+
+    public static function createTestedMorph(array $postFields): bool
     {
         $dBConnection = openDatabaseConnection();
 
@@ -80,18 +90,32 @@ class TestedMorph
                 $postFields[$key] = null;
             }
         }
+
         $testId = array_shift($postFields);
 
-        $sql = "INSERT INTO testedmorph (test_id, morph_id, result, comment, result_image_path) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('iisss', $testId, ...$postFields);
-        $isSuccessful = $stmt->execute();
-        $stmt->close();
-        $dBConnection->close();
-        return $isSuccessful;
+        try {
+            $sql = "INSERT INTO testedmorph (test_id, morph_id, result, comment, result_image_path) VALUES (?, ?, ?, ?, ?)";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $testId, PDO::PARAM_INT);
+            $stmt->bindParam(2, $postFields['morphId'], PDO::PARAM_INT);
+            $stmt->bindParam(3, $postFields['result'], PDO::PARAM_STR);
+            $stmt->bindParam(4, $postFields['comment'], PDO::PARAM_STR);
+            $stmt->bindParam(5, $postFields['resultImagePath'], PDO::PARAM_STR);
+
+            $isSuccessful = $stmt->execute();
+
+            return $isSuccessful;
+        } catch (PDOException $e) {
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
+
+        return false;
     }
-    //TODO do view first then make this function work
-    public static function updateTestedMorph(int $pUserId, array $postFields): void
+
+    public static function updateTestedMorph(int $pTestId, int $pMorphId, array $postFields): bool
     {
         $dBConnection = openDatabaseConnection();
 
@@ -101,23 +125,47 @@ class TestedMorph
             }
         }
 
-        $sql = "UPDATE user SET first_name = ?, last_name = ?, password = ?, phone_number = ?, company_name = ?, role_id = ? WHERE user_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('sssssii', $postFields['firstName'], $postFields['lastName'], $postFields['password'], $postFields['phoneNumber'], $postFields['companyName'], $postFields['roleId'], $pUserId);
-        $stmt->execute();
-        $stmt->close();
-        $dBConnection->close();
+        try {
+            $sql = "UPDATE testedmorph SET result = ?, comment = ?, result_image_path = ? WHERE test_id = ? AND morph_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $postFields['result'], PDO::PARAM_STR);
+            $stmt->bindParam(2, $postFields['comment'], PDO::PARAM_STR);
+            $stmt->bindParam(3, $postFields['resultImagePath'], PDO::PARAM_STR);
+            $stmt->bindParam(4, $pTestId, PDO::PARAM_INT);
+            $stmt->bindParam(5, $pMorphId, PDO::PARAM_INT);
+
+            $isSuccessful = $stmt->execute();
+
+            return $isSuccessful;
+        } catch (PDOException $e) {
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
+
+        return false;
     }
-    //TODO might need to change this
-    public static function deleteTestedMorph(int $pTestId, int $pMorphId): void
+
+    public static function deleteTestedMorph(int $pTestId, int $pMorphId): bool
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "DELETE FROM testedmorph WHERE test_id = ? AND morph_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('i', $pTestId, $pMorphId);
-        $stmt->execute();
-        $stmt->close();
-        $dBConnection->close();
+
+        try {
+            $sql = "DELETE FROM testedmorph WHERE test_id = ? AND morph_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pTestId, PDO::PARAM_INT);
+            $stmt->bindParam(2, $pMorphId, PDO::PARAM_INT);
+
+            $isSuccessful = $stmt->execute();
+
+            return $isSuccessful;
+        } catch (PDOException $e) {
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
     }
 
     public function getTestId(): int
@@ -169,5 +217,4 @@ class TestedMorph
     {
         $this->resultImagePath = $resultImagePath;
     }
-
 }

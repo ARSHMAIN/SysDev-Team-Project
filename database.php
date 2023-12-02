@@ -1,14 +1,18 @@
 <?php
-function openDatabaseConnection() {
+function openDatabaseConnection()
+{
     $hostName = "localhost";
     $userName = "root";
     $password = "";
     $dataBase = "snake";
 
-    $conn = new mysqli($hostName,$userName,$password,$dataBase);
-
-    if ($conn->connect_error){
-        die("Connection Error" . $conn->connect_error);
+    try {
+        $conn = new PDO("mysql:host=$hostName;dbname=$dataBase;charset=utf8", $userName, $password);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch (PDOException $e) {
+        die("Connection Error: " . $e->getMessage());
     }
+
     return $conn;
 }
+

@@ -1,6 +1,4 @@
 <?php
-
-
 include_once 'database.php';
 
 class Sex
@@ -8,9 +6,9 @@ class Sex
     private int $sexId = -1;
     private string $sexName = "";
 
-    function __construct(
-        $pSexId = -1,
-        $pSexName = ""
+    public function __construct(
+        int $pSexId = -1,
+        string $pSexName = ""
     ) {
         $this->initializeProperties(
             $pSexId,
@@ -19,10 +17,9 @@ class Sex
     }
 
     private function initializeProperties(
-        $pSexId,
-        $pSexName
-    ): void
-    {
+        int $pSexId,
+        string $pSexName
+    ): void {
         if ($pSexId < 0) return;
         else if (
             $pSexId > 0
@@ -35,34 +32,54 @@ class Sex
         }
     }
 
-    private function getSexById($pSexId): void
+    private function getSexById(int $pSexId): void
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM sex WHERE sex_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('i', $pSexId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            $result = $result->fetch_assoc();
-            $this->sexId = $pSexId;
-            $this->sexName = $result['sex_name'];
+
+        try {
+            $sql = "SELECT * FROM sex WHERE sex_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pSexId, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result) {
+                $this->sexId = $result['sex_id'];
+                $this->sexName = $result['sex_name'];
+            }
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt?->closeCursor();
+            $dBConnection = null;
         }
     }
-    public static function geSexByName($pSexName): Sex
+
+    public static function getSexByName(string $pSexName): Sex
     {
         $sex = new Sex();
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM sex WHERE sex_name = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('s', $pSexName);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            $result = $result->fetch_assoc();
-            $sex->sexId = $result['sex_id'];
-            $sex->sexName = $pSexName;
+
+        try {
+            $sql = "SELECT * FROM sex WHERE sex_name = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pSexName, PDO::PARAM_STR);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result) {
+                $sex->sexId = $result['sex_id'];
+                $sex->sexName = $result['sex_name'];
+            }
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt?->closeCursor();
+            $dBConnection = null;
         }
+
         return $sex;
     }
 
@@ -85,5 +102,4 @@ class Sex
     {
         $this->sexName = $sexName;
     }
-
 }

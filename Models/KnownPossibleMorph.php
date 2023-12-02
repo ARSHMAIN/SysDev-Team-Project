@@ -1,6 +1,4 @@
 <?php
-
-
 include_once 'database.php';
 
 class KnownPossibleMorph
@@ -8,10 +6,11 @@ class KnownPossibleMorph
     private int $snakeId = -1;
     private int $morphId = -1;
     private bool $isKnown = false;
-    function __construct(
-        $pSnakeId = -1,
-        $pMorphId = -1,
-        $pIsKnown = false
+
+    public function __construct(
+        int $pSnakeId = -1,
+        int $pMorphId = -1,
+        bool $pIsKnown = false
     ) {
         $this->initializeProperties(
             $pSnakeId,
@@ -21,16 +20,12 @@ class KnownPossibleMorph
     }
 
     private function initializeProperties(
-        $pSnakeId,
-        $pMorphId,
-        $pIsKnown
-    ): void
-    {
+        int $pSnakeId,
+        int $pMorphId,
+        bool $pIsKnown
+    ): void {
         if ($pSnakeId < 0) return;
-        else if (
-            $pSnakeId > 0
-            && strlen($pSnakeId) > 0
-        ) {
+        else if ($pSnakeId > 0 && $pMorphId > 0) {
             $this->snakeId = $pSnakeId;
             $this->morphId = $pMorphId;
             $this->isKnown = $pIsKnown;
@@ -38,68 +33,129 @@ class KnownPossibleMorph
             $this->getKnownAndPossibleMorphBySnakeId($pSnakeId);
         }
     }
-    private function getKnownAndPossibleMorphBySnakeId($pSnakeId)
+
+    private function getKnownAndPossibleMorphBySnakeId(int $pSnakeId): void
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM knownpossiblemorph WHERE snake_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('i', $pSnakeId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            $result = $result->fetch_assoc();
-            $this->snakeId = $pSnakeId;
-            $this->morphId = $result['morph_id'];
-            $this->isKnown = $result['is_known'];
+
+        try {
+            $sql = "SELECT * FROM knownpossiblemorph WHERE snake_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result) {
+                $this->snakeId = $pSnakeId;
+                $this->morphId = $result['morph_id'];
+                $this->isKnown = $result['is_known'];
+            }
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
         }
     }
-    public static function getKnownOrPossibleMorphsBySnakeId($pSnakeId, $pIsKnown): KnownPossibleMorph
+
+    public static function getKnownOrPossibleMorphsBySnakeId(int $pSnakeId, bool $pIsKnown): KnownPossibleMorph
     {
         $knownPossibleMorph = new KnownPossibleMorph();
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM knownpossiblemorph WHERE snake_id = ? AND is_known = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('ii', $pSnakeId, $pIsKnown);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            $result = $result->fetch_assoc();
-            $knownPossibleMorph->snakeId = $pSnakeId;
-            $knownPossibleMorph->morphId = $result['morph_id'];
-            $knownPossibleMorph->isKnown = $pIsKnown;
+
+        try {
+            $sql = "SELECT * FROM knownpossiblemorph WHERE snake_id = ? AND is_known = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
+            $stmt->bindParam(2, $pIsKnown, PDO::PARAM_BOOL);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result) {
+                $knownPossibleMorph->snakeId = $pSnakeId;
+                $knownPossibleMorph->morphId = $result['morph_id'];
+                $knownPossibleMorph->isKnown = $pIsKnown;
+            }
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
         }
+
         return $knownPossibleMorph;
     }
+
     public static function createKnownPossibleMorph(int $pSnakeId, int $pMorphId, bool $pIsKnown): bool
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "INSERT INTO knownpossiblemorph (snake_id, morph_id, is_known) VALUES (?, ?, ?)";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('iii', $pSnakeId, $pMorphId, $pIsKnown);
-        $isSuccessful = $stmt->execute();
-        $stmt->close();
-        $dBConnection->close();
-        return $isSuccessful;
+
+        try {
+            $sql = "INSERT INTO knownpossiblemorph (snake_id, morph_id, is_known) VALUES (?, ?, ?)";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
+            $stmt->bindParam(2, $pMorphId, PDO::PARAM_INT);
+            $stmt->bindParam(3, $pIsKnown, PDO::PARAM_BOOL);
+            $isSuccessful = $stmt->execute();
+        } catch (PDOException $e) {
+            // Handle specific error conditions
+            if ($e->getCode() == '23000') {
+                // Handle duplicate key error or other specific error
+                die("Error: " . $e->getMessage());
+            }
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
+
+        return $isSuccessful ?? false;
     }
+
     public static function updateKnownPossibleMorph(int $pSnakeId, int $pMorphId, bool $pIsKnown): void
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "UPDATE knownpossiblemorph SET morph_id = ?, is_known = ? WHERE snake_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('iii',$pMorphId, $pIsKnown, $pSnakeId);
-        $stmt->execute();
-        $stmt->close();
-        $dBConnection->close();
+
+        try {
+            $sql = "UPDATE knownpossiblemorph SET morph_id = ?, is_known = ? WHERE snake_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pMorphId, PDO::PARAM_INT);
+            $stmt->bindParam(2, $pIsKnown, PDO::PARAM_BOOL);
+            $stmt->bindParam(3, $pSnakeId, PDO::PARAM_INT);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            // Handle specific error conditions
+            if ($e->getCode() == '23000') {
+                // Handle duplicate key error or other specific error
+                die("Error: " . $e->getMessage());
+            }
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
     }
-    public static function deleteKnownPossibleMorph(int $pMorphId, bool $pIsKnown): void
+
+    public static function deleteKnownPossibleMorph(int $pSnakeId, int $pMorphId): void
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "DELETE FROM knownpossiblemorph WHERE snake_id = ? AND morph_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('ii',$pSnakeId, $pMorphId);
-        $stmt->execute();
-        $stmt->close();
-        $dBConnection->close();
+
+        try {
+            $sql = "DELETE FROM knownpossiblemorph WHERE snake_id = ? AND morph_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
+            $stmt->bindParam(2, $pMorphId, PDO::PARAM_INT);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            // Handle specific error conditions
+            if ($e->getCode() == '23000') {
+                // Handle foreign key constraint violation or other specific error
+                die("Error: " . $e->getMessage());
+            }
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
     }
 
     public function getSnakeId(): int

@@ -1,6 +1,4 @@
 <?php
-
-
 include_once 'database.php';
 
 class CustomerSnakeName
@@ -9,10 +7,10 @@ class CustomerSnakeName
     private int $userId = -1;
     private int $snakeId = -1;
 
-    function __construct(
-        $pCustomerSnakeId = "",
-        $pUserId = -1,
-        $pSnakeId = -1
+    public function __construct(
+        string $pCustomerSnakeId = "",
+        int $pUserId = -1,
+        int $pSnakeId = -1
     ) {
         $this->initializeProperties(
             $pCustomerSnakeId,
@@ -22,11 +20,10 @@ class CustomerSnakeName
     }
 
     private function initializeProperties(
-        $pCustomerSnakeId,
-        $pUserId,
-        $pSnakeId,
-    ): void
-    {
+        string $pCustomerSnakeId,
+        int $pUserId,
+        int $pSnakeId
+    ): void {
         if ($pSnakeId < 0) return;
         else if (
             strlen($pCustomerSnakeId) > 0
@@ -37,70 +34,235 @@ class CustomerSnakeName
             $this->userId = $pUserId;
             $this->snakeId = $pSnakeId;
         } else if ($pSnakeId > 0) {
-            $this->getCustomerSnakeNameBySnakeId($pSnakeId);
+            $this->getBySnakeId($pSnakeId);
         }
     }
 
-    private function getCustomerSnakeNameBySnakeId($pSnakeId): void
+    private function getBySnakeId(int $pSnakeId): void
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM customersnakename WHERE snake_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('i', $pSnakeId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            $result = $result->fetch_assoc();
-            $this->customerSnakeId = $result['customer_snake_id'];
-            $this->userId = $result['user_id'];
-            $this->snakeId = $pSnakeId;
+        try {
+            $sql = "SELECT * FROM customersnakename WHERE snake_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                $this->customerSnakeId = $result['customer_snake_id'];
+                $this->userId = $result['user_id'];
+                $this->snakeId = $result['snake_id'];
+            }
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
         }
     }
-    public static function createCustomerSnakeName(string $pCustomerSnakeId, int $pUserId, int $pSnakeId): array
+
+    public static function getByUserId(int $pUserId): ?array
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "INSERT INTO customersnakename (customer_snake_id, user_id, snake_id) VALUES (?, ?, ?)";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('sii', $pCustomerSnakeId, $pUserId, $pSnakeId);
-        $isSuccessful = $stmt->execute();
-        $customerSnakeId = $dBConnection->insert_id;
-        $stmt->close();
-        $dBConnection->close();
+        try {
+            $sql = "SELECT * FROM customersnakename WHERE user_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pUserId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $customerSnakeNames = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $customerSnakeName = new CustomerSnakeName(
+                    $row['customer_snake_id'],
+                    $row['user_id'],
+                    $row['snake_id']
+                );
+                $customerSnakeNames[] = $customerSnakeName;
+            }
+
+            return $customerSnakeNames;
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
+    }
+
+    public static function create(string $pCustomerSnakeId, int $pUserId, int $pSnakeId): array
+    {
+        $stmt = null; // Initialize $stmt outside the try block
+
+        try {
+            $dBConnection = openDatabaseConnection();
+            $sql = "INSERT INTO customersnakename (customer_snake_id, user_id, snake_id) VALUES (?, ?, ?)";
+            $stmt = $dBConnection->prepare($sql);
+
+            // Bind parameters after checking for empty strings
+            $stmt->bindValue(1, $pCustomerSnakeId);
+            $stmt->bindValue(2, $pUserId, PDO::PARAM_INT);
+            $stmt->bindValue(3, $pSnakeId, PDO::PARAM_INT);
+
+            $isSuccessful = $stmt->execute();
+            $customerSnakeId = $dBConnection->lastInsertId();
+
+            return [
+                'isSuccessful' => $isSuccessful,
+                'newCustomerSnakeId' => $customerSnakeId
+            ];
+        } catch (PDOException $e) {
+            // Handle specific error conditions
+            if ($e->getCode() == '23000') {
+                // Check the error message for more detailed information
+                if (str_contains($e->getMessage(), 'NOT NULL')) {
+                    // Handle NOT NULL constraint violation
+                    return [
+                        'isSuccessful' => false,
+                        'error' => 'NOT NULL constraint violation. Please provide values for all required fields.',
+                    ];
+                } elseif (str_contains($e->getMessage(), 'Duplicate entry')) {
+                    // Handle duplicate key error
+                    return [
+                        'isSuccessful' => false,
+                        'error' => 'Duplicate entry. The combination of customer_snake_id, user_id, and snake_id must be unique.',
+                    ];
+                } else {
+                    // Handle other errors
+                    die("Error: " . $e->getMessage());
+                }
+            }
+        } finally {
+            $stmt?->closeCursor();
+            $dBConnection = null;
+        }
         return [
-            'isSuccessful' => $isSuccessful,
-            'newCustomerSnakeId' => $customerSnakeId
+            'isSuccessful' => false
         ];
     }
-    public static function updateCustomerSnakeName(string $pCustomerSnakeId, int $pUserId, int $pSnakeId): array
+
+    public static function update(string $pSnakeId, string $pNewCustomerSnakeId, int $pUserId): array
     {
-        $dBConnection = openDatabaseConnection();
-        $sql = "UPDATE customersnakename SET customer_snake_id = ? WHERE snake_id = ? AND user_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('sii', $pCustomerSnakeId, $pUserId, $pSnakeId);
-        $isSuccessful = $stmt->execute();
-        $stmt->close();
-        $dBConnection->close();
+        $stmt = null; // Initialize $stmt outside the try block
+
+        try {
+            $dBConnection = openDatabaseConnection();
+            $sql = "UPDATE customersnakename SET customer_snake_id = ? WHERE snake_id = ? AND user_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+
+            // Bind parameters after checking for empty strings
+            $stmt->bindValue(1, $pNewCustomerSnakeId);
+            $stmt->bindValue(2, $pSnakeId);
+            $stmt->bindValue(3, $pUserId, PDO::PARAM_INT);
+
+            // Check the number of affected rows to determine if the update was successful
+            $rowCount = $stmt->rowCount();
+            if ($rowCount > 0) {
+                return [
+                    'isSuccessful' => true,
+                    'rowCount' => $rowCount
+                ];
+            } else {
+                return [
+                    'isSuccessful' => false,
+                    'error' => 'No records were updated. Please check if the provided snake_id and user_id combination exists.',
+                ];
+            }
+        } catch (PDOException $e) {
+            // Handle specific error conditions
+            if ($e->getCode() == '23000') {
+                // Check the error message for more detailed information
+                if (str_contains($e->getMessage(), 'NOT NULL')) {
+                    // Handle NOT NULL constraint violation
+                    return [
+                        'isSuccessful' => false,
+                        'error' => 'NOT NULL constraint violation. Please provide values for all required fields.',
+                    ];
+                } elseif (str_contains($e->getMessage(), 'Duplicate entry')) {
+                    // Handle duplicate key error
+                    return [
+                        'isSuccessful' => false,
+                        'error' => 'Duplicate entry. The combination of snake_id and user_id must be unique.',
+                    ];
+                } else {
+                    // Handle other errors
+                    die("Error: " . $e->getMessage());
+                }
+            }
+        } finally {
+            $stmt?->closeCursor();
+            $dBConnection = null;
+        }
+
         return [
-            'isSuccessful' => $isSuccessful,
-            'updatedCustomerSnakeId' => $pCustomerSnakeId
+            'isSuccessful' => false
         ];
     }
-    public static function deleteCustomerSnakeName(string $pCustomerSnakeId, int $pSnakeId, int $pUserId): void
+
+    public static function delete(string $pSnakeId, int $pUserId): array
     {
-        $dBConnection = openDatabaseConnection();
-        $sql = "DELETE FROM customersnakename WHERE customer_snake_id = ? AND snake_id = ? AND user_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('sii', $pCustomerSnakeId, $pSnakeId, $pUserId);
-        $stmt->execute();
-        $stmt->close();
-        $dBConnection->close();
+        $stmt = null; // Initialize $stmt outside the try block
+
+        try {
+            $dBConnection = openDatabaseConnection();
+            $sql = "DELETE FROM customersnakename WHERE snake_id = ? AND user_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+
+            // Bind parameters after checking for empty strings
+            $stmt->bindValue(1, $pSnakeId);
+            $stmt->bindValue(2, $pUserId, PDO::PARAM_INT);
+
+            // Check the number of affected rows to determine if the delete was successful
+            $rowCount = $stmt->rowCount();
+            if ($rowCount > 0) {
+                return [
+                    'isSuccessful' => true,
+                    'rowCount' => $rowCount
+                ];
+            } else {
+                return [
+                    'isSuccessful' => false,
+                    'error' => 'No records were deleted. Please check if the provided snake_id and user_id combination exists.',
+                ];
+            }
+        } catch (PDOException $e) {
+            // Handle specific error conditions
+            if ($e->getCode() == '23000') {
+                // Check the error message for more detailed information
+                if (str_contains($e->getMessage(), 'NOT NULL')) {
+                    // Handle NOT NULL constraint violation
+                    return [
+                        'isSuccessful' => false,
+                        'error' => 'NOT NULL constraint violation. Please provide values for all required fields.',
+                    ];
+                } elseif (str_contains($e->getMessage(), 'foreign key constraint fails')) {
+                    // Handle foreign key constraint violation
+                    return [
+                        'isSuccessful' => false,
+                        'error' => 'Foreign key constraint violation. Ensure that the provided snake_id and user_id combination exists.',
+                    ];
+                } else {
+                    // Handle other errors
+                    die("Error: " . $e->getMessage());
+                }
+            }
+        } finally {
+            $stmt?->closeCursor();
+            $dBConnection = null;
+        }
+
+        return [
+            'isSuccessful' => false
+        ];
     }
-    public function getCustomerSnakeId(): int
+
+    public function getCustomerSnakeId(): string
     {
         return $this->customerSnakeId;
     }
 
-    public function setCustomerSnakeId(int $customerSnakeId): void
+    public function setCustomerSnakeId(string $customerSnakeId): void
     {
         $this->customerSnakeId = $customerSnakeId;
     }
@@ -124,5 +286,4 @@ class CustomerSnakeName
     {
         $this->snakeId = $snakeId;
     }
-
 }
