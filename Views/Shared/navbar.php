@@ -9,23 +9,24 @@
                 <h2>LOGO</h2>
             </div>
         </section>
-        <section class="navBarButtons displayFlex">
+        <section class="navBarButtons displayFlex alignItemsCenter">
             <div>
-                <a href="index.php?controller=home&action=home"><button>Home</button></a>
+                <a href="index.php?controller=home&action=home">Home</a>
             </div>
             <div>
-                <a href="index.php?controller=services&action=services"><button>Services</button></a>
+                <a href="index.php?controller=services&action=services">Services</a>
+            </div>
+
+            <div>
+                <a href="index.php?controller=faq&action=faq">FAQ</a>
             </div>
             <div>
-                <a href="index.php?controller=faq&action=faq"><button>FAQ</button></a>
-            </div>
-            <div>
-                <a href="index.php?controller=contact&action=contact"><button>Contact Us</button></a>
+                <a href="index.php?controller=contact&action=contact">Contact Us</a>
             </div>
             <div>
                 <?php
                 if (!isset($_SESSION['user_id'])) {
-                    echo "<a href='/?controller=login&action=login'><button>Sign In</button></a>";
+                    echo "<a href='/?controller=login&action=login'>Sign In</a>";
                 }
                 if (isset($_SESSION['user_id'])) {
                     echo "<a href='/?controller=order&action=order'><button>Order</button></a>";

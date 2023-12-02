@@ -23,10 +23,6 @@
     align-items: center;
 }
 
-.navBar section {
-}
-
-
 .navBar section div {
     flex: 1;
 }
@@ -41,15 +37,16 @@
 }
 
 .navBarButtons div{
-    padding: 10px 2%;
+    padding: 0 4%;
+    height: min-content;
 }
 
 .navBarButtons {
     flex-direction: row;
 }
-.navBar section div a button {
+.navBar section div a  {
     background-color: #FCC458;
-    padding: 1.5em 3.5em;
+    padding: 15px 50px;
     border-style: none;
     border-radius: 10px; /* Adjust the value to control the roundness */
     text-align: center;
@@ -58,14 +55,9 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    height: 46px;
-    display: flex; /* Add this line for flexbox */
-    align-items: center; /* Add this line to center the text vertically */
-    justify-content: center;
-}
-
-.navBar section div a {
     text-decoration: none;
+    /*Do not wrap the text inside the anchor*/
+    white-space: nowrap;
 }
 
 .navBar section div a button:hover {
@@ -74,6 +66,8 @@
 }
 
 /*Color the last button in the navbar*/
-.navBar div:last-child button {
+.navBar div:last-child a {
     background-color: #3C5BFF;
+    padding: 30px 50px;
+
 }
