@@ -58,13 +58,16 @@
     text-decoration: none;
     /*Do not wrap the text inside the anchor*/
     white-space: nowrap;
+    color: black;
 }
 
-.navBar section div a button:hover {
-    cursor: pointer;
+.navBar section div a:hover {
     background-color: #D9AA4C;
 }
 
+.navBar section div:last-child a:hover {
+    background-color: #2b41b5;
+}
 /*Color the last button in the navbar*/
 .navBar div:last-child a {
     background-color: #3C5BFF;
