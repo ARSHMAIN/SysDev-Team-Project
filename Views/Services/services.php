@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="Views/Styles/shared.css">
     <link rel="stylesheet" type="text/css" href="Views/Styles/navbar.css">
     <link rel="stylesheet" type="text/css" href="Views/Styles/home.css">
+    <link rel="stylesheet" type="text/css" href="Views/Styles/tests_offered.css">
     <script src="Views/Shared/Scripts/addRemoveInputs.js" defer></script>
     <script src="Views/Shared/Scripts/toggleGender.js" defer></script>
     <script src="Views/Shared/Scripts/searchDropdown.js" defer></script>
@@ -21,11 +22,122 @@ include_once 'Views/Shared/navbar.php';
         <p>We offer genotyping services for ball python morph mutations that we have discovered. Every test costs $50 + tax. Sheds coming from out of the country require a CITES permit. To order tests, please go <a href="index.php?action=test&controller=order_test">here</a>.</p>
 
         <h2>Different Tests Offered</h2>
-        <div class="tests_offered">
-            <table>
+        <center>
+            <div id="tests_offered">
+                <table>
+                    <div class="tableCategory">
+                        <!-- IMAGE ROW 1 -->
+                        <tr>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Albino</h4>
+                            </td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Candy/Toffee</h4>
+                            </td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Clown</h4>
+                            </td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Cryptic</h4>
+                            </td>
+                        </tr>
+                        <!-- IMAGE ROW 2 -->
+                        <tr>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Desert/ghost/enhancer</h4>
+                            </td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Hypo/Ghost</h4>
+                            </td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Lavander Albino</h4>
+                            </td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Piebald</h4>
+                            </td>
+                        </tr>
 
-            </table>
-        </div>
+                        <!-- IMAGE ROW 3 -->
+                        <tr>
+                            <td></td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Ultramel</h4>
+                            </td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>VPI Anxanthic</h4>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </div>
+                    
+                    <div class="tableCategory">
+                        <tr>
+                            <th colspan="4">Yellowbelly Complex</td>
+                        </tr>
+                        <!-- IMAGE ROW 4 -->
+                        <tr id="triple">
+                            <td></td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Asphalt</h4>
+                            </td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Gravel</h4>
+                            </td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Spark</h4>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <!-- IMAGE ROW 5 -->
+                        <tr>
+                            <td></td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Specter</h4>
+                            </td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Yellowbelly</h4>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </div>
+                    
+                    <div class="tableCategory">
+                        <tr>
+                            <th colspan="4">8-Ball Complex</td>
+                        </tr>
+                        <!-- IMAGE ROW 6 -->
+                        <tr>
+                            <td></td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Black Pastel</h4>
+                            </td>
+                            <td>
+                                <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
+                                <h4>Enchi</h4>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </div>
+                </table>
+            </div>
+        </center>
+        </br></br>
         <h2>Donations</h2>
         <p>All the mutations for which we can test are listed above. To gain the ability to test more mutations, we need to discover more mutations. To discover mutations, we need snake sheds.</p>
         <p>Sheds from homozygous individuals are best (i.e., visuals from recessives, supers from incomplete dominants). For the rarer morphs, we welcome known hets (i.e., from a visual parent, proven through breeding, identified through genotyping).</p>
