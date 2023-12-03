@@ -78,42 +78,41 @@ class TestedMorph
             $stmt->closeCursor();
             $dBConnection = null;
         }
-
     }
 
-    public static function createTestedMorph(array $postFields): bool
+    public static function create(int $pTestId, array $pMorphIds): bool
     {
         $dBConnection = openDatabaseConnection();
 
-        foreach ($postFields as $key => $value) {
-            if ($value === '') {
-                $postFields[$key] = null;
-            }
-        }
-
-        $testId = array_shift($postFields);
-
         try {
-            $sql = "INSERT INTO testedmorph (test_id, morph_id, result, comment, result_image_path) VALUES (?, ?, ?, ?, ?)";
+            // Build the SQL statement
+            $sql = "INSERT INTO testedmorph (test_id, morph_id) VALUES ";
+            $sql .= implode(',', array_fill(0, count($pMorphIds), "(?, $pTestId)"));
+
+            // Prepare the statement
             $stmt = $dBConnection->prepare($sql);
-            $stmt->bindParam(1, $testId, PDO::PARAM_INT);
-            $stmt->bindParam(2, $postFields['morphId'], PDO::PARAM_INT);
-            $stmt->bindParam(3, $postFields['result'], PDO::PARAM_STR);
-            $stmt->bindParam(4, $postFields['comment'], PDO::PARAM_STR);
-            $stmt->bindParam(5, $postFields['resultImagePath'], PDO::PARAM_STR);
 
+            // Bind parameters
+            foreach ($pMorphIds as $index => $morphId) {
+                $stmt->bindParam($index + 1, $morphId, PDO::PARAM_INT);
+            }
+
+            // Execute the query
             $isSuccessful = $stmt->execute();
-
-            return $isSuccessful;
         } catch (PDOException $e) {
-            die("Error: " . $e->getMessage());
+            // Handle specific error conditions
+            if ($e->getCode() == '23000') {
+                // Handle duplicate key error or other specific error
+                die("Error: " . $e->getMessage());
+            }
         } finally {
             $stmt->closeCursor();
             $dBConnection = null;
         }
 
-        return false;
+        return $isSuccessful ?? false;
     }
+
 
     public static function updateTestedMorph(int $pTestId, int $pMorphId, array $postFields): bool
     {
@@ -133,18 +132,13 @@ class TestedMorph
             $stmt->bindParam(3, $postFields['resultImagePath'], PDO::PARAM_STR);
             $stmt->bindParam(4, $pTestId, PDO::PARAM_INT);
             $stmt->bindParam(5, $pMorphId, PDO::PARAM_INT);
-
-            $isSuccessful = $stmt->execute();
-
-            return $isSuccessful;
+            return $stmt->execute();
         } catch (PDOException $e) {
             die("Error: " . $e->getMessage());
         } finally {
             $stmt->closeCursor();
             $dBConnection = null;
         }
-
-        return false;
     }
 
     public static function deleteTestedMorph(int $pTestId, int $pMorphId): bool
@@ -157,9 +151,7 @@ class TestedMorph
             $stmt->bindParam(1, $pTestId, PDO::PARAM_INT);
             $stmt->bindParam(2, $pMorphId, PDO::PARAM_INT);
 
-            $isSuccessful = $stmt->execute();
-
-            return $isSuccessful;
+            return $stmt->execute();
         } catch (PDOException $e) {
             die("Error: " . $e->getMessage());
         } finally {

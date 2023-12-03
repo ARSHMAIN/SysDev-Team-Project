@@ -91,6 +91,34 @@ class CustomerSnakeName
         }
     }
 
+    public static function getByUserIdAndCustomerSnakeName(string $pCustomerSnakeId, int $pUserId): ?CustomerSnakeName
+    {
+        $dBConnection = openDatabaseConnection();
+        try {
+            $sql = "SELECT * FROM customersnakename WHERE customer_snake_id = ? AND user_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pCustomerSnakeId, PDO::PARAM_STR);
+            $stmt->bindParam(2, $pUserId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                $customerSnakeName = new CustomerSnakeName();
+                $customerSnakeName->customerSnakeId = $result['customer_snake_id'];
+                $customerSnakeName->userId = $result['user_id'];
+                $customerSnakeName->snakeId = $result['snake_id'];
+                return $customerSnakeName;
+            }
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
+        return null;
+    }
+
     public static function create(string $pCustomerSnakeId, int $pUserId, int $pSnakeId): array
     {
         $stmt = null; // Initialize $stmt outside the try block

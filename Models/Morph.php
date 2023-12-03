@@ -33,11 +33,11 @@ class Morph
             $this->morphName = $pMorphName;
             $this->isTested = $pIsTested;
         } else if ($pMorphId > 0) {
-            $this->getMorphById($pMorphId);
+            $this->getById($pMorphId);
         }
     }
 
-    private function getMorphById(int $pMorphId): void
+    private function getById(int $pMorphId): void
     {
         $dBConnection = openDatabaseConnection();
 
@@ -62,7 +62,7 @@ class Morph
         }
     }
 
-    public static function getMorphByName(string $pMorphName): ?Morph
+    public static function getByName(string $pMorphName): ?Morph
     {
         $dBConnection = openDatabaseConnection();
 
@@ -76,7 +76,7 @@ class Morph
             if ($result) {
                 $morph = new Morph();
                 $morph->morphId = $result['morph_id'];
-                $morph->morphName = $pMorphName;
+                $morph->morphName =$result['morph_name'];
                 $morph->isTested = $result['is_tested'];
                 return $morph;
             }

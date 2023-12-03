@@ -1,5 +1,6 @@
 <?php
 include_once 'database.php';
+
 class User
 {
     private int $userId = -1;
@@ -79,126 +80,195 @@ class User
             $this->getUserById($pUserId);
         }
     }
+
     private function getUserById(int $pUserId): void
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM user WHERE user_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('i', $pUserId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            $result = $result->fetch_assoc();
-            $this->userId = $pUserId;
-            $this->firstName = $result['first_name'];
-            $this->lastName = $result['last_name'];
-            $this->email = $result['email'];
-            $this->password = $result['password'];
-            $this->phoneNumber = $result['phone_number'];
-            $this->companyName = $result['company_name'];
-            $this->registeredDate = $result['registration_date'];
-            $this->lastLogin = $result['last_login'];
-            $this->roleId = $result['role_id'];
+        try {
+            $sql = "SELECT * FROM user WHERE user_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pUserId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                $this->userId = $pUserId;
+                $this->firstName = $result['first_name'];
+                $this->lastName = $result['last_name'];
+                $this->email = $result['email'];
+                $this->password = $result['password'];
+                $this->phoneNumber = $result['phone_number'];
+                $this->companyName = $result['company_name'];
+                $this->registeredDate = $result['registration_date'];
+                $this->lastLogin = $result['last_login'];
+                $this->roleId = $result['role_id'];
+            }
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
         }
     }
+
     public static function getUserByCredentials(string $pEmail, string $pPassword): ?User
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM user WHERE email = ? AND password = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('ss', $pEmail, $pPassword);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            $user = new User();
-            $result = $result->fetch_assoc();
-            $user->userId = $result['user_id'];
-            $user->firstName = $result['first_name'];
-            $user->lastName = $result['last_name'];
-            $user->email = $pEmail;
-            $user->password = $pPassword;
-            $user->phoneNumber = $result['phone_number'];
-            $user->companyName = $result['company_name'];
-            $user->registeredDate = $result['registration_date'];
-            $user->lastLogin = $result['last_login'];
-            $user->roleId = $result['role_id'];
-            return $user;
+        try {
+            $sql = "SELECT * FROM user WHERE email = ? AND password = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pEmail, PDO::PARAM_STR);
+            $stmt->bindParam(2, $pPassword, PDO::PARAM_STR);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                $user = new User();
+                $user->userId = $result['user_id'];
+                $user->firstName = $result['first_name'];
+                $user->lastName = $result['last_name'];
+                $user->email = $pEmail;
+                $user->password = $pPassword;
+                $user->phoneNumber = $result['phone_number'];
+                $user->companyName = $result['company_name'];
+                $user->registeredDate = $result['registration_date'];
+                $user->lastLogin = $result['last_login'];
+                $user->roleId = $result['role_id'];
+                return $user;
+            }
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
         }
+
         return null;
     }
+
     public static function getUserByRoleName(string $pRoleName): User
     {
         $user = new User();
         $dBConnection = openDatabaseConnection();
-        $sql = "SELECT * FROM user WHERE role_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $roleId = Role::getRoleByName($pRoleName)->getRoleId();
-        $stmt->bind_param('s', $roleId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            $result = $result->fetch_assoc();
-            $user->userId = $result['user_id'];
-            $user->firstName = $result['first_name'];
-            $user->lastName = $result['last_name'];
-            $user->email = $result['email'];
-            $user->password = $result['password'];
-            $user->phoneNumber = $result['phone_number'];
-            $user->companyName = $result['company_name'];
-            $user->registeredDate = $result['registration_date'];
-            $user->lastLogin = $result['last_login'];
-            $user->roleId = $result['role_id'];
+        try {
+            $sql = "SELECT * FROM user WHERE role_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $roleId = Role::getRoleByName($pRoleName)->getRoleId();
+            $stmt->bindParam(1, $roleId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                $user->userId = $result['user_id'];
+                $user->firstName = $result['first_name'];
+                $user->lastName = $result['last_name'];
+                $user->email = $result['email'];
+                $user->password = $result['password'];
+                $user->phoneNumber = $result['phone_number'];
+                $user->companyName = $result['company_name'];
+                $user->registeredDate = $result['registration_date'];
+                $user->lastLogin = $result['last_login'];
+                $user->roleId = $result['role_id'];
+            }
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
         }
         return $user;
     }
+
     public static function createUserByRoleName(array $postFields): array
     {
         $dBConnection = openDatabaseConnection();
 
-        foreach ($postFields as $key => $value) {
-            if ($value === '') {
-                $postFields[$key] = null;
+        try {
+            foreach ($postFields as $key => $value) {
+                if ($value === '') {
+                    $postFields[$key] = null;
+                }
             }
-        }
 
-        $sql = "INSERT INTO user (first_name, last_name, email, password, phone_number, company_name, role_id) VALUES (?, ?, ?, md5(?), ?, ?, ?)";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('sssssssi', $postFields['firstName'], $postFields['lastName'], $postFields['email'], $postFields['password'], $postFields['phoneNumber'], $postFields['companyName'], $postFields['roleId']);
-        $isSuccessful = $stmt->execute();
-        $userId = $dBConnection->insert_id;
-        $stmt->close();
-        $dBConnection->close();
-        return [
-            'isSuccessful' => $isSuccessful,
-            'newRegisteredUserId' => $userId
-        ];
+            $sql = "INSERT INTO user (first_name, last_name, email, password, phone_number, company_name, role_id) VALUES (:firstName, :lastName, :email, MD5(:password), :phoneNumber, :companyName, :roleId)";
+            $stmt = $dBConnection->prepare($sql);
+
+            $stmt->bindParam(':firstName', $postFields['firstName']);
+            $stmt->bindParam(':lastName', $postFields['lastName']);
+            $stmt->bindParam(':email', $postFields['email']);
+            $stmt->bindParam(':password', $postFields['password']);
+            $stmt->bindParam(':phoneNumber', $postFields['phoneNumber']);
+            $stmt->bindParam(':companyName', $postFields['companyName']);
+            $stmt->bindParam(':roleId', $postFields['roleId'], PDO::PARAM_INT);
+
+            $isSuccessful = $stmt->execute();
+            $userId = $dBConnection->lastInsertId();
+            return [
+                'isSuccessful' => $isSuccessful,
+                'newRegisteredUserId' => $userId
+            ];
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
     }
+
     public static function updatePersonalInfo(int $pUserId, array $postFields): void
     {
         $dBConnection = openDatabaseConnection();
 
-        foreach ($postFields as $key => $value) {
-            if ($value === '') {
-                $postFields[$key] = null;
+        try {
+            foreach ($postFields as $key => $value) {
+                if ($value === '') {
+                    $postFields[$key] = null;
+                }
             }
-        }
 
-        $sql = "UPDATE user SET first_name = ?, last_name = ?, password = ?, phone_number = ?, company_name = ?, role_id = ? WHERE user_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('sssssii', $postFields['firstName'], $postFields['lastName'], $postFields['password'], $postFields['phoneNumber'], $postFields['companyName'], $postFields['roleId'], $pUserId);
-        $stmt->execute();
-        $stmt->close();
-        $dBConnection->close();
+            $sql = "UPDATE user SET first_name = :firstName, last_name = :lastName, password = MD5(:password), phone_number = :phoneNumber, company_name = :companyName, role_id = :roleId WHERE user_id = :userId";
+            $stmt = $dBConnection->prepare($sql);
+
+            $stmt->bindParam(':firstName', $postFields['firstName']);
+            $stmt->bindParam(':lastName', $postFields['lastName']);
+            $stmt->bindParam(':password', $postFields['password']);
+            $stmt->bindParam(':phoneNumber', $postFields['phoneNumber']);
+            $stmt->bindParam(':companyName', $postFields['companyName']);
+            $stmt->bindParam(':roleId', $postFields['roleId'], PDO::PARAM_INT);
+            $stmt->bindParam(':userId', $pUserId, PDO::PARAM_INT);
+
+            $stmt->execute();
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
     }
+
     public static function deleteUserById(int $pUserId): void
     {
         $dBConnection = openDatabaseConnection();
-        $sql = "DELETE FROM user WHERE user_id = ?";
-        $stmt = $dBConnection->prepare($sql);
-        $stmt->bind_param('i', $pUserId);
-        $stmt->execute();
-        $stmt->close();
-        $dBConnection->close();
+
+        try {
+            $sql = "DELETE FROM user WHERE user_id = :userId";
+            $stmt = $dBConnection->prepare($sql);
+
+            $stmt->bindParam(':userId', $pUserId, PDO::PARAM_INT);
+
+            $stmt->execute();
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
     }
 
     public function getUserId(): int

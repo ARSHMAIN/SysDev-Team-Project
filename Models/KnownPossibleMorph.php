@@ -88,16 +88,28 @@ class KnownPossibleMorph
         return $knownPossibleMorph;
     }
 
-    public static function createKnownPossibleMorph(int $pSnakeId, int $pMorphId, bool $pIsKnown): bool
+    public static function create(int $pSnakeId, array $pMorphIds, bool $pIsKnown): bool
     {
         $dBConnection = openDatabaseConnection();
 
         try {
-            $sql = "INSERT INTO knownpossiblemorph (snake_id, morph_id, is_known) VALUES (?, ?, ?)";
+            // Build the SQL statement
+            $sql = "INSERT INTO knownpossiblemorph (snake_id, morph_id, is_known) VALUES ";
+            $sql .= implode(',', array_fill(0, count($pMorphIds), '(?, ?, ?)'));
+
+            // Prepare the statement
             $stmt = $dBConnection->prepare($sql);
+
+            // Bind parameters
             $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
-            $stmt->bindParam(2, $pMorphId, PDO::PARAM_INT);
             $stmt->bindParam(3, $pIsKnown, PDO::PARAM_BOOL);
+
+            // Iterate over morph IDs and bind them
+            foreach ($pMorphIds as $index => $morphId) {
+                $stmt->bindParam(2 + $index * 3, $morphId, PDO::PARAM_INT);
+            }
+
+            // Execute the query
             $isSuccessful = $stmt->execute();
         } catch (PDOException $e) {
             // Handle specific error conditions
@@ -112,6 +124,7 @@ class KnownPossibleMorph
 
         return $isSuccessful ?? false;
     }
+
 
     public static function updateKnownPossibleMorph(int $pSnakeId, int $pMorphId, bool $pIsKnown): void
     {
