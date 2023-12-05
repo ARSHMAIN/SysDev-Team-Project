@@ -14,14 +14,20 @@
 <body>
 <?php
 include_once 'Views/Shared/navbar.php';
-var_dump($_SESSION['error']);
+if (isset($_SESSION['error'])) {
+    var_dump($_SESSION['error']);
+}
+echo "<br>";
+if (isset($_SESSION['MissingFieldError'])) {
+    var_dump($_SESSION['MissingFieldError']);
+}
 ?>
 <h1>Order Test</h1>
 <h3>Full Name</h3>
 <div class="form-container">
     <form id="order" name="order" action="/?controller=order&action=createTest" method="post">
         <label for="customerSnakeId">Snake ID</label><br>
-        <input id="customerSnakeId" type="text" name="customerSnakeId"><br>
+        <input id="customerSnakeId" type="text" name="customerSnakeId" value="ARSH"><br>
         <img id="maleGender" class="gender selected" src="Views/Images/maleGender.png" alt="maleGender">
         <img id="femaleGender" class="gender" src="Views/Images/femaleGender.png" alt="femaleGender">
         <img id="unknownGender" class="gender" src="Views/Images/unknownGender.png" alt="unknownGender"><br>
@@ -54,4 +60,6 @@ var_dump($_SESSION['error']);
 </html>
 <?php
 unset($_SESSION['error']);
+unset($_SESSION['duplicate_error']);
+unset($_SESSION['MissingFieldError']);
 ?>

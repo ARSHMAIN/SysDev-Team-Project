@@ -155,17 +155,17 @@ include_once 'Views/Shared/navbar.php';
                 </ul>
             </li>
             <li>Staple shed to the envelope over the designated square. I will tear off what I need for genotyping.
-            </br>Fold the envelope closed and store until submission. It is not necessary to staple the envelope closed if the shed is covered by the flaps. If you must staple, a single staple at the bottom will suffice.
-            </br>Sheds can be stored at room temperature or in the freezer prior to mailing them. Protect them from direct sunlight, high humidity, and high temperatures.
+            <br>Fold the envelope closed and store until submission. It is not necessary to staple the envelope closed if the shed is covered by the flaps. If you must staple, a single staple at the bottom will suffice.
+            <br>Sheds can be stored at room temperature or in the freezer prior to mailing them. Protect them from direct sunlight, high humidity, and high temperatures.
             </li>
             <li>
                 Mail sheds to me at 
-                </br> Heather Roffey
-                </br> Vanier College - Biology Department
-                </br> 821 Sainte-Croix Ave
-                </br> Saint-Laurent, QC H4L 3X9
-                </br> 
-                </br> Results will be communicated to you within 2-6 weeks after payment and snake sheds have been recieved. 
+                <br> Heather Roffey
+                <br> Vanier College - Biology Department
+                <br> 821 Sainte-Croix Ave
+                <br> Saint-Laurent, QC H4L 3X9
+                <br>
+                <br> Results will be communicated to you within 2-6 weeks after payment and snake sheds have been received.
             </li>
         </ol>
 

@@ -87,14 +87,14 @@ class TestedMorph
         try {
             // Build the SQL statement
             $sql = "INSERT INTO testedmorph (test_id, morph_id) VALUES ";
-            $sql .= implode(',', array_fill(0, count($pMorphIds), "(?, $pTestId)"));
+            $sql .= implode(',', array_fill(0, count($pMorphIds), "($pTestId, ?)"));
 
             // Prepare the statement
             $stmt = $dBConnection->prepare($sql);
 
             // Bind parameters
             foreach ($pMorphIds as $index => $morphId) {
-                $stmt->bindParam($index + 1, $morphId, PDO::PARAM_INT);
+                $stmt->bindValue($index + 1, $morphId, PDO::PARAM_INT);
             }
 
             // Execute the query
@@ -112,6 +112,7 @@ class TestedMorph
 
         return $isSuccessful ?? false;
     }
+
 
 
     public static function updateTestedMorph(int $pTestId, int $pMorphId, array $postFields): bool

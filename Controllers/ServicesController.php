@@ -1,11 +1,13 @@
 <?php
-
+include_once 'Models/Morph.php';
 class ServicesController
 {
     function route(): void
     {
-        global $controller, $action;
+        global $action;
         if ($action == "services"){
+            $testedMorphs = Morph::getByIsTested(true);
+            print_r($testedMorphs);
             $this->render($action);
         }
     }
@@ -15,5 +17,3 @@ class ServicesController
         include_once "Views/Services/$action.php";
     }
 }
-
-?>

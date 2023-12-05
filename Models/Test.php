@@ -4,12 +4,12 @@ class Test
 {
     private int $testId;
     private int $snakeId;
-    private int $orderId;
+    private ?int $orderId;
     private int $userId;
     public function __construct(
         int $pTestId = -1,
         int $pSnakeId = -1,
-        int $pOrderId = -1,
+        ?int $pOrderId = -1,
         int $pUserId = -1
     ) {
         $this->initializeProperties(
@@ -23,7 +23,7 @@ class Test
     private function initializeProperties(
         int $pTestId,
         int $pSnakeId,
-        int $pOrderId,
+        ?int $pOrderId,
         int $pUserId
     ): void {
         if ($pTestId < 0) return;
@@ -67,6 +67,39 @@ class Test
             $dBConnection = null;
         }
     }
+    public static function getBySnakeId(int $pSnakeId) {
+        $dBConnection = openDatabaseConnection();
+
+        try {
+            $sql = "SELECT * FROM test WHERE snake_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($stmt->rowCount() > 0) {
+                $tests = [];
+                foreach ($results as $row) {
+                    $test = new Test(
+                        $row['test_id'],
+                        $row['snake_id'],
+                        $row['order_id'],
+                        $row['user_id']
+                    );
+                    $tests[] = $test;
+                }
+                return $tests;
+            }
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
+        return null;
+    }
+
     public static function create(int $pSnakeId, int $pUserId): array
     {
         $stmt = null; // Initialize $stmt outside the try block
@@ -89,6 +122,7 @@ class Test
             ];
         } catch (PDOException $e) {
             // Handle specific error conditions
+            var_dump($e->getMessage());
             if ($e->getCode() == '23000') {
                 // Check the error message for more detailed information
                 if (str_contains($e->getMessage(), 'NOT NULL')) {
@@ -117,4 +151,45 @@ class Test
             'isSuccessful' => false
         ];
     }
+
+    public function getTestId(): int
+    {
+        return $this->testId;
+    }
+
+    public function setTestId(int $testId): void
+    {
+        $this->testId = $testId;
+    }
+
+    public function getSnakeId(): int
+    {
+        return $this->snakeId;
+    }
+
+    public function setSnakeId(int $snakeId): void
+    {
+        $this->snakeId = $snakeId;
+    }
+
+    public function getOrderId(): int
+    {
+        return $this->orderId;
+    }
+
+    public function setOrderId(int $orderId): void
+    {
+        $this->orderId = $orderId;
+    }
+
+    public function getUserId(): int
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(int $userId): void
+    {
+        $this->userId = $userId;
+    }
+
 }

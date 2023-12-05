@@ -65,7 +65,6 @@ class Morph
     public static function getByName(string $pMorphName): ?Morph
     {
         $dBConnection = openDatabaseConnection();
-
         try {
             $sql = "SELECT * FROM morph WHERE morph_name = ?";
             $stmt = $dBConnection->prepare($sql);
@@ -80,6 +79,7 @@ class Morph
                 $morph->isTested = $result['is_tested'];
                 return $morph;
             }
+            return null;
         } catch (PDOException $e) {
             // Handle the exception as per your application's requirements
             die("Error: " . $e->getMessage());
@@ -87,8 +87,74 @@ class Morph
             $stmt->closeCursor();
             $dBConnection = null;
         }
+    }
+    public static function getByIsTested(bool $pIsTested): ?array
+    {
+        $dBConnection = openDatabaseConnection();
+        try {
+            $sql = "SELECT * FROM morph WHERE is_tested = ?";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pIsTested, PDO::PARAM_BOOL);
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($stmt->rowCount() > 0) {
+                $testedMorphs = [];
+                foreach ($results as $row) {
+                    $morph = new Morph();
+                    $morph->morphId = $row['morph_id'];
+                    $morph->morphName =$row['morph_name'];
+                    $morph->isTested = $row['is_tested'];
+                    $testedMorphs[] = $morph;
+                }
+                return $testedMorphs;
+            }
+            return null;
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
+    }
+    public static function getByIsTestedAndName(bool $pIsTested, array $pMorphNames): array
+    {
+        $dBConnection = openDatabaseConnection();
 
-        return null;
+        try {
+            // Build the SQL statement
+            $sql = "SELECT * FROM morph WHERE is_tested = ? AND morph_name IN (" . implode(',', array_fill(0, count($pMorphNames), '?')) . ")";
+            $stmt = $dBConnection->prepare($sql);
+
+            // Bind parameters
+            $stmt->bindValue(1, $pIsTested, PDO::PARAM_BOOL);
+
+            // Bind morph names
+            foreach ($pMorphNames as $index => $morphName) {
+                $stmt->bindValue(2 + $index, $morphName, PDO::PARAM_STR);
+            }
+
+            $stmt->execute();
+
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $morphs = [];
+            foreach ($results as $result) {
+                $morph = new Morph();
+                $morph->morphId = $result['morph_id'];
+                $morph->morphName = $result['morph_name'];
+                $morph->isTested = $result['is_tested'];
+                $morphs[] = $morph;
+            }
+
+            return $morphs;
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
     }
 
     public static function createMorph(string $pMorphName, bool $pIsTested): bool

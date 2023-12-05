@@ -17,18 +17,18 @@ include_once 'Views/Shared/navbar.php';
 ?>
     <div class="padding">
     <h2>Contact Us</h2>
-    </hr>
 
-    <form action="" class="input_figma_styling">
-        <label for="email">Your email address</label> </br>
-        <input type="text" id="email"> </br> 
-        <label for="inquiry">Inquiry</label>
-        <br>
-        <textarea name="inquiry" id="inquiry" cols="53.5" rows="10">
-        </textarea> </br>
-        <button type="submit">Contact Us</button>
+    <form action="/?controller=contact&action=email" method="post" class="input_figma_styling padding">
+        <label for="name">Your name</label><br>
+        <input type="text" name="name" id="name"> <br>
+        <label for="email">Your email address</label><br>
+        <input type="text" name="email" id="email"> <br>
+        <label for="subject">Your subject</label><br>
+        <input type="text" name="subject" id="subject"> <br>
+        <label for="inquiry">Inquiry</label><br>
+        <textarea name="inquiry" id="inquiry" cols="53.5" rows="10"></textarea><br>
+        <input type="submit" name="submit" value="Contact Us">
     </form>
     </div>
-    
 </body>
 </html>

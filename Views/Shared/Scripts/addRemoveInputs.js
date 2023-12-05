@@ -10,7 +10,7 @@ function addInput(insertClass) {
     input.setAttribute('id', `${insertId}`);
     input.setAttribute('type', 'text');
     input.setAttribute('name', `${insertId}`);
-    input.setAttribute('required', 'required');
+    // input.setAttribute('required', 'required');
     if (insertBeforeElement) {
         insertBeforeElement.insertAdjacentElement('afterend', input);
         insertBeforeElement.insertAdjacentElement('afterend', lineBreak);

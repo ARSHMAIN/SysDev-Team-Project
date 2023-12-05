@@ -6,6 +6,8 @@ include_once 'Models/Sex.php';
 include_once 'Models/Morph.php';
 include_once 'Models/KnownPossibleMorph.php';
 include_once 'Models/CustomerSnakeName.php';
+include_once 'Models/Test.php';
+include_once 'Models/TestedMorph.php';
 class OrderController
 {
     function route(): void

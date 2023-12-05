@@ -29,12 +29,12 @@ class KnownPossibleMorph
             $this->snakeId = $pSnakeId;
             $this->morphId = $pMorphId;
             $this->isKnown = $pIsKnown;
-        } else if ($pSnakeId > 0) {
+        } /*else if ($pSnakeId > 0) {
             $this->getKnownAndPossibleMorphBySnakeId($pSnakeId);
-        }
+        }*/
     }
 
-    private function getKnownAndPossibleMorphBySnakeId(int $pSnakeId): void
+    public static function getKnownAndPossibleMorphBySnakeId(int $pSnakeId): ?array
     {
         $dBConnection = openDatabaseConnection();
 
@@ -43,13 +43,20 @@ class KnownPossibleMorph
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
             $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($result) {
-                $this->snakeId = $pSnakeId;
-                $this->morphId = $result['morph_id'];
-                $this->isKnown = $result['is_known'];
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($stmt->rowCount() > 0) {
+                $knownPossibleMorphs = [];
+                foreach ($results as $row) {
+                    $knownPossibleMorph = new KnownPossibleMorph(
+                        $row['snake_id'],
+                        $row['morph_id'],
+                        $row['is_known']
+                    );
+                    $knownPossibleMorphs[] = $knownPossibleMorph;
+                }
+                return $knownPossibleMorphs;
             }
+            return null;
         } catch (PDOException $e) {
             // Handle the exception as per your application's requirements
             die("Error: " . $e->getMessage());
@@ -59,23 +66,27 @@ class KnownPossibleMorph
         }
     }
 
-    public static function getKnownOrPossibleMorphsBySnakeId(int $pSnakeId, bool $pIsKnown): KnownPossibleMorph
+    public static function getKnownPossibleMorphsBySnakeId(int $pSnakeId, bool $pIsKnown): ?array
     {
-        $knownPossibleMorph = new KnownPossibleMorph();
         $dBConnection = openDatabaseConnection();
-
         try {
-            $sql = "SELECT * FROM knownpossiblemorph WHERE snake_id = ? AND is_known = ?";
+            $sql = "SELECT * FROM knownpossiblemorph WHERE snake_id = ? AND  is_known = ?";
             $stmt = $dBConnection->prepare($sql);
-            $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
-            $stmt->bindParam(2, $pIsKnown, PDO::PARAM_BOOL);
+            $stmt->bindValue(1, $pSnakeId, PDO::PARAM_INT);
+            $stmt->bindValue(2, $pIsKnown, PDO::PARAM_BOOL);
             $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($result) {
-                $knownPossibleMorph->snakeId = $pSnakeId;
-                $knownPossibleMorph->morphId = $result['morph_id'];
-                $knownPossibleMorph->isKnown = $pIsKnown;
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($stmt->rowCount() > 0) {
+                $knownPossibleMorphs = [];
+                foreach ($results as $row) {
+                    $knownPossibleMorph = new KnownPossibleMorph(
+                        $row['snake_id'],
+                        $row['morph_id'],
+                        $row['is_known']
+                    );
+                    $knownPossibleMorphs[] = $knownPossibleMorph;
+                }
+                return $knownPossibleMorphs;
             }
         } catch (PDOException $e) {
             // Handle the exception as per your application's requirements
@@ -85,7 +96,34 @@ class KnownPossibleMorph
             $dBConnection = null;
         }
 
-        return $knownPossibleMorph;
+        return null;
+    }
+
+    public static function getKnownPossibleMorphsByMorphId(int $pMorphId): ?KnownPossibleMorph
+    {
+        $dBConnection = openDatabaseConnection();
+
+        try {
+            $sql = "SELECT * FROM knownpossiblemorph k JOIN morph m on k.morph_id = m.morph_id WHERE k.morph_id = ? AND m.is_tested = TRUE";
+            $stmt = $dBConnection->prepare($sql);
+            $stmt->bindParam(1, $pMorphId, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                $knownPossibleMorph = new KnownPossibleMorph();
+                $knownPossibleMorph->snakeId = $result['snake_id'];
+                $knownPossibleMorph->morphId = $result['morph_id'];
+                $knownPossibleMorph->isKnown = $result['is_known'];
+                return $knownPossibleMorph;
+            }
+            return null;
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
     }
 
     public static function create(int $pSnakeId, array $pMorphIds, bool $pIsKnown): bool
@@ -100,13 +138,14 @@ class KnownPossibleMorph
             // Prepare the statement
             $stmt = $dBConnection->prepare($sql);
 
-            // Bind parameters
-            $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
-            $stmt->bindParam(3, $pIsKnown, PDO::PARAM_BOOL);
+            // Initialize the parameter index
+            $paramIndex = 1;
 
-            // Iterate over morph IDs and bind them
-            foreach ($pMorphIds as $index => $morphId) {
-                $stmt->bindParam(2 + $index * 3, $morphId, PDO::PARAM_INT);
+            // Iterate over morph IDs and bind parameters
+            foreach ($pMorphIds as $morphId) {
+                $stmt->bindValue($paramIndex++, $pSnakeId, PDO::PARAM_INT);
+                $stmt->bindValue($paramIndex++, $morphId, PDO::PARAM_INT);
+                $stmt->bindValue($paramIndex++, $pIsKnown, PDO::PARAM_BOOL);
             }
 
             // Execute the query
@@ -124,6 +163,8 @@ class KnownPossibleMorph
 
         return $isSuccessful ?? false;
     }
+
+
 
 
     public static function updateKnownPossibleMorph(int $pSnakeId, int $pMorphId, bool $pIsKnown): void

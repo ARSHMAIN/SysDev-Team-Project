@@ -29,7 +29,7 @@
                     echo "<a href='/?controller=login&action=login'>Sign In</a>";
                 }
                 if (isset($_SESSION['user_id'])) {
-                    echo "<a href='/?controller=order&action=order'><button>Order</button></a>";
+                    echo "<a href='/?controller=order&action=order'>Order</a>";
                 }
                 ?>
             </div>

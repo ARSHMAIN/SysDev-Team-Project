@@ -7,13 +7,13 @@ class ContactController
         global $controller, $action;
         if ($action == "contact"){
             $this->render($action);
+        } else if ($action == "email") {
+            $this->render($action);
         }
     }
     function render($action, $data = []): void
     {
         extract($data);
-        include_once "Views/Contact/$action.php"; //
+        include_once "Views/Contact/$action.php";
     }
 }
-
-?>
