@@ -5,7 +5,8 @@
         <link rel="stylesheet" type="text/css" href="Views/Styles/shared.css">
         <link rel="stylesheet" type="text/css" href="Views/Styles/navbar.css">
         <link rel="stylesheet" type="text/css" href="Views/Styles/loginRegister.css">
-
+        <script src="Views/Shared/Scripts/textFieldValidation.js" type="text/javascript"></script>
+        <script src="Views/Register/scripts/registrationValidation.js" type="text/javascript"></script>
     </head>
 
     <body>
@@ -26,37 +27,37 @@
                 <section>
                     <div class="loginRegisterInputLabelText registrationMargin widthMinContent marginAuto">
                         <div>
-                            <label for="firstName">First Name</label> <span class="requiredAsterisk"> *</span> <br/>
+                            <label for="firstName">First Name</label> <span class="requiredAsterisk"> *</span>
                         </div>
 
-                        <input id="email" type="text" name="firstName" class="width100Percent" required><br/>
+                        <input id="email" type="text" name="firstName" class="width100Percent" >
                     </div>
 
                     <div class="loginRegisterInputLabelText registrationMargin widthMinContent marginAuto">
                         <div>
-                            <label for="lastName">Last Name</label> <span class="requiredAsterisk"> *</span> <br/>
+                            <label for="lastName">Last Name</label> <span class="requiredAsterisk"> *</span>
                         </div>
 
-                        <input id="email" type="text" name="lastName" class="width100Percent" required><br/>
+                        <input id="email" type="text" name="lastName" class="width100Percent" >
                     </div>
 
                     <div class="loginRegisterInputLabelText registrationMargin widthMinContent marginAuto">
                         <div>
-                            <label for="email">Email</label> <span class="requiredAsterisk"> *</span> <br/>
+                            <label for="email">Email</label> <span class="requiredAsterisk"> *</span>
                         </div>
 
-                        <input id="email" type="text" name="email" class="width100Percent" required><br/>
+                        <input id="email" type="text" name="email" class="width100Percent" >
                     </div>
 
                     <div class="loginRegisterInputLabelText registrationMargin widthMinContent marginAuto">
                         <div>
-                            <label for="password">Password</label><span class="requiredAsterisk"> *</span> <br/>
+                            <label for="password">Password</label><span class="requiredAsterisk"> *</span>
                         </div>
 
-                        <input id="email" type="text" name="password" class="width100Percent" required><br/>
-                        <div class="errorLabelText">
+                        <input id="email" type="text" name="password" class="width100Percent" >
+                        <!--<div class="errorLabelText">
                             <label>Password is empty</label>
-                        </div>
+                        </div>-->
                     </div>
 
 
