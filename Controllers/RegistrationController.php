@@ -1,12 +1,15 @@
 <?php
+include_once "Models/User.php";
 class RegistrationController
 {
     function route(): void
     {
         global $controller, $action;
-        if ($action == "registration"){
+
+        if ($action == "registration" || $action == "register"){
             $this->render($action);
         }
+
     }
     function render($action, $data = []): void
     {

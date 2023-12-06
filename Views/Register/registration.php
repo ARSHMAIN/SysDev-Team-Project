@@ -23,7 +23,7 @@
                 </header>
             </div>
 
-            <form action="" method="POST">
+            <form action="/?controller=registration&action=register" method="POST">
                 <section>
                     <div class="loginRegisterInputLabelText registrationMargin widthMinContent marginAuto">
                         <div>
@@ -54,11 +54,12 @@
                             <label for="password">Password</label><span class="requiredAsterisk"> *</span>
                         </div>
 
-                        <input id="email" type="text" name="password" class="width100Percent" >
+                        <input id="password" type="password" name="password" class="width100Percent" >
                         <!--<div class="errorLabelText">
                             <label>Password is empty</label>
                         </div>-->
                     </div>
+
 
 
                     <footer>

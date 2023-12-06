@@ -195,14 +195,17 @@ class User
 
             $sql = "INSERT INTO user (first_name, last_name, email, password, phone_number, company_name, role_id) VALUES (:firstName, :lastName, :email, MD5(:password), :phoneNumber, :companyName, :roleId)";
             $stmt = $dBConnection->prepare($sql);
-
+            /* If the role id gotten from the post fields is null,
+                choose the default user role id for the new user
+            */
+            $newUserRoleId = $postFields["roleId"] ?? 3;
             $stmt->bindParam(':firstName', $postFields['firstName']);
             $stmt->bindParam(':lastName', $postFields['lastName']);
             $stmt->bindParam(':email', $postFields['email']);
             $stmt->bindParam(':password', $postFields['password']);
             $stmt->bindParam(':phoneNumber', $postFields['phoneNumber']);
             $stmt->bindParam(':companyName', $postFields['companyName']);
-            $stmt->bindParam(':roleId', $postFields['roleId'], PDO::PARAM_INT);
+            $stmt->bindParam(':roleId', $newUserRoleId, PDO::PARAM_INT);
 
             $isSuccessful = $stmt->execute();
             $userId = $dBConnection->lastInsertId();
