@@ -9,6 +9,8 @@ session_destroy();
         <link rel="stylesheet" type="text/css" href="Views/Styles/shared.css">
         <link rel="stylesheet" type="text/css" href="Views/Styles/navbar.css">
         <link rel="stylesheet" type="text/css" href="Views/Styles/loginRegister.css">
+        <script src="Views/Shared/Scripts/textFieldValidation.js" type="text/javascript"></script>
+        <script src="Views/Login/scripts/loginValidation.js" type="text/javascript"></script>
     </head>
     <body>
     <?php
@@ -28,13 +30,13 @@ session_destroy();
                                 <label for="email">Email</label> <br/>
                             </div>
 
-                            <input id="email" type="text" name="email" class="width100Percent" required><br>
+                            <input id="email" type="text" name="email" class="width100Percent">
                         </div>
                         <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                             <div>
                                 <label for="password">Password</label> <br/>
                             </div>
-                            <input id="password" type="password" name="password" class="width100Percent" required> <br/>
+                            <input id="password" type="password" name="password" class="width100Percent">
                         </div>
 
                         <footer>
