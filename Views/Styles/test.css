@@ -19,3 +19,15 @@ body {
 .error {
     color: red;
 }
+
+.gender {
+    cursor: pointer;
+}
+
+.add-remove {
+    cursor: pointer;
+}
+
+#submit {
+    cursor: pointer;
+}

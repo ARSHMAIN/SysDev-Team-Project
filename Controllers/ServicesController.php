@@ -7,7 +7,7 @@ class ServicesController
         global $action;
         if ($action == "services"){
             $testedMorphs = Morph::getByIsTested(true);
-            print_r($testedMorphs);
+//            print_r($testedMorphs);
             $this->render($action);
         }
     }

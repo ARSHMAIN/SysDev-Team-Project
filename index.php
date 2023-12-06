@@ -15,5 +15,3 @@ else
 
 $controller = new $controllerName;
 $controller->route();
-
-?>

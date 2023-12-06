@@ -16,7 +16,8 @@ class OrderController
         if ($action == 'order') {
             $this->render($action);
         } else if ($action == 'test') {
-            $this->render($action);
+            $user = new User($_SESSION['user_id']);
+            $this->render($action, ['user' => $user]);
         } else if ($action == 'createTest') {
             $this->render($action);
         }
