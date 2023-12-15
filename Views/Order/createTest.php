@@ -120,7 +120,8 @@ if (!$customerSnakeId) {
     } else {
         $test = Test::create($customerSnakeId->getSnakeId(), $_SESSION['user_id']);
         $testMorphs = TestedMorph::create($test['newTestId'], $checkedMorphs);
-        header('Location: /?controller=order&action=order');
+        $_SESSION['testId'] = $test['newTestId'];
+        header('Location: /?controller=cart&action=addTestToCart');
 
     }
 }

@@ -224,6 +224,15 @@ class Morph
             $dBConnection = null;
         }
     }
+    public static function getMorphNames(array $morphs): array
+    {
+        $morphNames = [];
+        foreach ($morphs as $morph) {
+            $morphObj = new Morph($morph->getMorphId());
+            $morphNames[] = $morphObj->getMorphName();
+        }
+        return $morphNames;
+    }
 
     public function getMorphId(): int
     {

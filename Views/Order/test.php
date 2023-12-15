@@ -18,6 +18,7 @@
 <body>
 <?php
 include_once 'Views/Shared/navbar.php';
+include_once 'Views/Order/orderSubCategories.php';
 if (isset($_SESSION['error'])) {
     var_dump($_SESSION['error']);
 }

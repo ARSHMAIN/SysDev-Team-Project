@@ -24,50 +24,49 @@ include_once 'Views/Shared/navbar.php';
            </header>
 
 
-           <form action="?controller=login&action=validation" method="POST">
+           <form action="?controller=billing&action=billingFormHandler" method="post">
                <section class="textAlignStart">
                        <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                            <div>
-                               <label for="firstName">First Name</label> </br>
+                               <label for="firstName">First Name</label> <br>
                            </div>
 
-
-                           <input type="text" name="firstName"> </br>
+                           <input type="text" name="firstName"> <br>
                        </div>
                        <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                            <div>
-                               <label for="lastName">Last Name</label> </br>
+                               <label for="lastName">Last Name</label> <br>
                            </div>
-                               <input type="text" name="lastName"> </br>
+                               <input type="text" name="lastName"> <br>
                        </div>
                        <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                            <div>
-                               <label for="email">Email</label> </br>
+                               <label for="email">Email</label> <br>
                            </div>
-                               <input type="email" name="email"> </br>
+                               <input type="email" name="email"> <br>
                        </div>
                        <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                            <div>
-                               <label for="phoneNumber">Phone Number</label> </br>
+                               <label for="phoneNumber">Phone Number</label> <br>
                            </div>
-                               <input type="text" name="lastName"> </br>
+                               <input type="text" name="lastName"> <br>
                        </div>
                        <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                            <div>
-                               <label for="mailingAddress">Mailing Address</label> </br>
+                               <label for="mailingAddress">Mailing Address</label> <br>
                            </div>
-                               <input type="text" name="mailingAddress"> </br>
+                               <input type="text" name="mailingAddress"> <br>
                        </div>
                       
                </section>
                <section class="width">
                <div class="loginRegisterInputLabelText sidenav">
-                   <label>Check out: </label></br></br>
-                   <label>Subtotal: $</label></br></br>
-                   <hlabel4>Tax: $</label></br></br>
+                   <label>Check out: </label><br><br>
+                   <label>Subtotal: $</label><br><br>
+                   <label>Tax: $</label><br><br>
                    <footer>
                        <hr>
-                       <label>Total: $</label></br></br>
+                       <label>Total: $</label><br><br>
                        <div class="signButtons widthMinContent marginAuto">
                                <div class="loginSignUpButton">
                                    <input type="submit" name="submit" class="cursorPointer width100Percent" value="Check Out">

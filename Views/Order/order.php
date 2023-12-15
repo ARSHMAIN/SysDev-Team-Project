@@ -18,9 +18,6 @@ include_once 'Views/Shared/navbar.php';
 ?>
 <h1>Orders</h1>
 <h3></h3>
-<a href="/?controller=order&action=test">Snake Testing</a>
-<a href="/?controller=order&action=donation">Donation</a>
-<a href="/?controller=order&action=history">Order History</a>
-<a href="/?controller=cart&action=cart">Cart</a>
+<?php include_once 'Views/Order/orderSubCategories.php'; ?>
 </body>
 </html>

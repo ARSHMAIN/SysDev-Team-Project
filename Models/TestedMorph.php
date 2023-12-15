@@ -5,16 +5,16 @@ class TestedMorph
 {
     private int $testId = -1;
     private int $morphId = -1;
-    private string $result = "";
-    private string $comment = "";
-    private string $resultImagePath = "";
+    private ?string $result = null;
+    private ?string $comment = null;
+    private ?string $resultImagePath = null;
 
     public function __construct(
         int $pTestId = -1,
         int $pMorphId = -1,
-        string $pResult = "",
-        string $pComment = "",
-        string $pResultImagePath = ""
+        ?string $pResult = null,
+        ?string $pComment = null,
+        ?string $pResultImagePath = null
     ) {
         $this->initializeProperties(
             $pTestId,
@@ -28,17 +28,14 @@ class TestedMorph
     private function initializeProperties(
         int $pTestId,
         int $pMorphId,
-        string $pResult,
-        string $pComment,
-        string $pResultImagePath
+        ?string $pResult,
+        ?string $pComment,
+        ?string $pResultImagePath
     ): void {
         if ($pTestId < 0) return;
         else if (
             $pTestId > 0
             && $pMorphId > 0
-            && strlen($pResult) > 0
-            && strlen($pComment) > 0
-            && strlen($pResultImagePath) > 0
         ) {
             $this->testId = $pTestId;
             $this->morphId = $pMorphId;
@@ -59,19 +56,22 @@ class TestedMorph
             $stmt->execute();
 
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $testedMorphs = [];
-            foreach ($results as $row) {
-                $testedMorph = new TestedMorph(
-                    $pTestId,
-                    $row['morph_id'],
-                    $row['result'],
-                    $row['comment'],
-                    $row['result_image_path']
-                );
-                $testedMorphs[] = $testedMorph;
-            }
+            if ($stmt->rowCount() > 0) {
 
-            return $testedMorphs;
+                $testedMorphs = [];
+                foreach ($results as $row) {
+                    $testedMorph = new TestedMorph(
+                        $row['test_id'],
+                        $row['morph_id'],
+                        $row['result'],
+                        $row['comment'],
+                        $row['result_image_path']
+                    );
+                    $testedMorphs[] = $testedMorph;
+                }
+                return $testedMorphs;
+            }
+        return null;
         } catch (PDOException $e) {
             die("Error: " . $e->getMessage());
         } finally {

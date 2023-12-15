@@ -170,7 +170,6 @@ class Snake
             $stmt->bindValue(4, $pSnakeId, PDO::PARAM_INT);
 
             $isSuccessful = $stmt->execute();
-            $stmt->close();
 
             return [
                 'isSuccessful' => $isSuccessful,

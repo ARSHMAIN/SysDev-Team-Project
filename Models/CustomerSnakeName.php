@@ -8,9 +8,9 @@ class CustomerSnakeName
     private int $snakeId = -1;
 
     public function __construct(
+        int $pSnakeId = -1,
         string $pCustomerSnakeId = "",
-        int $pUserId = -1,
-        int $pSnakeId = -1
+        int $pUserId = -1
     ) {
         $this->initializeProperties(
             $pCustomerSnakeId,
