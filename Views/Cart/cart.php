@@ -18,7 +18,15 @@ include_once 'Views/Shared/navbar.php';
 include_once 'Views/Order/orderSubCategories.php';
 ?>
 <h1>Cart</h1>
+<?php
+if (empty($data)) {
+    echo "<label>Empty Cart</label>";
+}
+?>
 <h2>Tests</h2>
+<?php
+if (!empty($data['tests'])) {
+?>
 <table>
     <thead>
     <tr>
@@ -48,6 +56,7 @@ include_once 'Views/Order/orderSubCategories.php';
     ?>
     </tbody>
 </table>
+<?php } ?>
 <h2>Donations</h2>
 <table>
     <thead>

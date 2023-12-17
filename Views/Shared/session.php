@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 
 }
-function noAccess($userId, $userRoles, $permission): void
+function noAccess($userId, $userRole, $permission): void
 {
     if (!isset($userRole)
         || !isset($userId)

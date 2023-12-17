@@ -207,7 +207,7 @@ class Snake
     }
 
     // TODO: delete only if test and donation do not have a record of snake_id
-    public static function deleteSnakeById(int $pSnakeId): void
+    public static function deleteSnake(int $pSnakeId): void
     {
         $dBConnection = openDatabaseConnection();
 

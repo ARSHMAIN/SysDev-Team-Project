@@ -29,7 +29,7 @@ class OrderController
                 $knownMorphs = KnownPossibleMorph::getKnownPossibleMorphsBySnakeId($snake->getSnakeId(), true);
                 $possibleMorphs = KnownPossibleMorph::getKnownPossibleMorphsBySnakeId($snake->getSnakeId(), false);
                 $testedMorphs = TestedMorph::getAllTestedMorphById($test->getTestId());
-                $tests[] = [
+                $tests = [
                     'testId' => $test->getTestId(),
                     'customerSnakeId' => $customerSnakeId->getCustomerSnakeId(),
                     'sex' => $sex->getSexName(),
@@ -40,6 +40,8 @@ class OrderController
                 ];
                 $this->render($action, ['user' => $user, 'tests' => $tests]);
             }
+        } else if ($action == 'deleteTest') {
+            $this->render($action);
         }
     }
 

@@ -81,7 +81,6 @@ class CartItem
     public static function geCartItemByCartIdAndUserId(int $pUserId)
     {
         $dBConnection = openDatabaseConnection();
-
         try {
             $sql = "SELECT * FROM cart_item WHERE cart_id = 1 AND user_id = ?";
             $stmt = $dBConnection->prepare($sql);
@@ -91,6 +90,7 @@ class CartItem
             $stmt->execute();
 
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            var_dump($results);
             if ($stmt->rowCount() > 0) {
                 $cartItems = [];
                 foreach ($results as $row) {
@@ -118,12 +118,12 @@ class CartItem
         $dBConnection = openDatabaseConnection();
 
         try {
-            $sql = "INSERT INTO cart_item (cart_id, user_id ,donation_id, test_id) VALUES (1, ?, ?, ?)";
+            $sql = "INSERT INTO cart_item (cart_id, user_id, donation_id, test_id) VALUES (1, ?, ?, ?)";
             $stmt = $dBConnection->prepare($sql);
 
-            $stmt->bindValue(1, $pUserId, PDO::PARAM_INT);
-            $stmt->bindValue(2, $pDonationId, PDO::PARAM_INT);
-            $stmt->bindValue(3, $pTestId, PDO::PARAM_INT);
+            $stmt->bindValue(1, $pUserId, PDO::PARAM_INT);     // user_id
+            $stmt->bindValue(2, $pDonationId, PDO::PARAM_INT); // donation_id
+            $stmt->bindValue(3, $pTestId, PDO::PARAM_INT);     // test_id
 
             $isSuccessful = $stmt->execute();
             $newCartItemId = $dBConnection->lastInsertId();

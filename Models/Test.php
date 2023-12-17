@@ -67,14 +67,17 @@ class Test
             $dBConnection = null;
         }
     }
-    public static function getBySnakeId(int $pSnakeId) {
+    public static function getBySnakeId(int $pSnakeId): array
+    {
         $dBConnection = openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM test WHERE snake_id = ?";
             $stmt = $dBConnection->prepare($sql);
+
             $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
-            $stmt->execute();
+
+            $isSuccessful = $stmt->execute();
 
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($stmt->rowCount() > 0) {
@@ -88,16 +91,26 @@ class Test
                     );
                     $tests[] = $test;
                 }
-                return $tests;
+                return [
+                    'isSuccessful' => $isSuccessful,
+                    'tests' => $tests,
+                    'rowCount' => $stmt->rowCount()
+                ];
             }
+            return [
+                'isSuccessful' => false,
+                'tests' => null
+            ];
         } catch (PDOException $e) {
             // Handle the exception as per your application's requirements
-            die("Error: " . $e->getMessage());
+            return [
+                'isSuccessful' => false,
+                'error' => "Error: " . $e->getMessage()
+            ];
         } finally {
             $stmt->closeCursor();
             $dBConnection = null;
         }
-        return null;
     }
 
     public static function create(int $pSnakeId, int $pUserId): array
@@ -150,6 +163,34 @@ class Test
         return [
             'isSuccessful' => false
         ];
+    }
+
+    public static function deleteTest(int $pTestId): array
+    {
+        $dBConnection = openDatabaseConnection();
+
+        try {
+            $sql = "DELETE FROM test WHERE test_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+
+            $stmt->bindValue(1, $pTestId, PDO::PARAM_INT);
+
+            $isSuccessful = $stmt->execute();
+
+            return [
+                'isSuccessful' => $isSuccessful,
+                'deletedTestId' => $pTestId
+            ];
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            return [
+                'isSuccessful' => false,
+                'error' => $e->getMessage()
+            ];
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
     }
 
     public function getTestId(): int

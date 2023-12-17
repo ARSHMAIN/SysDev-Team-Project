@@ -1,4 +1,3 @@
-
 <nav>
     <section class="profileSection">
         <img src="Views/Images/profile.png" alt="account">

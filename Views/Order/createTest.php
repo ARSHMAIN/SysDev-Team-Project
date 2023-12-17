@@ -89,7 +89,7 @@ if (!$customerSnakeId) {
         $possible = KnownPossibleMorph::create($snake['newSnakeId'], getMorphId($newPossibleMorphs), false);
         $test = Test::create($snake['newSnakeId'], $_SESSION['user_id']);
         $testMorphs = TestedMorph::create($test['newTestId'], $checkedMorphs);
-        header('Location: /?controller=order&action=order');
+        header('Location: ?controller=cart&action=addTestToCart&id=' . $test['newTestId']);
     }
 } else {
     $snake = new Snake($customerSnakeId->getSnakeId());
@@ -120,8 +120,7 @@ if (!$customerSnakeId) {
     } else {
         $test = Test::create($customerSnakeId->getSnakeId(), $_SESSION['user_id']);
         $testMorphs = TestedMorph::create($test['newTestId'], $checkedMorphs);
-        $_SESSION['testId'] = $test['newTestId'];
-        header('Location: /?controller=cart&action=addTestToCart');
+        header('Location: /?controller=cart&action=addTestToCart&id=' . $test['newTestId']);
 
     }
 }
