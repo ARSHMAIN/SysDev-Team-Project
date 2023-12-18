@@ -75,10 +75,12 @@ class Address
         try {
             $sql = "SELECT * FROM address WHERE user_id = :user_id";
             $stmt = $dBConnection->prepare($sql);
-            $stmt->bindParam(':user_id', $pUserId, PDO::PARAM_INT);
-            $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+            $stmt->bindParam(':user_id', $pUserId, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($result) {
                 $this->addressId = $result['address_id'];
                 $this->streetNumber = $result['street_number'];

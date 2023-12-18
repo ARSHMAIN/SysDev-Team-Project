@@ -1,5 +1,5 @@
 <?php
-
+include_once 'Views/Shared/session.php';
 class DonationController
 {
     function route(): void

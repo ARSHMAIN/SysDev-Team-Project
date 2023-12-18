@@ -49,7 +49,7 @@ session_destroy();
                                 </div>
 
                                 <div class="loginSignUpButton">
-                                    <a href="index.php?controller=registration&action=registration">
+                                    <a href="/?controller=registration&action=registration">
                                         <input type="button" class="cursorPointer width100Percent" name="submit" value="Sign up">
                                     </a>
                                 </div>

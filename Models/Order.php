@@ -7,7 +7,7 @@ class Order
     private bool $paymentStatus;
     private bool $seenStatus;
     private string $orderDate;
-    private float $total;
+    private ?float $total;
     private int $userId;
     private int $orderStatusId;
 
@@ -16,7 +16,7 @@ class Order
         bool   $pPaymentStatus = false,
         bool   $pSeenStatus = false,
         string $pOrderDate = '',
-        float  $pTotal = -1,
+        ?float  $pTotal = -1,
         int    $pUserId = -1,
         int    $pOrderStatusId = -1,
 
@@ -38,7 +38,7 @@ class Order
         bool   $pPaymentStatus,
         bool   $pSeenStatus,
         string $pOrderDate,
-        float  $pTotal,
+        ?float  $pTotal,
         int    $pUserId,
         int    $pOrderStatusId
     ): void
@@ -132,7 +132,7 @@ class Order
         }
     }
 
-    public static function createOrder(int $pPaymentStatus, bool $pSeenStatus, float $pTotal, int $pUserId, int $pOrderStatusId): array
+    public static function createOrder(bool $pPaymentStatus, bool $pSeenStatus, ?float $pTotal, int $pUserId, int $pOrderStatusId): array
     {
         $dBConnection = openDatabaseConnection();
 
@@ -151,7 +151,7 @@ class Order
 
             return [
                 'isSuccessful' => $isSuccessful,
-                'newSnakeId' => $newOrderId
+                'newOrderId' => $newOrderId
             ];
         } catch (PDOException $e) {
             // Handle the exception as per your application's requirements
@@ -165,7 +165,7 @@ class Order
         }
     }
 
-    public static function updateOrder(int $pPaymentStatus, bool $pSeenStatus, float $pTotal, int $pUserId, int $pOrderStatusId, int $pOrderId): array
+    public static function updateOrder(int $pPaymentStatus, bool $pSeenStatus, ?float $pTotal, int $pUserId, int $pOrderStatusId, int $pOrderId): array
     {
         $dBConnection = openDatabaseConnection();
 
@@ -266,12 +266,12 @@ class Order
         $this->orderDate = $orderDate;
     }
 
-    public function getTotal(): float
+    public function getTotal(): ?float
     {
         return $this->total;
     }
 
-    public function setTotal(float $total): void
+    public function setTotal(?float $total): void
     {
         $this->total = $total;
     }

@@ -82,6 +82,34 @@ class Cart
         }
     }
 
+    public static function deleteCart(int $pUserId): array
+    {
+        $dBConnection = openDatabaseConnection();
+
+        try {
+            $sql = "DELETE FROM cart WHERE user_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+
+            $stmt->bindValue(1, $pUserId, PDO::PARAM_INT);
+
+            $isSuccessful = $stmt->execute();
+
+            return [
+                'isSuccessful' => $isSuccessful,
+                'deletedCartUserId' => $pUserId
+            ];
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            return [
+                'isSuccessful' => false,
+                'error' => $e->getMessage()
+            ];
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
+    }
+
     public function getCartId(): int
     {
         return $this->cartId;

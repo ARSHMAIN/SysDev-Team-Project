@@ -1,5 +1,4 @@
 <nav>
-    <?php var_dump($_SESSION); ?>
     <section class="profileSection">
         <img src="Views/Images/profile.png" alt="account">
     </section>

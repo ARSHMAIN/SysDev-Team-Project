@@ -1,4 +1,5 @@
 <?php
+include_once 'Views/Shared/session.php';
 class UserController
 {
     function route(): void

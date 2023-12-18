@@ -1,5 +1,5 @@
 <?php
-
+include_once 'Views/Shared/session.php';
 class FAQController
 {
     function route(): void

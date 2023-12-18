@@ -165,6 +165,37 @@ class Test
         ];
     }
 
+    public static function updateTest($pSnakeId, $pOrderId, $pUserId, $pTestId): array
+    {
+        $dBConnection = openDatabaseConnection();
+
+        try {
+            $sql = "UPDATE test SET snake_id = ?, order_id = ?, user_id = ? WHERE test_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+
+            $stmt->bindValue(1, $pSnakeId, PDO::PARAM_INT);
+            $stmt->bindValue(2, $pOrderId, PDO::PARAM_INT);
+            $stmt->bindValue(3, $pUserId, PDO::PARAM_INT);
+            $stmt->bindValue(4, $pTestId, PDO::PARAM_INT);
+
+            $isSuccessful = $stmt->execute();
+
+            return [
+                'isSuccessful' => $isSuccessful,
+                'updatedTestId' => $pTestId
+            ];
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            return [
+                'isSuccessful' => false,
+                'error' => $e->getMessage()
+            ];
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
+    }
+
     public static function deleteTest(int $pTestId): array
     {
         $dBConnection = openDatabaseConnection();

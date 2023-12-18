@@ -80,6 +80,10 @@ if (!empty($data['tests'])) {
     <!-- Add more rows as needed -->
     </tbody>
 </table>
-<a href="?controller=billing&action=billing"><button>Confirm</button></a>
+<?php
+if (!empty($data)) {
+    echo "<a href='?controller=billing&action=billing'><button>Confirm</button></ahre>";
+}
+?>
 </body>
 </html>

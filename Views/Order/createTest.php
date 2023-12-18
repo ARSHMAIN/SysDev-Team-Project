@@ -102,7 +102,7 @@ if (!$customerSnakeId) {
     $knownMorphs =  checkOldMorphsInfo($customerSnakeId->getSnakeId(), $newKnownMorphs, 'knownMorph', true);
     $possibleMorphs =  checkOldMorphsInfo($customerSnakeId->getSnakeId(), $newPossibleMorphs, 'possibleMorph', false);
     if (isset($_SESSION['MissingFieldError'])) {
-        header('Location: index.php?controller=order&action=test');
+        header('Location: /?controller=order&action=test');
     }
     if ($knownMorphs !== null) {
         $known = KnownPossibleMorph::create($customerSnakeId->getSnakeId(), getMorphId($knownMorphs), true);
@@ -116,11 +116,11 @@ if (!$customerSnakeId) {
     }
     if (sizeof($checkedMorphs) !== sizeof($newTestMorphs)) {
         $_SESSION['error'][] = 'Morphs not for testing';
-        header('Location: index.php?controller=order&action=test');
+        header('Location: /?controller=order&action=test');
     } else {
         $test = Test::create($customerSnakeId->getSnakeId(), $_SESSION['user_id']);
         $testMorphs = TestedMorph::create($test['newTestId'], $checkedMorphs);
-        header('Location: index.php?controller=cart&action=addTestToCart&id=' . $test['newTestId']);
+        header('Location: /?controller=cart&action=addTestToCart&id=' . $test['newTestId']);
 
     }
 }

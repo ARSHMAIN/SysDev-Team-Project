@@ -90,7 +90,6 @@ class CartItem
             $stmt->execute();
 
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            var_dump($results);
             if ($stmt->rowCount() > 0) {
                 $cartItems = [];
                 foreach ($results as $row) {

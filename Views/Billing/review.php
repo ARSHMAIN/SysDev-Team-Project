@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Billing</title>
+    <title>Review Information</title>
     <link rel="stylesheet" type="text/css" href="Views/Styles/shared.css">
     <link rel="stylesheet" type="text/css" href="Views/Styles/navbar.css">
     <link rel="stylesheet" type="text/css" href="Views/Styles/home.css">
@@ -22,12 +22,12 @@ include_once 'Views/Shared/navbar.php';
 <section class="loginRegisterWrapper marginAuto" id="center">
     <div>
         <header class="loginRegisterHeader textAlignCenter">
-            <label><a href="#"><i class="bi bi-arrow-left"></i></a> Shipping And Billing Information</label>
+            <label><a href="#"><i class="bi bi-arrow-left"></i></a> Review Mailing Information</label>
         </header>
 
 
-        <form action="?controller=billing&action=review" method="post">
-            <section class="textAlignStart">
+        <section class="textAlignStart">
+            <form action="?controller=billing&action=billing" method="post">
                 <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                     <div>
                         <label for="firstName">First Name</label> <br>
@@ -51,85 +51,105 @@ include_once 'Views/Shared/navbar.php';
                     <div>
                         <label for="phoneNumber">Phone Number</label> <br>
                     </div>
-                    <input type="text" name="phoneNumber" value='<?php echo $data['user']->getPhoneNumber() ?>'> <br>
+                    <input type="text" name="phoneNumber" value='<?php echo $data['user']->getPhoneNumber() ?>'
+                           disabled> <br>
                 </div>
                 <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                     <div>
                         <label for="address">Address</label> <br>
                     </div>
-                    <?php
-                    $addressNames = preg_split('/\s+/', ($data['address']->getStreetName()));
-                    foreach ($addressNames as $key => $addressName) {
-                        $addressNames[$key] = ucfirst($addressName);
-                    }
-                    $strAddressName = join(' ', $addressNames);
-                    $address = $data['address']->getStreetNumber() . ' ' . $strAddressName;
-                    ?>
-                    <input type="text" name="address" value='<?php echo $address ?>'> <br>
+                    <input type="text" name="address" value='<?php echo $_POST['address'] ?>' disabled> <br>
                 </div>
                 <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                     <div>
                         <label for="city">City</label> <br>
                     </div>
-                    <?php
-                    $cityNames = preg_split('/\s+/', ($data['address']->getCity()));
-                    foreach ($cityNames as $key => $cityName) {
-                        $cityNames[$key] = ucfirst($cityName);
-                    }
-                    $city = join(' ', $cityNames);
-                    ?>
-                    <input type="text" name="city" value='<?php echo $city ?>'> <br>
+                    <input type="text" name="city" value='<?php echo $_POST['city'] ?>' disabled> <br>
                 </div>
                 <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                     <div>
                         <label for="province">Province</label> <br>
                     </div>
-                    <input type="text" name="province" value='<?php echo strtoupper($data['address']->getStateOrRegion()) ?>'> <br>
+                    <input type="text" name="province" value='<?php echo $_POST['province'] ?>' disabled> <br>
                 </div>
                 <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                     <div>
                         <label for="postalCode">Postal Code</label> <br>
                     </div>
-                    <input type="text" name="postalCode" value='<?php echo strtoupper($data['address']->getPostalCode()) ?>'> <br>
+                    <input type="text" name="postalCode" value='<?php echo $_POST['postalCode'] ?>' disabled> <br>
                 </div>
                 <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                     <div>
                         <label for="country">Country</label> <br>
                     </div>
-                    <?php
-                    $countryNames = preg_split('/\s+/', ($data['address']->getCountry()));
-                    foreach ($countryNames as $key => $countryName) {
-                        $countryNames[$key] = ucfirst($countryName);
-                    }
-                    $country = join(' ', $countryNames);
-                    ?>
-                    <input type="text" name="country" value='<?php echo $country ?>'> <br>
+                    <input type="text" name="country" value='<?php echo $_POST['country'] ?>' disabled> <br>
                 </div>
+                <input type="submit" name="submit" value="Edit">
+            </form>
 
-            </section>
-            <section class="width">
-                <div class="loginRegisterInputLabelText sidenav">
-                    <label>Check out: </label><br><br>
-                    <label>Subtotal: $</label><br><br>
-                    <label>Tax: $</label><br><br>
-                    <footer>
-                        <hr>
-                        <label>Total: $</label><br><br>
-                        <div class="signButtons widthMinContent marginAuto">
-                            <div class="loginSignUpButton">
-                                <input style="color: black" type="submit" name="submit" class="cursorPointer width100Percent"
-                                       value="Continue">
-                            </div>
-                        </div>
-                    </footer>
+
+        </section>
+    </div>
+</section>
+<section class="loginRegisterWrapper marginAuto" id="center">
+    <div class="loginRegisterInputLabelText widthMinContent marginAuto">
+        <header class="loginRegisterHeader textAlignCenter">
+            <label><a href="#"><i class="bi bi-arrow-left"></i></a>Review Cart</label>
+        </header>
+        <?php
+        if (isset($data['tests'])) {
+        ?>
+        <section class="textAlignStart">
+            <header class="loginRegisterHeader textAlignCenter">
+                <label>Tests</label><br>
+            </header>
+            <div class="loginRegisterInputLabelText widthMinContent marginAuto">
+                <?php
+                foreach ($data['tests'] as $test) {
+                    echo "<td>" . $test['customerSnakeId'] . "</td>";
+                    echo "<td>" . $test['sex'] . "</td>";
+                    echo "<td>" . $test['origin'] . "</td>";
+                    $stringKnownMorph = implode(', ', $test['knownMorphs']);
+                    $stringPossibleMorph = implode(', ', $test['possibleMorphs']);
+                    $stringTestedMorph = implode(', ', $test['testedMorphs']);
+                    echo "<td>" . $stringKnownMorph . "</td>";
+                    echo "<td>" . $stringPossibleMorph . "</td>";
+                    echo "<td>" . $stringTestedMorph . "</td>";
+                }
+                ?>
+            </div>
+            <a href="?controller=cart&action=cart"><button>Edit</button></a>
+        </section>
+        <?php
+        }
+        ?>
+    </div>
+</section>
+<section class="width">
+    <div class="loginRegisterInputLabelText sidenav">
+        <?php
+        $subtotal = $data['totalTests'] * 50;
+        $tax = $subtotal * .15;
+        $total = $subtotal + $tax;
+        ?>
+        <label>Check out: </label><br><br>
+        <label>Subtotal: $<?php echo number_format($subtotal, 2) ?></label><br><br>
+        <label>Tax: $<?php echo number_format($tax, 2) ?></label><br><br>
+        <footer>
+            <hr>
+            <label>Total: $<?php echo number_format($total, 2) ?></label><br><br>
+            <div class="signButtons widthMinContent marginAuto">
+                <div class="loginSignUpButton">
+                    <a  href="?controller=billing&action=orderConfirmed" class="width100Percent"><button style="color: black" class="cursorPointer">Place Order</button></a>
                 </div>
-            </section>
-
-        </form>
-        <footer class="loginRegisterHeader textAlignCenter">
-            <label></label>
+            </div>
         </footer>
     </div>
+</section>
+
+<footer class="loginRegisterHeader textAlignCenter">
+    <label></label>
+</footer>
 </section>
 </body>
 </html>
