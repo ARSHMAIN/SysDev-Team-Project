@@ -23,7 +23,7 @@
                 </header>
             </div>
 
-            <form action="/?controller=registration&action=register" method="POST">
+            <form action="index.php?controller=registration&action=register" method="POST">
                 <section>
                     <div class="loginRegisterInputLabelText registrationMargin widthMinContent marginAuto">
                         <div>

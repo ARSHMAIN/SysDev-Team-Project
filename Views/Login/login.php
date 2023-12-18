@@ -23,7 +23,7 @@ session_destroy();
                 <label>Login</label>
             </header>
 
-            <form action="/?controller=login&action=validation" method="POST">
+            <form action="index.php?controller=login&action=validation" method="POST">
                 <section class="textAlignStart">
                         <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                             <div>
@@ -49,7 +49,7 @@ session_destroy();
                                 </div>
 
                                 <div class="loginSignUpButton">
-                                    <a href="/?controller=registration&action=registration">
+                                    <a href="index.php?controller=registration&action=registration">
                                         <input type="button" class="cursorPointer width100Percent" name="submit" value="Sign up">
                                     </a>
                                 </div>

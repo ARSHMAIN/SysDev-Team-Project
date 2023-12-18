@@ -10,4 +10,4 @@ if (isset($_GET['id'])) {
         }
     }
 }
-header('Location: ?controller=cart&action=cart');
+header('Location: index.php?controller=cart&action=cart');

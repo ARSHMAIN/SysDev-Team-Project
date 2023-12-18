@@ -30,7 +30,7 @@ if (isset($_POST['submit'])) {
         $mail->Body = $inquiry;
 
         $mail->send();
-        header('Location: /?controller=contact&action=contact');
+        header('Location: index.php?controller=contact&action=contact');
     } catch (Exception $e) {
         echo "Message could not be sent. Mailer Error: $mail->ErrorInfo";
     }

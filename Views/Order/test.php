@@ -33,7 +33,7 @@ echo "<h3>" . $data['user']->getFirstName() . ' ' . $data['user']->getLastName()
 ?>
 
 <div class="form-container">
-    <form id="order" name="order" action="/?controller=order&action=createTest" method="post">
+    <form id="order" name="order" action="index.php?controller=order&action=createTest" method="post">
         <label for="customerSnakeId">Snake ID</label><br>
         <input id="customerSnakeId" type="text" name="customerSnakeId" value="ARSH"><br>
         <img id="maleGender" class="gender selected" src="Views/Images/maleGender.png" alt="maleGender">

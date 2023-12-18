@@ -1,3 +1,3 @@
 <?php
     User::createUserByRoleName($_POST);
-    header("Location: /?controller=login&action=login");
+    header("Location: index.php?controller=login&action=login");

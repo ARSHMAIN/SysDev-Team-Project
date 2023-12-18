@@ -50,8 +50,8 @@ if (!empty($data['tests'])) {
         echo "<td>" . $stringKnownMorph . "</td>";
         echo "<td>" . $stringPossibleMorph . "</td>";
         echo "<td>" . $stringTestedMorph . "</td>";
-        echo "<td><a href='?controller=order&action=updateTest&id=" . $test['testId'] . "'>Update</a></td>";
-        echo "<td><a href='?controller=order&action=deleteTest&id=" . $test['testId'] . "'>Delete</a></td></tr>";
+        echo "<td><a href='index.php?controller=order&action=updateTest&id=" . $test['testId'] . "'>Update</a></td>";
+        echo "<td><a href='index.php?controller=order&action=deleteTest&id=" . $test['testId'] . "'>Delete</a></td></tr>";
     }
     ?>
     </tbody>

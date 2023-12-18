@@ -35,7 +35,7 @@
     ?>
 
     <div class="form-container">
-        <form id="order" name="order" action="/?controller=order&action=updateTest" method="post">
+        <form id="order" name="order" action="index.php?controller=order&action=updateTest" method="post">
             <label for="customerSnakeId">Snake ID</label><br>
             <input id="customerSnakeId" type="text" name="customerSnakeId" value="ARSH"><br>
             <?php

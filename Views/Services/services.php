@@ -53,7 +53,7 @@ include_once 'Views/Shared/navbar.php';
                         <tr>
                             <td>
                                 <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
-                                <h4>Desert/ghost/enhancer</h4>
+                                <h4>Desert ghost/enhancer</h4>
                             </td>
                             <td>
                                 <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
@@ -61,7 +61,7 @@ include_once 'Views/Shared/navbar.php';
                             </td>
                             <td>
                                 <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
-                                <h4>Lavander Albino</h4>
+                                <h4>Lavender Albino</h4>
                             </td>
                             <td>
                                 <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
@@ -78,7 +78,7 @@ include_once 'Views/Shared/navbar.php';
                             </td>
                             <td>
                                 <img src="Views/Images/snake_dummy_image.jpeg" alt="snake">
-                                <h4>VPI Anxanthic</h4>
+                                <h4>VPI Axanthic</h4>
                             </td>
                             <td></td>
                         </tr>

@@ -22,7 +22,7 @@ include_once 'Views/Shared/navbar.php';
     <div class="padding">
     <h2>Contact Us</h2>
 
-    <form action="/?controller=contact&action=email" method="post" class="input_figma_styling padding">
+    <form action="index.php?controller=contact&action=email" method="post" class="input_figma_styling padding">
         <label for="name">Your name</label><br>
         <input type="text" name="name" id="name"> <br>
         <label for="email">Your email address</label><br>

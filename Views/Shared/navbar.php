@@ -1,4 +1,5 @@
 <nav>
+    <?php var_dump($_SESSION); ?>
     <section class="profileSection">
         <img src="Views/Images/profile.png" alt="account">
     </section>
@@ -25,10 +26,10 @@
             <div>
                 <?php
                 if (!isset($_SESSION['user_id'])) {
-                    echo "<a href='/?controller=login&action=login'>Sign In</a>";
+                    echo "<a href='index.php?controller=login&action=login'>Sign In</a>";
                 }
                 if (isset($_SESSION['user_id'])) {
-                    echo "<a href='/?controller=order&action=order'>Order</a>";
+                    echo "<a href='index.php?controller=order&action=order'>Order</a>";
                 }
                 ?>
             </div>

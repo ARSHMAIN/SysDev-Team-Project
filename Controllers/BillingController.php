@@ -10,6 +10,10 @@ class BillingController
         if ($action == "billing"){
             $this->render($action, ['user' => $user]);
         }
+        else
+        {
+            $this->render($action);
+        }
     }
     function render($action, $data = []): void
     {
