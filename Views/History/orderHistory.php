@@ -1,7 +1,3 @@
-<?php
-include_once "Views/Shared/session.php";
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,6 +16,8 @@ include_once "Views/Shared/session.php";
 <?php
 include_once 'Views/Shared/navbar.php';
 include_once 'Views/Order/orderSubCategories.php';
+include_once 'Views/Shared/search.php';
+search('history', 'orderHistory');
 ?>
 <table>
     <thead>
@@ -31,11 +29,12 @@ include_once 'Views/Order/orderSubCategories.php';
     </thead>
     <tbody>
     <?php
-    foreach ($data['order'] as $order) {
+    foreach ($data['orders'] as $order) {
         echo "<tr><td>" . $order->getOrderDate() . "</td>";
         echo "<td>$" . $order->getTotal() . "</td>";
         $orderStatus = new OrderStatus($order->getOrderStatusId());
-        echo "<td>" . $orderStatus->getOrderStatusName() . "</td></tr>";
+        echo "<td>" . $orderStatus->getOrderStatusName() . "</td>";
+        echo "<td><a href='?controller=history&action=snakeHistory&id=" . $order->getOrderId() . "'><button>Open Order</button></a></td>";
     }
     ?>
     </tbody>

@@ -113,6 +113,76 @@ class Test
         }
     }
 
+    public static function getBySnakeIdAndOrderExists(int $pSnakeId)
+    {
+        $dBConnection = openDatabaseConnection();
+
+        try {
+            $sql = "SELECT * FROM test WHERE snake_id = ? AND order_id IS NOT NULL";
+            $stmt = $dBConnection->prepare($sql);
+
+            $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($stmt->rowCount() > 0) {
+                $tests = [];
+                foreach ($results as $row) {
+                    $test = new Test();
+                    $test->testId = $row['test_id'];
+                    $test->snakeId = $row['snake_id'];
+                    $test->orderId = $row['order_id'];
+                    $test->userId = $row['user_id'];
+                    $tests[] = $test;
+                }
+                return $tests;
+            }
+            return null;
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
+    }
+
+    public static function getByOrderId(int $pOrderId): ?array
+    {
+        $dBConnection = openDatabaseConnection();
+
+        try {
+            $sql = "SELECT * FROM test WHERE order_id = ?";
+            $stmt = $dBConnection->prepare($sql);
+
+            $stmt->bindParam(1, $pOrderId, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($stmt->rowCount() > 0) {
+                $tests = [];
+                foreach ($results as $row) {
+                    $test = new Test();
+                    $test->testId = $row['test_id'];
+                    $test->snakeId = $row['snake_id'];
+                    $test->orderId = $row['order_id'];
+                    $test->userId = $row['user_id'];
+                    $tests[] = $test;
+                }
+                return $tests;
+            }
+            return null;
+        } catch (PDOException $e) {
+            // Handle the exception as per your application's requirements
+            die("Error: " . $e->getMessage());
+        } finally {
+            $stmt->closeCursor();
+            $dBConnection = null;
+        }
+    }
+
     public static function create(int $pSnakeId, int $pUserId): array
     {
         $stmt = null; // Initialize $stmt outside the try block
