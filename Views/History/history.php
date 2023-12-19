@@ -19,8 +19,27 @@ include_once "Views/Shared/session.php";
 <body>
 <?php
 include_once 'Views/Shared/navbar.php';
+include_once 'Views/Order/orderSubCategories.php';
 ?>
-
+<table>
+    <thead>
+    <tr>
+        <th>Order Placed On</th>
+        <th>Total</th>
+        <th>Order Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+    foreach ($data['order'] as $order) {
+        echo "<tr><td>" . $order->getOrderDate() . "</td>";
+        echo "<td>$" . $order->getTotal() . "</td>";
+        $orderStatus = new OrderStatus($order->getOrderStatusId());
+        echo "<td>" . $orderStatus->getOrderStatusName() . "</td></tr>";
+    }
+    ?>
+    </tbody>
+</table>
 
 </body>
 </html>

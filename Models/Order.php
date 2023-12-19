@@ -99,7 +99,7 @@ class Order
         $dBConnection = openDatabaseConnection();
 
         try {
-            $sql = "SELECT * FROM `order` WHERE user_id = ?";
+            $sql = "SELECT * FROM `order` WHERE user_id = ? ORDER BY order_date DESC";
             $stmt = $dBConnection->prepare($sql);
 
             $stmt->bindParam(1, $pUserId, PDO::PARAM_INT);

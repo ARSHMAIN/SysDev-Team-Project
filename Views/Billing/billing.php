@@ -24,14 +24,14 @@ include_once 'Views/Shared/navbar.php';
         <header class="loginRegisterHeader textAlignCenter">
             <label><a href="#"><i class="bi bi-arrow-left"></i></a> Shipping And Billing Information</label>
         </header>
-
-
         <form action="?controller=billing&action=review" method="post">
             <section class="textAlignStart">
                 <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                     <div>
                         <label for="firstName">First Name</label> <br>
                     </div>
+                    <?php
+                    ?>
                     <input type="text" name="firstName" value='<?php echo $data['user']->getFirstName() ?>' disabled>
                     <br>
                 </div>
@@ -51,19 +51,24 @@ include_once 'Views/Shared/navbar.php';
                     <div>
                         <label for="phoneNumber">Phone Number</label> <br>
                     </div>
-                    <input type="text" name="phoneNumber" value='<?php echo $data['user']->getPhoneNumber() ?>'> <br>
+                    <input type="text" name="phoneNumber" value='<?php echo $data['user']->getPhoneNumber() !== null ? $data['user']->getPhoneNumber() : '' ?>'> <br>
                 </div>
                 <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                     <div>
                         <label for="address">Address</label> <br>
                     </div>
                     <?php
-                    $addressNames = preg_split('/\s+/', ($data['address']->getStreetName()));
-                    foreach ($addressNames as $key => $addressName) {
-                        $addressNames[$key] = ucfirst($addressName);
+                    $address = null;
+                    if (isset($data['address']) && $data['address']->getStreetName() !== null) {
+                        $addressNames = preg_split('/\s+/', ($data['address']->getStreetName()));
+                        foreach ($addressNames as $key => $addressName) {
+                            $addressNames[$key] = ucfirst($addressName);
+                        }
+                        $strAddressName = join(' ', $addressNames);
+                        $address = $data['address']->getStreetNumber() . ' ' . $strAddressName;
+                    } else {
+                        $address = '';
                     }
-                    $strAddressName = join(' ', $addressNames);
-                    $address = $data['address']->getStreetNumber() . ' ' . $strAddressName;
                     ?>
                     <input type="text" name="address" value='<?php echo $address ?>'> <br>
                 </div>
@@ -72,11 +77,16 @@ include_once 'Views/Shared/navbar.php';
                         <label for="city">City</label> <br>
                     </div>
                     <?php
-                    $cityNames = preg_split('/\s+/', ($data['address']->getCity()));
-                    foreach ($cityNames as $key => $cityName) {
-                        $cityNames[$key] = ucfirst($cityName);
+                    $city = null;
+                    if (isset($data['address']) && $data['address']->getCity() !== null) {
+                        $cityNames = preg_split('/\s+/', ($data['address']->getCity()));
+                        foreach ($cityNames as $key => $cityName) {
+                            $cityNames[$key] = ucfirst($cityName);
+                        }
+                        $city = join(' ', $cityNames);
+                    } else {
+                        $city = '';
                     }
-                    $city = join(' ', $cityNames);
                     ?>
                     <input type="text" name="city" value='<?php echo $city ?>'> <br>
                 </div>
@@ -84,24 +94,45 @@ include_once 'Views/Shared/navbar.php';
                     <div>
                         <label for="province">Province</label> <br>
                     </div>
-                    <input type="text" name="province" value='<?php echo strtoupper($data['address']->getStateOrRegion()) ?>'> <br>
+                    <?php
+                    $province = null;
+                    if (isset($data['address']) && $data['address']->getStateOrRegion() !== null) {
+                        $province = strtoupper($data['address']->getStateOrRegion());
+                    } else {
+                        $province = '';
+                    }
+                    ?>
+                    <input type="text" name="province" value='<?php echo $province ?>'> <br>
                 </div>
                 <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                     <div>
                         <label for="postalCode">Postal Code</label> <br>
                     </div>
-                    <input type="text" name="postalCode" value='<?php echo strtoupper($data['address']->getPostalCode()) ?>'> <br>
+                    <?php
+                    $postalCode = null;
+                    if (isset($data['address']) && $data['address']->getPostalCode() !== null) {
+                        $province = strtoupper($data['address']->getPostalCode());
+                    } else {
+                        $postalCode = '';
+                    }
+                    ?>
+                    <input type="text" name="postalCode" value='<?php echo $postalCode ?>'> <br>
                 </div>
                 <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                     <div>
                         <label for="country">Country</label> <br>
                     </div>
                     <?php
-                    $countryNames = preg_split('/\s+/', ($data['address']->getCountry()));
-                    foreach ($countryNames as $key => $countryName) {
-                        $countryNames[$key] = ucfirst($countryName);
+                    $country = null;
+                    if (isset($data['address']) && $data['address']->getCountry() !== null) {
+                        $countryNames = preg_split('/\s+/', ($data['address']->getCountry()));
+                        foreach ($countryNames as $key => $countryName) {
+                            $countryNames[$key] = ucfirst($countryName);
+                        }
+                        $country = join(' ', $countryNames);
+                    } else {
+                        $country = '';
                     }
-                    $country = join(' ', $countryNames);
                     ?>
                     <input type="text" name="country" value='<?php echo $country ?>'> <br>
                 </div>
