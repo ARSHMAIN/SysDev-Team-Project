@@ -1,6 +1,27 @@
 <nav>
     <section class="profileSection">
-        <img src="Views/Images/profile.png" alt="account">
+        <?php
+            if(isset($_SESSION["user_id"])) {
+        ?>
+            <div class="userProfileButton floatRight height100Percent displayInlineBlock">
+
+                <div class="height100Percent">
+                    <img src="Views/Images/profile.png" alt="account">
+                </div>
+
+                <div class="userProfileDropdown backgroundColorD9D9D9 floatRight positionAbsolute">
+                    <div class="userProfileDropdownItem nameDropdownItem backgroundColorBABABA">
+                        <label>First Name, Last Name</label>
+                    </div>
+
+                    <a class="displayBlock userProfileDropdownItem" href="">Edit Profile</a>
+                    <div class="dropdownItemDivider marginAuto"></div>
+                    <a class="displayBlock userProfileDropdownItem" href="?controller=login&action=login">Logout</a>
+                </div>
+            </div>
+        <?php
+            }
+        ?>
     </section>
     <section class="navBar">
         <section class="logoSection">
@@ -30,10 +51,14 @@
                 if (!isset($_SESSION['user_id'])) {
                     echo "<a href='index.php?controller=login&action=login'>Sign In</a>";
                 }
+
+
                 if (isset($_SESSION['user_id'])) {
                     echo "<a href='index.php?controller=order&action=order'>Order</a>";
                 }
                 ?>
+
+
             </div>
         </section>
     </section>

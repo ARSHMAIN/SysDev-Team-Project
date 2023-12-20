@@ -96,3 +96,23 @@ p, li, button
     color: #ff3d3d;
     margin-top: 2%;
 }
+
+.positionAbsolute {
+    position: absolute;
+}
+
+.floatRight {
+    float: right;
+}
+
+.displayInlineBlock {
+    display: inline-block;
+}
+
+.height100Percent {
+    height: 100%;
+}
+
+.backgroundColorBABABA {
+    background-color: #BABABA;
+}
