@@ -38,29 +38,18 @@
         <form id="order" name="order" action="index.php?controller=order&action=updateTest" method="post">
             <label for="customerSnakeId">Snake ID</label><br>
             <input id="customerSnakeId" type="text" name="customerSnakeId" value="ARSH"><br>
-            <?php
-            if ($sexGender === "maleGender") {
-                echo "<img id='maleGender' class='gender selected' src='Views/Images/maleGender.png' alt='maleGender'>";
-            } else {
-                echo "<img id='maleGender' class='gender' src='Views/Images/maleGender.png' alt='maleGender'>";
-            } if ($sexGender === "femaleGender") {
-                echo "<img id='femaleGender' class='gender selected' src='Views/Images/femaleGender.png' alt='femaleGender'>";
-            } else {
-                echo "<img id='femaleGender' class='gender' src='Views/Images/femaleGender.png' alt='femaleGender'>";
-            } if ($sexGender === "unknownGender") {
-                echo "<img id='unknownGender' class='gender selected' src='Views/Images/unknownGender.png' alt='unknownGender'>";
-            } else {
-                echo "<img id='unknownGender' class='gender' src='Views/Images/unknownGender.png' alt='unknownGender'>";
-            }
-            ?>
+            <img id="maleGender" class="gender<?php echo (($sexGender === "maleGender")? " selected" : ""); ?>" src="Views/Images/maleGender.png" alt="maleGender">
+            <img id="femaleGender" class="gender<?php echo (($sexGender === "femaleGender")? " selected" : ""); ?>" src="Views/Images/femaleGender.png" alt="femaleGender">
+            <img id="unknownGender" class="gender<?php echo (($sexGender === "unknownGender")? " selected" : ""); ?>" src="Views/Images/unknownGender.png" alt="unknownGender">
+
             <input type="hidden" id="sex" name="sex" value='<?php echo "$sex"?>'><br>
             <label for="knownMorphs" id="knownMorphLabel">Known morphs</label><br>
             <img id="addBtnKnownMorph" class="add-remove" src="Views/Images/addSign.png" style="width: 2%; height: 2%" alt="addSign">
             <img id="removeBtnKnownMorph" class="add-remove" src="Views/Images/removeSign.png" style="width: 2.25%; height: 2.25%" alt="removeSign"><br>
             <?php
-            if (isset($_SESSION['error_message']) && $_SESSION['error_message'] === 'knownMorph') {
-                echo '<label class="error">Morph doesn\'t exists</label><br>';
-            }
+//            if (isset($_SESSION['error_message']) && $_SESSION['error_message'] === 'knownMorph') {
+//                echo '<label class="error">Morph doesn\'t exists</label><br>';
+//            }
             ?>
             <?php
             foreach ($data['tests']['knownMorphs'] as $key => $knownMorph) {
