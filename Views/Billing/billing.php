@@ -92,7 +92,7 @@
             </div>
             <div class="right column">
                 <div class="loginRegisterInputLabelText sidenav">
-                    <label style="font-size: large;">Check out: </label></br></br>
+                <label><strong> Check out </strong></label></br></br>
                     <label>Subtotal: $</label></br></br>
                     <label>Tax: $</label></br></br>
                     <footer>

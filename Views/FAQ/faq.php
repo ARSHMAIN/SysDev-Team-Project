@@ -27,7 +27,7 @@ include_once 'Views/Shared/navbar.php';
         <div class="accordion">
             <div class="box">
                 <div class="question">
-                    <h5>How much time does it usually take for a test to nbe completed?</h5>
+                    <h5>How much time does it usually take for a test to be completed?</h5>
                     <span class="icon"></span>
                 </div>
                 <div class="content">

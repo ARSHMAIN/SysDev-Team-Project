@@ -21,10 +21,9 @@ body {
 
 .padding
 {
-    padding-top: 30px;
-    padding-right: 30px;
-    padding-bottom: 30px;
-    padding-left: 30px;
+    padding-top: 40px;
+    padding-left: 300px;
+    padding-right: 300px;
 }
 
 p, h1, h2, h3, h5, li, label, div
