@@ -1,6 +1,6 @@
 <?php
 include_once 'database.php';
-
+include_once "Models/SQLHelper.php";
 class KnownPossibleMorph
 {
     private int $snakeId = -1;
@@ -178,7 +178,7 @@ class KnownPossibleMorph
                     WHERE snake_id = ? AND 
             ";
 
-            $sqlQuery = self::concatenateConditions($morphIdsToKeep, $sqlQuery, "morph_id != ?");
+            $sqlQuery = SQLHelper::concatenateConditions($morphIdsToKeep, $sqlQuery, "morph_id != ?");
             $sqlQuery .= " AND is_known = ?;";
             $pdoStatement = $dbConnection->prepare($sqlQuery);
             $currentBindValueIndex = 1;
@@ -188,7 +188,7 @@ class KnownPossibleMorph
             $pdoStatement->bindValue($currentBindValueIndex++, $snakeId);
 
 
-            $bindValueResult = self::bindValues($pdoStatement, $morphIdsToKeep, $currentBindValueIndex);
+            $bindValueResult = SQLHelper::bindValues($pdoStatement, $morphIdsToKeep, $currentBindValueIndex);
             $pdoStatement = $bindValueResult["pdoStatement"];
             $currentBindValueIndex = $bindValueResult["currentBindValue"];
             /*
@@ -212,35 +212,7 @@ class KnownPossibleMorph
         }
     }
 
-    private static function concatenateConditions(array $arrayToIterateOn, string $sqlQuery, string $sqlCondition) : string {
-        /*
-            Concatenate conditions for the WHERE clause in an SQL query
-            where the condition to concatenate and the count of conditions to concatenate is given
-            (usually an array full of primary keys, such as IDs)
-            Bind value is the current bind value for PDOStatement::bindValue
-            Send the current index to bind on to this function
-        */
-        $sqlQuery .= implode(" AND ", array_fill(0, count($arrayToIterateOn), $sqlCondition));
-        return $sqlQuery;
-    }
 
-
-    private static function bindValues(PDOStatement $pdoStatement, array $valuesToBind, int $currentBindValue = 1, int $pdoType = PDO::PARAM_INT) : array {
-        /*
-            Bind values to values that were sent through $valuesToBind
-            using the $currentBindValue integer argument
-            Default is PDO::PARAM_INT for the bind value
-        */
-        foreach($valuesToBind as $morphId) {
-            $pdoStatement->bindValue($currentBindValue, $morphId, $pdoType);
-            ++$currentBindValue;
-        }
-
-        return [
-            "pdoStatement" => $pdoStatement,
-            "currentBindValue" => $currentBindValue
-        ];
-    }
 
     public static function updateKnownPossibleMorph(int $pSnakeId, int $pMorphId, bool $pIsKnown): void
     {

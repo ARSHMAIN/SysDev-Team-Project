@@ -1,6 +1,6 @@
 <?php
 include_once 'database.php';
-
+include_once "SQLHelper.php";
 class TestedMorph
 {
     private int $testId = -1;
@@ -126,12 +126,12 @@ class TestedMorph
                     WHERE test_id = ? AND
             ";
 
-            $sqlQuery = self::concatenateConditions($morphIdsToKeep, $sqlQuery, "morph_id != ?");
+            $sqlQuery = SQLHelper::concatenateConditions($morphIdsToKeep, $sqlQuery, "morph_id != ?");
             $pdoStatement = $dbConnection->prepare($sqlQuery);
 
             $currentBindValueIndex = 1;
             $pdoStatement->bindValue($currentBindValueIndex++, $testId);
-            $bindValueResult = self::bindValues($pdoStatement, $morphIdsToKeep, $currentBindValueIndex);
+            $bindValueResult = SQLHelper::bindValues($pdoStatement, $morphIdsToKeep, $currentBindValueIndex);
 
             $pdoStatement = $bindValueResult["pdoStatement"];
 
@@ -168,7 +168,7 @@ class TestedMorph
             /*
                 Bind the values for the values to insert (morph ids)
             */
-            $bindInsertValuesResult = self::bindValues($pdoStatement, $pMorphIds, $currentBindValueIndex, PDO::PARAM_INT);
+            $bindInsertValuesResult = SQLHelper::bindValues($pdoStatement, $pMorphIds, $currentBindValueIndex, PDO::PARAM_INT);
             $pdoStatement = $bindInsertValuesResult["pdoStatement"];
 
 
@@ -187,34 +187,7 @@ class TestedMorph
         }
     }
 
-    private static function bindValues(PDOStatement $pdoStatement, array $valuesToBind, int $currentBindValue = 1, int $pdoType = PDO::PARAM_INT) : array {
-        /*
-            Bind values to values that were sent through $valuesToBind
-            using the $currentBindValue integer argument
-            Default is PDO::PARAM_INT for the bind value
-        */
-        foreach($valuesToBind as $morphId) {
-            $pdoStatement->bindValue($currentBindValue, $morphId, $pdoType);
-            ++$currentBindValue;
-        }
 
-        return [
-            "pdoStatement" => $pdoStatement,
-            "currentBindValue" => $currentBindValue
-        ];
-    }
-
-    private static function concatenateConditions(array $arrayToIterateOn, string $sqlQuery, string $sqlCondition) : string {
-        /*
-            Concatenate conditions for the WHERE clause in an SQL query
-            where the condition to concatenate and the count of conditions to concatenate is given
-            (usually an array full of primary keys, such as IDs)
-            Bind value is the current bind value for PDOStatement::bindValue
-            Send the current index to bind on to this function
-        */
-        $sqlQuery .= implode(" AND ", array_fill(0, count($arrayToIterateOn), $sqlCondition));
-        return $sqlQuery;
-    }
 
     public static function updateTestedMorph(int $pTestId, int $pMorphId, array $postFields): bool
     {
