@@ -128,9 +128,8 @@ class KnownPossibleMorph
 
     public static function create(int $pSnakeId, array $pMorphIds, bool $pIsKnown): bool
     {
-        $dBConnection = openDatabaseConnection();
-
         try {
+            $dBConnection = openDatabaseConnection();
             // Build the SQL statement
             $sql = "INSERT INTO knownpossiblemorph (snake_id, morph_id, is_known) VALUES ";
             $sql .= implode(',', array_fill(0, count($pMorphIds), '(?, ?, ?)'));
@@ -165,7 +164,83 @@ class KnownPossibleMorph
     }
 
 
+    public static function deleteRemovedKnownMorphs(int $snakeId, array $morphIdsToKeep, bool $isKnown)
+    {
+        /*
+            Delete the testedmorph rows that were removed by the customer on the create/update test form
+            The bool isKnown represents whether the function should delete known or possible morphs
+        */
 
+        $isSuccessful = false;
+        try {
+            $dbConnection = openDatabaseConnection();
+            $sqlQuery = "DELETE FROM knownpossiblemorph
+                    WHERE snake_id = ? AND 
+            ";
+
+            $sqlQuery = self::concatenateConditions($morphIdsToKeep, $sqlQuery, "morph_id != ?");
+            $sqlQuery .= " AND is_known = ?;";
+            $pdoStatement = $dbConnection->prepare($sqlQuery);
+            $currentBindValueIndex = 1;
+            /*
+                Bind value for knownpossiblemorph.snake_id = ? in the query
+            */
+            $pdoStatement->bindValue($currentBindValueIndex++, $snakeId);
+
+
+            $bindValueResult = self::bindValues($pdoStatement, $morphIdsToKeep, $currentBindValueIndex);
+            $pdoStatement = $bindValueResult["pdoStatement"];
+            $currentBindValueIndex = $bindValueResult["currentBindValue"];
+            /*
+                Bind value for knownpossiblemorph.is_known = ? in the query
+            */
+            $pdoStatement->bindValue($currentBindValueIndex++, $isKnown);
+
+
+            $isSuccessful = $pdoStatement->execute();
+        }
+        catch(PDOException $pdoException) {
+            if ($pdoException->getCode() == '23000') {
+                // Handle duplicate key error or other specific error
+                die("Error: " . $pdoException->getMessage());
+            }
+        }
+        finally {
+            $pdoStatement->closeCursor();
+            $dbConnection = null;
+            return $isSuccessful;
+        }
+    }
+
+    private static function concatenateConditions(array $arrayToIterateOn, string $sqlQuery, string $sqlCondition) : string {
+        /*
+            Concatenate conditions for the WHERE clause in an SQL query
+            where the condition to concatenate and the count of conditions to concatenate is given
+            (usually an array full of primary keys, such as IDs)
+            Bind value is the current bind value for PDOStatement::bindValue
+            Send the current index to bind on to this function
+        */
+        $sqlQuery .= implode(" AND ", array_fill(0, count($arrayToIterateOn), $sqlCondition));
+        return $sqlQuery;
+    }
+
+
+    private static function bindValues(PDOStatement $pdoStatement, array $valuesToBind, int $currentBindValue = 1, int $pdoType = PDO::PARAM_INT) : array {
+        /*
+            Bind values to values that were sent through $valuesToBind
+            using the $currentBindValue integer argument
+            Default is PDO::PARAM_INT for the bind value
+        */
+        foreach($valuesToBind as $morphId) {
+            $pdoStatement->bindValue($currentBindValue, $morphId, $pdoType);
+            ++$currentBindValue;
+        }
+
+        return [
+            "pdoStatement" => $pdoStatement,
+            "currentBindValue" => $currentBindValue
+        ];
+    }
 
     public static function updateKnownPossibleMorph(int $pSnakeId, int $pMorphId, bool $pIsKnown): void
     {

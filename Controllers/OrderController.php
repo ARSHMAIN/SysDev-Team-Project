@@ -43,6 +43,9 @@ class OrderController
         } else if ($action == 'deleteTest') {
             $this->render($action);
         }
+        else if($action == "submitUpdateTest") {
+            $this->render($action);
+        }
     }
 
     private function render(string $action, array $data = []): void

@@ -113,7 +113,108 @@ class TestedMorph
         return $isSuccessful ?? false;
     }
 
+    public static function deleteRemovedTestedMorphs(int $testId, array $morphIdsToKeep)
+    {
+        /*
+            Delete the testedmorph rows that were removed by the customer on the create/update test form
+        */
+        $isSuccessful = false;
+        try {
+            $dbConnection = openDatabaseConnection();
+            $sqlQuery = "
+                DELETE FROM testedmorph
+                    WHERE test_id = ? AND
+            ";
 
+            $sqlQuery = self::concatenateConditions($morphIdsToKeep, $sqlQuery, "morph_id != ?");
+            $pdoStatement = $dbConnection->prepare($sqlQuery);
+
+            $currentBindValueIndex = 1;
+            $pdoStatement->bindValue($currentBindValueIndex++, $testId);
+            $bindValueResult = self::bindValues($pdoStatement, $morphIdsToKeep, $currentBindValueIndex);
+
+            $pdoStatement = $bindValueResult["pdoStatement"];
+
+            $isSuccessful = $pdoStatement->execute();
+        }
+        catch(PDOException $pdoException) {
+            if ($pdoException->getCode() == '23000') {
+                // Handle duplicate key error or other specific error
+                die("Error: " . $pdoException->getMessage());
+            }
+        }
+        finally {
+            $pdoStatement->closeCursor();
+            $dbConnection = null;
+            return $isSuccessful;
+        }
+    }
+
+    public static function createTestedMorphsIfNotExists(int $pTestId, array $pMorphIds) : bool {
+        $isSuccessful = false;
+        try {
+            $dbConnection = openDatabaseConnection();
+            $sqlQuery = "INSERT INTO testedmorph (test_id, morph_id) VALUES ";
+            $sqlQuery .= implode(',', array_fill(0, count($pMorphIds), "($pTestId, ?)"));
+            $sqlQuery .= " ON DUPLICATE KEY UPDATE testedmorph.test_id = testedmorph.test_id, testedmorph.morph_id = testedmorph.morph_id;
+            ";
+
+            $pdoStatement = $dbConnection->prepare($sqlQuery);
+
+            /*
+                The current index that allows to bind the next value using PDOStatement::bindValue
+            */
+            $currentBindValueIndex = 1;
+            /*
+                Bind the values for the values to insert (morph ids)
+            */
+            $bindInsertValuesResult = self::bindValues($pdoStatement, $pMorphIds, $currentBindValueIndex, PDO::PARAM_INT);
+            $pdoStatement = $bindInsertValuesResult["pdoStatement"];
+
+
+            $isSuccessful = $pdoStatement->execute();
+        }
+        catch(PDOException $pdoException) {
+            if ($pdoException->getCode() == '23000') {
+                // Handle duplicate key error or other specific error
+                die("Error: " . $pdoException->getMessage());
+            }
+        }
+        finally {
+            $pdoStatement->closeCursor();
+            $dbConnection = null;
+            return $isSuccessful;
+        }
+    }
+
+    private static function bindValues(PDOStatement $pdoStatement, array $valuesToBind, int $currentBindValue = 1, int $pdoType = PDO::PARAM_INT) : array {
+        /*
+            Bind values to values that were sent through $valuesToBind
+            using the $currentBindValue integer argument
+            Default is PDO::PARAM_INT for the bind value
+        */
+        foreach($valuesToBind as $morphId) {
+            $pdoStatement->bindValue($currentBindValue, $morphId, $pdoType);
+            ++$currentBindValue;
+        }
+
+        return [
+            "pdoStatement" => $pdoStatement,
+            "currentBindValue" => $currentBindValue
+        ];
+    }
+
+    private static function concatenateConditions(array $arrayToIterateOn, string $sqlQuery, string $sqlCondition) : string {
+        /*
+            Concatenate conditions for the WHERE clause in an SQL query
+            where the condition to concatenate and the count of conditions to concatenate is given
+            (usually an array full of primary keys, such as IDs)
+            Bind value is the current bind value for PDOStatement::bindValue
+            Send the current index to bind on to this function
+        */
+        $sqlQuery .= implode(" AND ", array_fill(0, count($arrayToIterateOn), $sqlCondition));
+        return $sqlQuery;
+    }
 
     public static function updateTestedMorph(int $pTestId, int $pMorphId, array $postFields): bool
     {

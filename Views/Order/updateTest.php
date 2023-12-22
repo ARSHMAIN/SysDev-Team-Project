@@ -11,9 +11,13 @@
         <link rel="stylesheet" type="text/css" href="Views/Styles/navbar.css">
         <link rel="stylesheet" type="text/css" href="Views/Styles/home.css">
         <link rel="stylesheet" type="text/css" href="Views/Styles/test.css">
+        <link rel="stylesheet" type="text/css" href="Views/Styles/updateTest.css">
         <script src="Views/Shared/Scripts/addRemoveInputs.js" defer></script>
-        <script src="Views/Shared/Scripts/toggleGender.js" defer></script>
-        <script src="Views/Home/orderTest.js" defer></script>
+
+<!--        <script src="Views/Shared/Scripts/toggleGender.js" defer></script>-->
+<!--        <script src="Views/Home/orderTest.js" defer></script>-->
+
+        <script src="Views/Order/scripts/updateTest.js" defer></script>
     </head>
     <body>
     <?php
@@ -35,9 +39,9 @@
     ?>
 
     <div class="form-container">
-        <form id="order" name="order" action="index.php?controller=order&action=updateTest" method="post">
+        <form id="order" name="order" action="index.php?controller=order&action=submitUpdateTest&id=<?php echo $_GET["id"]; ?>" method="post">
             <label for="customerSnakeId">Snake ID</label><br>
-            <input id="customerSnakeId" type="text" name="customerSnakeId" value="ARSH"><br>
+            <input id="customerSnakeId" type="text" name="customerSnakeId" value="ARSH" readonly><br>
             <img id="maleGender" class="gender<?php echo (($sexGender === "maleGender")? " selected" : ""); ?>" src="Views/Images/maleGender.png" alt="maleGender">
             <img id="femaleGender" class="gender<?php echo (($sexGender === "femaleGender")? " selected" : ""); ?>" src="Views/Images/femaleGender.png" alt="femaleGender">
             <img id="unknownGender" class="gender<?php echo (($sexGender === "unknownGender")? " selected" : ""); ?>" src="Views/Images/unknownGender.png" alt="unknownGender">
@@ -53,15 +57,15 @@
             ?>
             <?php
             foreach ($data['tests']['knownMorphs'] as $key => $knownMorph) {
-                echo "<input class='knownMorph' id='knownMorph$key' type='text' name='knownMorph$key' value='$knownMorph'><br>";
+                echo "<input class='knownMorph' id='knownMorph".  $key + 1 . "' type='text' name='knownMorph" . $key + 1 . "' value='$knownMorph'><br>";
             }
             ?>
             <label for="possibleMorphs" id="possibleMorphLabel">Possible morphs</label><br>
-            <img id="addBtnPossibleMorph" class="add-remove" src="Views/Images/addSign.png" style="width: 2%; height: 2%" alt="addSign">
-            <img id="removeBtnPossibleMorph" class="add-remove" src="Views/Images/removeSign.png" style="width: 2.25%; height: 2.25%" alt="removeSign"><br>
+<!--            <img id="addBtnPossibleMorph" class="add-remove" src="Views/Images/addSign.png" style="width: 2%; height: 2%" alt="addSign">-->
+<!--            <img id="removeBtnPossibleMorph" class="add-remove" src="Views/Images/removeSign.png" style="width: 2.25%; height: 2.25%" alt="removeSign"><br>-->
             <?php
             foreach ($data['tests']['possibleMorphs'] as $key => $possibleMorph) {
-                echo "<input class='possibleMorph' id='possibleMorph$key' type='text' name='possibleMorph$key' value='$possibleMorph'><br>";
+                echo "<input class='possibleMorph' id='possibleMorph" . $key + 1  . "' type='text' name='possibleMorph" . $key + 1 . "' value='$possibleMorph' readonly><br>";
             }
             ?>
             <label for="testMorphs" id="testMorphLabel">Test morphs</label><br>
@@ -69,11 +73,11 @@
             <img id="removeBtnTestMorph" class="add-remove" src="Views/Images/removeSign.png" style="width: 2.25%; height: 2.25%" alt="removeSign"><br>
             <?php
             foreach ($data['tests']['testedMorphs'] as $key => $testMorph) {
-                echo "<input class='testMorph' id='testMorph$key' type='text' name='testMorph$key' value='$testMorph'><br>";
+                echo "<input class='testMorph' id='testMorph" . $key + 1 . "' type='text' name='testMorph" . $key + 1 . "' value='$testMorph'><br>";
             }
             ?>
             <label for="snakeOrigin">Snake Origin</label><br>
-            <input id="snakeOrigin" type="text" name="snakeOrigin" value="<?php echo $data['tests']['origin'] ?>"><br>
+            <input id="snakeOrigin" type="text" name="snakeOrigin" value="<?php echo $data['tests']['origin'] ?>" readonly><br>
             <input id="submit" type="submit" name="submit">
         </form>
     </body>

@@ -68,6 +68,9 @@ function checkOldMorphsInfo(int $snakeId, array $newMorphs, string $morphType, b
 }
 function getMorphId(array $morphs): array
 {
+    /*
+        Get morph IDs from an array of morph names (gotten from POST request)
+    */
     $morphIds = [];
     foreach ($morphs as $morph) {
         $morphObj = Morph::getByName($morph);

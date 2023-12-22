@@ -1,6 +1,10 @@
 <?php
 include_once 'database.php';
 
+enum CustomerSnakeNameError: string{
+    case CustomerSnakeIdsNotEqual = "Customer snake IDs are not equal.";
+}
+
 class CustomerSnakeName
 {
     private string $customerSnakeId = '';
@@ -257,6 +261,43 @@ class CustomerSnakeName
         ];
     }
 
+    public static function areSnakeIdsEqual(int $testId, string $newCustomerSnakeId) : int {
+        $snakeIdsAreEqual = false;
+        try {
+            $dbConnection = openDatabaseConnection();
+            /*
+                Get the customer snake ID according to the test ID in the GET parameters
+                because we want to know if the customer snake ID in the database is the same one as the
+                customer put in the form
+            */
+            $sqlQuery = "
+                SELECT COUNT(customersnakename.customer_snake_id) as sameCustomerSnakeIdCount
+                FROM TEST
+                JOIN CUSTOMERSNAKENAME on test.snake_id = customersnakename.snake_id
+                WHERE customersnakename.customer_snake_id = ?
+                AND test.test_id = ?;
+            ";
+            $pdoStatement = $dbConnection->prepare($sqlQuery);
+            $pdoStatement->bindValue(1, $newCustomerSnakeId);
+            $pdoStatement->bindValue(2, $testId);
+            $pdoStatement->execute();
+            $queryResult = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+            $customerSnakeIdCount = $queryResult["sameCustomerSnakeIdCount"];
+            $snakeIdsAreEqual = $customerSnakeIdCount > 0;
+        }
+        catch(PDOException $pdoException) {
+            die("Error: " . $pdoException->getMessage());
+        }
+        finally {
+            $pdoStatement?->closeCursor();
+            $dBConnection = null;
+
+            if(!$snakeIdsAreEqual) {
+                $_SESSION["error"][] = CustomerSnakeNameError::CustomerSnakeIdsNotEqual->value;
+            }
+            return $snakeIdsAreEqual;
+        }
+    }
     public static function delete(string $pSnakeId, int $pUserId): array
     {
         $stmt = null; // Initialize $stmt outside the try block

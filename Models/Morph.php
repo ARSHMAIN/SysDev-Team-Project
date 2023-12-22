@@ -1,6 +1,26 @@
 <?php
 include_once 'database.php';
 
+
+enum MorphError: string {
+    /*
+        Enumeration of all errors that happen when a morph does not exist
+        in the database
+    */
+        case KnownMorphNonexistent = "knownMorphNonexistent";
+        case PossibleMorphNonexistent = "possibleMorphNonexistent";
+        case TestMorphNonexistent = "testMorphNonexistent";
+}
+
+enum MorphInputClass : string {
+    /* Enumeration of all class names for input text fields in the create/update
+        test section
+    */
+    case KnownMorph = "knownMorph";
+    case PossibleMorph = "possibleMorph";
+    case TestMorph = "testMorph";
+}
+
 class Morph
 {
     private int $morphId = -1;
@@ -224,6 +244,53 @@ class Morph
             $dBConnection = null;
         }
     }
+
+    public static function getNewMorphs(int $snakeId, array $newMorphs, string $morphType, bool $isKnown) {
+        $oldMorphs = KnownPossibleMorph::getKnownPossibleMorphsBySnakeId($snakeId, $isKnown);
+
+        if ($oldMorphs) {
+            $oldMorphsNames = [];
+            foreach ($oldMorphs as $oldMorph) {
+                $oldMorphsNames[] = (new Morph($oldMorph->getMorphId()))->getMorphName();
+            }
+
+            foreach ($newMorphs as $newMorph) {
+                /*
+                    Check if the new morphs typed by the customer also include the old ones
+                    If the array with the old morphs is not empty after doing this loop
+                    it means that some old morphs were deleted on the client side so return an error
+                    (??? not sure if this correct)
+                */
+                if (!empty($oldMorphsNames && in_array($newMorph, $oldMorphsNames, true))) {
+                    $oldMorphIndex = array_search($newMorph, $oldMorphsNames);
+                    $newMorphIndex = array_search($newMorph, $newMorphs);
+                    unset($oldMorphsNames[$oldMorphIndex]);
+                    unset($newMorphs[$newMorphIndex]);
+                    $oldMorphsNames = array_values($oldMorphsNames);
+                    $newMorphs = array_values($newMorphs);
+                }
+
+            }
+        }
+        /*
+            If the array of new morphs is not empty, and the array of old morphs is empty,
+            it means that the morphs typed by the customer are the old ones + the new ones
+        */
+        return empty($newMorphs) ? [] : $newMorphs;
+    }
+
+
+    public static function getMorphIds(array $morphs): array {
+        /*
+                Get morph IDs from an array of morph names (gotten from POST request)
+            */
+        $morphIds = [];
+        foreach ($morphs as $morph) {
+            $morphObj = Morph::getByName($morph);
+            $morphIds[] = $morphObj->getMorphId();
+        }
+        return $morphIds;
+    }
     public static function getMorphNames(array $morphs): array
     {
         $morphNames = [];
@@ -232,6 +299,44 @@ class Morph
             $morphNames[] = $morphObj->getMorphName();
         }
         return $morphNames;
+    }
+
+    public static function getSnakeTestPosts(string $pInputClassName)
+    {
+        $i = 1;
+        $array = [];
+        while (true) {
+            /*
+                Get all the POSTs from the create/update test
+            */
+            $key = $pInputClassName . $i;
+            if (isset($_POST[$key])) {
+                $array[] = $_POST[$key];
+            } else {
+                break;
+            }
+            $i++;
+        }
+        return $array;
+    }
+
+    public static function checkMorphsExist(array $morphsToCheck, string $errorMessage): array
+    {
+        $newMorphs = [];
+        foreach ($morphsToCheck as $key => $morph) {
+            $morphObj = Morph::getByName($morph);
+            if ($morphObj) {
+                $newMorphs[] = $morph;
+            }
+            else {
+                /*
+                    If there was no morph found matching the current iterated morph in the database,
+                    add an error to the session error array
+                */
+                $_SESSION['error'][] = ($key + 1) . $errorMessage;
+            }
+        }
+        return $newMorphs;
     }
 
     public function getMorphId(): int
