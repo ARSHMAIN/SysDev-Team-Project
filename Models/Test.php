@@ -126,6 +126,7 @@ class Test
             $stmt->execute();
 
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             if ($stmt->rowCount() > 0) {
                 $tests = [];
                 foreach ($results as $row) {

@@ -15,19 +15,28 @@ class HistoryController
     {
         global $action;
         if ($action == "orderHistory"){
-            if ($_POST['submit']) {
+            if (isset($_POST['submit'])) {
                 $sanitizedSearch = htmlentities($_POST['search']);
                 $customerSnakeId = CustomerSnakeName::getByUserIdAndLikeCustomerSnakeName($sanitizedSearch, $_SESSION['user_id']);
                 if ($customerSnakeId === null) {
                     $orders = Order::getOrderByUserId($_SESSION['user_id']);
                     $this->render($action, ['orders' => $orders]);
                 }
-                $tests = Test::getBySnakeIdAndOrderExists($customerSnakeId->getSnakeId());
-                $orders = [];
-                foreach ($tests as $test) {
-                    $orders[] = new Order($test->getOrderId());
+                else {
+                    $tests = Test::getBySnakeIdAndOrderExists($customerSnakeId->getSnakeId());
+                    if($tests !== null) {
+                        $orders = [];
+                        foreach ($tests as $test) {
+                            $orders[] = new Order($test->getOrderId());
+                        }
+                    $this->render($action, ['orders' => $orders]);
+                    }
+                    else {
+                        $orders = Order::getOrderByUserId($_SESSION['user_id']);
+                        $this->render($action, ['orders' => $orders]);
+                    }
                 }
-                $this->render($action, ['orders' => $orders]);
+
             } else {
                 $orders = Order::getOrderByUserId($_SESSION['user_id']);
                 $this->render($action, ['orders' => $orders]);

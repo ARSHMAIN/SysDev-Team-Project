@@ -133,7 +133,6 @@ class CustomerSnakeName
             $stmt->bindParam(1, $pCustomerSnakeId, PDO::PARAM_STR);
             $stmt->bindParam(2, $pUserId, PDO::PARAM_INT);
             $stmt->execute();
-
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($result) {
                 $customerSnakeName = new CustomerSnakeName();

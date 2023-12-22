@@ -41,7 +41,7 @@
     <div class="form-container">
         <form id="order" name="order" action="index.php?controller=order&action=submitUpdateTest&id=<?php echo $_GET["id"]; ?>" method="post">
             <label for="customerSnakeId">Snake ID</label><br>
-            <input id="customerSnakeId" type="text" name="customerSnakeId" value="ARSH" readonly><br>
+            <input id="customerSnakeId" type="text" name="customerSnakeId" value="<?php echo $data["tests"]["customerSnakeId"]; ?>" readonly><br>
             <img id="maleGender" class="gender<?php echo (($sexGender === "maleGender")? " selected" : ""); ?>" src="Views/Images/maleGender.png" alt="maleGender">
             <img id="femaleGender" class="gender<?php echo (($sexGender === "femaleGender")? " selected" : ""); ?>" src="Views/Images/femaleGender.png" alt="femaleGender">
             <img id="unknownGender" class="gender<?php echo (($sexGender === "unknownGender")? " selected" : ""); ?>" src="Views/Images/unknownGender.png" alt="unknownGender">
