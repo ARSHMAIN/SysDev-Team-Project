@@ -40,6 +40,10 @@ include_once 'Views/Shared/navbar.php';
         <input id="submit" type="submit" name="submit">
     </form>
 -->
+    <a href="index.php?controller=database&action=index" class="displayBlock widthMinContent marginAuto">
+        <input type="button" value="Click here to show all database contents">
+    </a>
+
     <div class="padding">
         <h1>Slogan</h1>
         <div class="textAlignCenter">

@@ -30,9 +30,9 @@
             </div>
         </section>
         <section class="navBarButtons displayFlex alignItemsCenter">
-            <div>
-                <a href="index.php?controller=database&action=index">Database</a>
-            </div>
+<!--            <div>-->
+<!--                <a href="index.php?controller=database&action=index">Database</a>-->
+<!--            </div>-->
             <div>
                 <a href="index.php?controller=home&action=home">Home</a>
             </div>
