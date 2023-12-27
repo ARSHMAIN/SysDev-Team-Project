@@ -58,9 +58,9 @@ echo "<h3>" . $data['user']->getFirstName() . ' ' . $data['user']->getLastName()
             <img src="Views/Images/unknownGender.png" alt="unknownGender">
         </label>
 <!--        <input type="hidden" id="sex" name="sex" value="male">-->
-        <div>
-            <label for="knownMorphs" id="knownMorphLabel">Known morphs</label><br>
-        </div>
+        <br>
+            <label for="knownMorphs" id="knownMorphLabel">Known morphs</label>
+        <br>
 
         <img id="addBtnKnownMorph" class="add-remove" src="Views/Images/addSign.png" style="width: 2%; height: 2%" alt="addSign">
         <img id="removeBtnKnownMorph" class="add-remove" src="Views/Images/removeSign.png" style="width: 2.25%; height: 2.25%" alt="removeSign"><br>
