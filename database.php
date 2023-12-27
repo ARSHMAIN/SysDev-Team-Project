@@ -1,7 +1,7 @@
 <?php
 function openDatabaseConnection()
 {
-    $hostName = "localhost";
+    $hostName = "localhost:3307";
     $userName = "root";
     $password = "";
     $dataBase = "snake";
