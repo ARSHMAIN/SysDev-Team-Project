@@ -1,19 +1,9 @@
 <?php
-include_once 'Views/Shared/session.php';
-class DonationController
+include_once 'Core/Controller.php';
+class DonationController extends Controller
 {
-    function route(): void
+    function donation(): void
     {
-        global $controller, $action;
-        if ($action == "donation"){
-            $this->render($action);
-        }
-    }
-    function render($action, $data = []): void
-    {
-        extract($data);
-        include_once "Views/Donation/$action.php";
+        $this->render();
     }
 }
-
-?>

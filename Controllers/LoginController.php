@@ -1,19 +1,13 @@
 <?php
-include_once 'Views/Shared/session.php';
-class LoginController
+include_once 'Core/Controller.php';
+class LoginController extends Controller
 {
-    function route(): void
+    function login(): void
     {
-        global $controller, $action;
-        if ($action == "login" || $action == "validation"){
-            $this->render($action);
-        }
+        $this->render();
     }
-    function render($action, $data = []): void
+    function validation(): void
     {
-        extract($data);
-        include_once "Views/Login/$action.php";
+        $this->render();
     }
 }
-
-?>

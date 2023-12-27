@@ -1,19 +1,9 @@
 <?php
-include_once 'Views/Shared/session.php';
-class FAQController
+include_once 'Core/Controller.php';
+class FAQController extends Controller
 {
-    function route(): void
+    function faq(): void
     {
-        global $controller, $action;
-        if ($action == "faq"){
-            $this->render($action);
-        }
-    }
-    function render($action, $data = []): void
-    {
-        extract($data);
-        include_once "Views/FAQ/$action.php";
+        $this->render();
     }
 }
-
-?>

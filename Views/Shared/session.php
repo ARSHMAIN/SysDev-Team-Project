@@ -1,7 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-
 }
 function noAccess($userId, $userRole, $permission): void
 {

@@ -1,19 +1,9 @@
 <?php
-
-class Order_testController
+include_once 'Core/Controller.php';
+class Order_testController extends Controller
 {
-    function route(): void
+    function test(): void
     {
-        global $controller, $action;
-        if ($action == "test"){ // TODO: rename as u wish
-            $this->render($action);
-        }
-    }
-    function render($action, $data = []): void
-    {
-        extract($data);
-        include_once "Views/OrderTest/$action.php";
+        $this->render();
     }
 }
-
-?>

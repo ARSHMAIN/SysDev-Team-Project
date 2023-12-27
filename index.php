@@ -1,8 +1,8 @@
 <?php
-$controllerPrefix = isset($_GET["controller"]) ? $_GET["controller"] : "home";
+$controllerPrefix = $_GET["controller"] ?? "home";
 $controllerName = ucfirst($controllerPrefix) . "Controller";
 
-$action = isset($_GET["action"]) ? $_GET["action"] : "home";
+$action = $_GET["action"] ?? "home";
 
 if (file_exists("Controllers/$controllerName.php"))
 {
@@ -14,4 +14,5 @@ else
 }
 
 $controller = new $controllerName;
-$controller->route();
+Controller::loadAuthentication();
+$controller->$action();

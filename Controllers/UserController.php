@@ -1,18 +1,9 @@
 <?php
-include_once 'Views/Shared/session.php';
-class UserController
+include_once 'Core/Controller.php';
+class UserController extends Controller
 {
-    function route(): void
+    function admin(): void
     {
-        global $action;
-        if ($action == "admin") {
-            $this->render($action);
-        }
-    }
-
-    function render($action, $data = []): void
-    {
-        extract($data);
-        include_once "Views/User/$action.php";
+        $this->render();
     }
 }

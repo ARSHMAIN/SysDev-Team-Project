@@ -1,19 +1,13 @@
 <?php
-include_once 'Views/Shared/session.php';
-class ContactController
+include "Core/Controller.php";
+class ContactController extends Controller
 {
-    function route(): void
+    function contact(): void
     {
-        global $controller, $action;
-        if ($action == "contact"){
-            $this->render($action);
-        } else if ($action == "email") {
-            $this->render($action);
-        }
+        $this->render();
     }
-    function render($action, $data = []): void
+    function email(): void
     {
-        extract($data);
-        include_once "Views/Contact/$action.php";
+        $this->render();
     }
 }

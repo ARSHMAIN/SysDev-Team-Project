@@ -1,18 +1,9 @@
 <?php
-include_once 'Views/Shared/session.php';
-class SharedController
+include_once 'Core/Controller.php';
+class SharedController extends Controller
 {
-    function route(): void
+    function error404(): void
     {
-        global $action;
-        if ($action == "error404") {
-            $this->render($action);
-        }
-    }
-
-    function render($action, $data = []): void
-    {
-        extract($data);
-        include_once "Views/Shared/$action.php";
+        $this->render();
     }
 }

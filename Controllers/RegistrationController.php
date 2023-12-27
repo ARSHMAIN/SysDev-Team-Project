@@ -1,22 +1,14 @@
 <?php
-include_once 'Views/Shared/session.php';
+include_once 'Core/Controller.php';
 include_once "Models/User.php";
-class RegistrationController
+class RegistrationController extends Controller
 {
-    function route(): void
+    function registration(): void
     {
-        global $controller, $action;
-
-        if ($action == "registration" || $action == "register"){
-            $this->render($action);
-        }
-
+        $this->render();
     }
-    function render($action, $data = []): void
+    function register(): void
     {
-        extract($data);
-        include_once "Views/Register/$action.php";
+        $this->render();
     }
 }
-
-?>
