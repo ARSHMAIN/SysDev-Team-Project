@@ -42,11 +42,25 @@
         <form id="order" name="order" action="index.php?controller=order&action=submitUpdateTest&id=<?php echo $_GET["id"]; ?>" method="post">
             <label for="customerSnakeId">Snake ID</label><br>
             <input id="customerSnakeId" type="text" name="customerSnakeId" value="<?php echo $data["tests"]["customerSnakeId"]; ?>" readonly><br>
-            <img id="maleGender" class="gender<?php echo (($sexGender === "maleGender")? " selected" : ""); ?>" src="Views/Images/maleGender.png" alt="maleGender">
-            <img id="femaleGender" class="gender<?php echo (($sexGender === "femaleGender")? " selected" : ""); ?>" src="Views/Images/femaleGender.png" alt="femaleGender">
-            <img id="unknownGender" class="gender<?php echo (($sexGender === "unknownGender")? " selected" : ""); ?>" src="Views/Images/unknownGender.png" alt="unknownGender">
+<!--            <img id="maleGender" class="gender--><?php //echo (($sexGender === "maleGender")? " selected" : ""); ?><!--" src="Views/Images/maleGender.png" alt="maleGender">-->
+<!--            <img id="femaleGender" class="gender--><?php //echo (($sexGender === "femaleGender")? " selected" : ""); ?><!--" src="Views/Images/femaleGender.png" alt="femaleGender">-->
+<!--            <img id="unknownGender" class="gender--><?php //echo (($sexGender === "unknownGender")? " selected" : ""); ?><!--" src="Views/Images/unknownGender.png" alt="unknownGender">-->
 
-            <input type="hidden" id="sex" name="sex" value='<?php echo "$sex"?>'><br>
+            <label>
+                <input type="radio" name="sex" value="male" <?php echo (($sexGender === "maleGender")? " checked" : " disabled"); ?>>
+                <img src="Views/Images/maleGender.png" alt="maleGender" >
+            </label>
+
+            <label>
+                <input type="radio" name="sex" value="female" <?php echo (($sexGender === "femaleGender")? " checked" : " disabled"); ?>>
+                <img src="Views/Images/femaleGender.png" alt="femaleGender" >
+            </label>
+            <label>
+                <input type="radio" name="sex" value="unknown"<?php echo (($sexGender === "unknownGender")? " checked" : " disabled"); ?>>
+                <img src="Views/Images/unknownGender.png" alt="unknownGender" >
+            </label>
+<!--            <input type="hidden" id="sex" name="sex" value='--><?php //echo "$sex"?><!--'>-->
+            <br>
             <label for="knownMorphs" id="knownMorphLabel">Known morphs</label><br>
             <img id="addBtnKnownMorph" class="add-remove" src="Views/Images/addSign.png" style="width: 2%; height: 2%" alt="addSign">
             <img id="removeBtnKnownMorph" class="add-remove" src="Views/Images/removeSign.png" style="width: 2.25%; height: 2.25%" alt="removeSign"><br>
