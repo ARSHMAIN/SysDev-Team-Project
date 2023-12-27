@@ -5,7 +5,7 @@ class DatabaseController extends Controller
 {
     function index(): void
     {
-        $dBConnection = self::openDatabaseConnection();
+        $dBConnection = openDatabaseConnection();
         $sql = "SHOW TABLES FROM snake";
         $stmt = $dBConnection->query($sql);
         $tableNames = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -21,7 +21,7 @@ class DatabaseController extends Controller
 
     function table($pTableName): array
     {
-        $dBConnection = self::openDatabaseConnection();
+        $dBConnection = openDatabaseConnection();
         $sql = "DESCRIBE $pTableName";
         $stmt = $dBConnection->query($sql);
         $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
