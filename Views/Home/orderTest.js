@@ -13,13 +13,13 @@ removeBtnKnownMorph.addEventListener('click', () => removeInput('knownMorph'));
 removeBtnPossibleMorph.addEventListener('click', () => removeInput('possibleMorph'));
 removeBtnTestMorph.addEventListener('click', () => removeInput('testMorph'));
 
-const maleImage = document.getElementById('maleGender');
-const femaleImage = document.getElementById('femaleGender');
-const unknownImage = document.getElementById('unknownGender');
-const hiddenGender = document.getElementById('sex');
-
-maleImage.addEventListener('click', toggleGender);
-femaleImage.addEventListener('click', toggleGender);
-unknownImage.addEventListener('click', toggleGender);
+// const maleImage = document.getElementById('maleGender');
+// const femaleImage = document.getElementById('femaleGender');
+// const unknownImage = document.getElementById('unknownGender');
+// const hiddenGender = document.getElementById('sex');
+//
+// maleImage.addEventListener('click', toggleGender);
+// femaleImage.addEventListener('click', toggleGender);
+// unknownImage.addEventListener('click', toggleGender);
 
 
