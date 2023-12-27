@@ -1,6 +1,5 @@
 <?php
-include_once 'database.php';
-class Cart
+class Cart extends Model
 {
     private int $cartId;
     private int $userId;
@@ -27,7 +26,7 @@ class Cart
     }
     public static function getCartByUserId(int $pUserId): ?Cart
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM cart WHERE user_id = ?";
@@ -55,7 +54,7 @@ class Cart
     }
     public static function createCart(int $pUserId): array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "INSERT INTO cart (user_id) VALUES (?)";
@@ -84,7 +83,7 @@ class Cart
 
     public static function deleteCart(int $pUserId): array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "DELETE FROM cart WHERE user_id = ?";

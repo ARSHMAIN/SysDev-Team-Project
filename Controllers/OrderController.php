@@ -1,13 +1,4 @@
 <?php
-include_once 'Core/Controller.php';
-include_once 'Models/User.php';
-include_once 'Models/Snake.php';
-include_once 'Models/Sex.php';
-include_once 'Models/Morph.php';
-include_once 'Models/KnownPossibleMorph.php';
-include_once 'Models/CustomerSnakeName.php';
-include_once 'Models/Test.php';
-include_once 'Models/TestedMorph.php';
 class OrderController extends Controller
 {
     function order(): void

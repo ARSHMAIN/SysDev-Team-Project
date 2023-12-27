@@ -1,6 +1,5 @@
 <?php
-include_once 'database.php';
-class CartItem
+class CartItem extends Model
 {
     private int $cartItemId;
     private int $cartId;
@@ -51,7 +50,7 @@ class CartItem
 
     private function getCartItemById(int $pCartItemId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM cart_item WHERE cart_item_id = ?";
@@ -80,7 +79,7 @@ class CartItem
     }
     public static function geCartItemByCartIdAndUserId(int $pUserId)
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
         try {
             $sql = "SELECT * FROM cart_item WHERE cart_id = 1 AND user_id = ?";
             $stmt = $dBConnection->prepare($sql);
@@ -114,7 +113,7 @@ class CartItem
     }
     public static function createCartItem(int $pUserId, ?int $pDonationId, ?int $pTestId): array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "INSERT INTO cart_item (cart_id, user_id, donation_id, test_id) VALUES (1, ?, ?, ?)";
@@ -144,7 +143,7 @@ class CartItem
     }
     public static function updateCartItem(int $pUserId, ?int $pDonationId, ?int $pTestId, int $pCartItemId): array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "UPDATE cart_item SET user_id = ?, donation_id = ?, test_id = ? WHERE cart_item_id = ?";
@@ -174,7 +173,7 @@ class CartItem
     }
     public static function deleteCartItem(int $pCartItemId): array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "DELETE FROM cart_item WHERE cart_item_id = ?";

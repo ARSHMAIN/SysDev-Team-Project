@@ -1,6 +1,5 @@
 <?php
-include_once 'database.php';
-class OrderStatus
+class OrderStatus extends Model
 {
     private int $orderStatusId;
     private string $orderStatusName;
@@ -29,7 +28,7 @@ class OrderStatus
     }
     private function getOrderStatusById(int $pOrderStatusId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM orderstatus WHERE order_status_id = ?";
@@ -54,7 +53,7 @@ class OrderStatus
     }
     private function getOrderStatusByName(int $pOrderStatusName): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM orderstatus WHERE order_status_name = ?";

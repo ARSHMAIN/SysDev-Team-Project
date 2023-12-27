@@ -1,7 +1,6 @@
 <?php
-include_once 'database.php';
 include_once "SQLHelper.php";
-class TestedMorph
+class TestedMorph extends Model
 {
     private int $testId = -1;
     private int $morphId = -1;
@@ -47,7 +46,7 @@ class TestedMorph
 
     public static function getAllTestedMorphById(int $pTestId): ?array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM testedmorph WHERE test_id = ?";
@@ -82,7 +81,7 @@ class TestedMorph
 
     public static function create(int $pTestId, array $pMorphIds): bool
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             // Build the SQL statement
@@ -120,7 +119,7 @@ class TestedMorph
         */
         $isSuccessful = false;
         try {
-            $dbConnection = openDatabaseConnection();
+            $dbConnection = self::openDatabaseConnection();
             $sqlQuery = "
                 DELETE FROM testedmorph
                     WHERE test_id = ? AND
@@ -153,7 +152,7 @@ class TestedMorph
     public static function createTestedMorphsIfNotExists(int $pTestId, array $pMorphIds) : bool {
         $isSuccessful = false;
         try {
-            $dbConnection = openDatabaseConnection();
+            $dbConnection = self::openDatabaseConnection();
             $sqlQuery = "INSERT INTO testedmorph (test_id, morph_id) VALUES ";
             $sqlQuery .= implode(',', array_fill(0, count($pMorphIds), "($pTestId, ?)"));
             $sqlQuery .= " ON DUPLICATE KEY UPDATE testedmorph.test_id = testedmorph.test_id, testedmorph.morph_id = testedmorph.morph_id;
@@ -191,7 +190,7 @@ class TestedMorph
 
     public static function updateTestedMorph(int $pTestId, int $pMorphId, array $postFields): bool
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         foreach ($postFields as $key => $value) {
             if ($value === '') {
@@ -218,7 +217,7 @@ class TestedMorph
 
     public static function deleteTestedMorph(int $pTestId, int $pMorphId): bool
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "DELETE FROM testedmorph WHERE test_id = ? AND morph_id = ?";

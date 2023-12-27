@@ -15,4 +15,3 @@ function openDatabaseConnection()
 
     return $conn;
 }
-

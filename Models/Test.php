@@ -1,6 +1,5 @@
 <?php
-include_once 'database.php';
-class Test
+class Test extends Model
 {
     private int $testId;
     private int $snakeId;
@@ -44,7 +43,7 @@ class Test
 
     private function getById(int $pTestId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM test WHERE test_id = ?";
@@ -69,7 +68,7 @@ class Test
     }
     public static function getBySnakeId(int $pSnakeId): array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM test WHERE snake_id = ?";
@@ -115,7 +114,7 @@ class Test
 
     public static function getBySnakeIdAndOrderExists(int $pSnakeId)
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM test WHERE snake_id = ? AND order_id IS NOT NULL";
@@ -151,7 +150,7 @@ class Test
 
     public static function getByOrderId(int $pOrderId): ?array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM test WHERE order_id = ?";
@@ -189,7 +188,7 @@ class Test
         $stmt = null; // Initialize $stmt outside the try block
 
         try {
-            $dBConnection = openDatabaseConnection();
+            $dBConnection = self::openDatabaseConnection();
             $sql = "INSERT INTO test (snake_id, user_id) VALUES (?, ?)";
             $stmt = $dBConnection->prepare($sql);
 
@@ -238,7 +237,7 @@ class Test
 
     public static function updateTest($pSnakeId, $pOrderId, $pUserId, $pTestId): array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "UPDATE test SET snake_id = ?, order_id = ?, user_id = ? WHERE test_id = ?";
@@ -269,7 +268,7 @@ class Test
 
     public static function deleteTest(int $pTestId): array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "DELETE FROM test WHERE test_id = ?";

@@ -1,14 +1,4 @@
 <?php
-include "Core/Controller.php";
-include_once "Models/Cart.php";
-include_once "Models/CartItem.php";
-include_once "Models/Test.php";
-include_once "Models/Snake.php";
-include_once "Models/CustomerSnakeName.php";
-include_once "Models/Sex.php";
-include_once "Models/KnownPossibleMorph.php";
-include_once "Models/TestedMorph.php";
-include_once "Models/Morph.php";
 class CartController extends Controller
 {
     function cart(): void
@@ -45,12 +35,17 @@ class CartController extends Controller
             $this->render();
         }
     }
-    function checkCart(): void
-    {
-        $this->render();
-    }
     function addTestToCart(): void
     {
-        $this->render();
+        $checkCart = Cart::getCartByUserId($_SESSION['user_id']);
+        if (!isset($checkCart)) {
+            Cart::createCart($_SESSION['user_id']);
+        }
+        $cartItem = CartItem::createCartItem($_SESSION['user_id'], null, $_GET['id']);
+        if ($cartItem['isSuccessful'] === true) {
+            header('Location: index.php?controller=order&action=test&itemAdded=true');
+        } else {
+            header('Location: index.php?controller=shared&action=error404');
+        }
     }
 }

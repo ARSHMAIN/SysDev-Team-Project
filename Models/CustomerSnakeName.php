@@ -1,11 +1,9 @@
 <?php
-include_once 'database.php';
-
 enum CustomerSnakeNameError: string{
     case CustomerSnakeIdsNotEqual = "Customer snake IDs are not equal.";
 }
 
-class CustomerSnakeName
+class CustomerSnakeName extends Model
 {
     private string $customerSnakeId = '';
     private int $userId = -1;
@@ -44,7 +42,7 @@ class CustomerSnakeName
 
     private function getBySnakeId(int $pSnakeId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
         try {
             $sql = "SELECT * FROM customersnakename WHERE snake_id = ?";
             $stmt = $dBConnection->prepare($sql);
@@ -68,7 +66,7 @@ class CustomerSnakeName
 
     public static function getByUserId(int $pUserId): ?array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
         try {
             $sql = "SELECT * FROM customersnakename WHERE user_id = ?";
             $stmt = $dBConnection->prepare($sql);
@@ -97,7 +95,7 @@ class CustomerSnakeName
 
     public static function getByUserIdAndCustomerSnakeName(string $pCustomerSnakeId, int $pUserId): ?CustomerSnakeName
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
         try {
             $sql = "SELECT * FROM customersnakename WHERE customer_snake_id = ? AND user_id = ?";
             $stmt = $dBConnection->prepare($sql);
@@ -125,7 +123,7 @@ class CustomerSnakeName
 
     public static function getByUserIdAndLikeCustomerSnakeName(string $pCustomerSnakeId, int $pUserId): ?CustomerSnakeName
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
         try {
             $sql = "SELECT * FROM customersnakename WHERE customer_snake_id LIKE ? AND user_id = ?";
             $stmt = $dBConnection->prepare($sql);
@@ -156,7 +154,7 @@ class CustomerSnakeName
         $stmt = null; // Initialize $stmt outside the try block
 
         try {
-            $dBConnection = openDatabaseConnection();
+            $dBConnection = self::openDatabaseConnection();
             $sql = "INSERT INTO customersnakename (customer_snake_id, user_id, snake_id) VALUES (?, ?, ?)";
             $stmt = $dBConnection->prepare($sql);
 
@@ -207,7 +205,7 @@ class CustomerSnakeName
         $stmt = null; // Initialize $stmt outside the try block
 
         try {
-            $dBConnection = openDatabaseConnection();
+            $dBConnection = self::openDatabaseConnection();
             $sql = "UPDATE customersnakename SET customer_snake_id = ? WHERE snake_id = ? AND user_id = ?";
             $stmt = $dBConnection->prepare($sql);
 
@@ -263,7 +261,7 @@ class CustomerSnakeName
     public static function areSnakeIdsEqual(int $testId, string $newCustomerSnakeId) : int {
         $snakeIdsAreEqual = false;
         try {
-            $dbConnection = openDatabaseConnection();
+            $dbConnection = self::openDatabaseConnection();
             /*
                 Get the customer snake ID according to the test ID in the GET parameters
                 because we want to know if the customer snake ID in the database is the same one as the
@@ -302,7 +300,7 @@ class CustomerSnakeName
         $stmt = null; // Initialize $stmt outside the try block
 
         try {
-            $dBConnection = openDatabaseConnection();
+            $dBConnection = self::openDatabaseConnection();
             $sql = "DELETE FROM customersnakename WHERE snake_id = ? AND user_id = ?";
             $stmt = $dBConnection->prepare($sql);
 

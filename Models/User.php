@@ -1,7 +1,6 @@
 <?php
-include_once 'database.php';
-
-class User
+include_once 'Core/Model.php';
+class User extends Model
 {
     private int $userId = -1;
     private string $firstName = "";
@@ -83,7 +82,7 @@ class User
 
     private function getUserById(int $pUserId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
         try {
             $sql = "SELECT * FROM user WHERE user_id = ?";
             $stmt = $dBConnection->prepare($sql);
@@ -114,7 +113,7 @@ class User
 
     public static function getUserByCredentials(string $pEmail, string $pPassword): ?User
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
         try {
             $sql = "SELECT * FROM user WHERE email = ? AND password = ?";
             $stmt = $dBConnection->prepare($sql);
@@ -151,7 +150,7 @@ class User
     public static function getUserByRoleName(string $pRoleName): User
     {
         $user = new User();
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
         try {
             $sql = "SELECT * FROM user WHERE role_id = ?";
             $stmt = $dBConnection->prepare($sql);
@@ -184,7 +183,7 @@ class User
 
     public static function createUserByRoleName(array $postFields): array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             foreach ($postFields as $key => $value) {
@@ -224,7 +223,7 @@ class User
 
     public static function updatePersonalInfo(int $pUserId, array $postFields): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             foreach ($postFields as $key => $value) {
@@ -256,7 +255,7 @@ class User
 
     public static function deleteUserById(int $pUserId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "DELETE FROM user WHERE user_id = :userId";

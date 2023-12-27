@@ -1,7 +1,5 @@
 <?php
-include_once 'database.php';
-
-class Sex
+class Sex extends Model
 {
     private int $sexId = -1;
     private string $sexName = "";
@@ -34,7 +32,7 @@ class Sex
 
     private function getSexById(int $pSexId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM sex WHERE sex_id = ?";
@@ -59,7 +57,7 @@ class Sex
     public static function getSexByName(string $pSexName): Sex
     {
         $sex = new Sex();
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM sex WHERE sex_name = ?";

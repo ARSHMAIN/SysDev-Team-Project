@@ -1,8 +1,3 @@
-<?php
-include_once 'Views/Shared/session.php';
-session_unset();
-session_destroy();
-?>
 <html>
     <head>
         <title>Login</title>

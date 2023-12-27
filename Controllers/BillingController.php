@@ -1,17 +1,4 @@
 <?php
-include_once 'Core/Controller.php';
-include_once 'Models/User.php';
-include_once 'Models/Address.php';
-include_once "Models/Cart.php";
-include_once "Models/CartItem.php";
-include_once "Models/Test.php";
-include_once "Models/Snake.php";
-include_once "Models/CustomerSnakeName.php";
-include_once "Models/Sex.php";
-include_once "Models/KnownPossibleMorph.php";
-include_once "Models/TestedMorph.php";
-include_once "Models/Morph.php";
-include_once 'Models/Order.php';
 class BillingController extends Controller
 {
     function billing(): void
@@ -64,6 +51,28 @@ class BillingController extends Controller
     }
     function orderConfirmed(): void
     {
-        $this->render();
+        $cartItems = CartItem::geCartItemByCartIdAndUserId($_SESSION['user_id']);
+        $donations = [];
+        $tests = [];
+        if ($cartItems) {
+            $order = Order::createOrder(false, false, null, $_SESSION['user_id'], 3);
+            if ($order['isSuccessful'] === true && isset($order['newOrderId'])) {
+                $total = 0;
+                foreach ($cartItems as $item) {
+                    if ($item->getDonationId() !== null) {
+                        $donation = null;
+                        $donations[] = $donation;
+                    } else if ($item->getTestId() !== null) {
+                        $test = new Test($item->getTestId());
+                        Test::updateTest($test->getSnakeId(), $order['newOrderId'], $_SESSION['user_id'], $test->getTestId());
+                        $testedMorphs = TestedMorph::getAllTestedMorphById($test->getTestId());
+                        $total += sizeof($testedMorphs);
+                    }
+                }
+                Order::updateOrder(false, false, $total * 50, $_SESSION['user_id'], 3, $order['newOrderId']);
+                Cart::deleteCart($_SESSION['user_id']);
+            }
+        }
+        header('Location: ?controller=home&action=home');
     }
 }

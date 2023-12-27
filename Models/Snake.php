@@ -1,7 +1,5 @@
 <?php
-include_once 'database.php';
-
-class Snake
+class Snake extends Model
 {
     private int $snakeId = -1;
     private int $userId = -1;
@@ -46,7 +44,7 @@ class Snake
 
     private function getSnakeById(int $pSnakeId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM snake WHERE snake_id = ?";
@@ -72,7 +70,7 @@ class Snake
 
     public static function getSnakesByUserId(int $pUserId): array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM snake WHERE user_id = ?";
@@ -107,7 +105,7 @@ class Snake
         $stmt = null; // Initialize $stmt outside the try block
 
         try {
-            $dBConnection = openDatabaseConnection();
+            $dBConnection = self::openDatabaseConnection();
             $sql = "INSERT INTO snake (user_id, sex_id, snake_origin) VALUES (?, ?, ?)";
             $stmt = $dBConnection->prepare($sql);
 
@@ -159,7 +157,7 @@ class Snake
         $stmt = null; // Initialize $stmt outside the try block
 
         try {
-            $dBConnection = openDatabaseConnection();
+            $dBConnection = self::openDatabaseConnection();
             $sql = "UPDATE snake SET user_id = ?, sex_id = ?, snake_origin = ? WHERE snake_id = ?";
             $stmt = $dBConnection->prepare($sql);
 
@@ -209,7 +207,7 @@ class Snake
     // TODO: delete only if test and donation do not have a record of snake_id
     public static function deleteSnake(int $pSnakeId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "DELETE FROM snake WHERE snake_id = ?";

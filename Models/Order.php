@@ -1,7 +1,5 @@
 <?php
-include_once 'database.php';
-
-class Order
+class Order extends Model
 {
     private int $orderId;
     private bool $paymentStatus;
@@ -65,7 +63,7 @@ class Order
 
     private function getOrderById(int $pOrderId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM `order` WHERE order_id = ?";
@@ -96,7 +94,7 @@ class Order
 
     public static function getOrderByUserId(int $pUserId)
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM `order` WHERE user_id = ? ORDER BY order_date DESC";
@@ -134,7 +132,7 @@ class Order
 
     public static function createOrder(bool $pPaymentStatus, bool $pSeenStatus, ?float $pTotal, int $pUserId, int $pOrderStatusId): array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "INSERT INTO `order` (payment_status, seen_status ,total, user_id, order_status_id) VALUES (?, ?, ?, ?, ?)";
@@ -167,7 +165,7 @@ class Order
 
     public static function updateOrder(int $pPaymentStatus, bool $pSeenStatus, ?float $pTotal, int $pUserId, int $pOrderStatusId, int $pOrderId): array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "UPDATE `order` SET payment_status = ?, seen_status = ?, total = ?, user_id = ?, order_status_id = ? WHERE order_id = ?";
@@ -200,7 +198,7 @@ class Order
 
     public static function deleteOrder(int $pOrderId): array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "DELETE FROM `order` WHERE order_id = ?";

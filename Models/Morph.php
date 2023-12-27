@@ -1,7 +1,4 @@
 <?php
-include_once 'database.php';
-
-
 enum MorphError: string {
     /*
         Enumeration of all errors that happen when a morph does not exist
@@ -21,7 +18,7 @@ enum MorphInputClass : string {
     case TestMorph = "testMorph";
 }
 
-class Morph
+class Morph extends Model
 {
     private int $morphId = -1;
     private string $morphName = "";
@@ -59,7 +56,7 @@ class Morph
 
     private function getById(int $pMorphId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM morph WHERE morph_id = ?";
@@ -84,7 +81,7 @@ class Morph
 
     public static function getByName(string $pMorphName): ?Morph
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
         try {
             $sql = "SELECT * FROM morph WHERE morph_name = ?";
             $stmt = $dBConnection->prepare($sql);
@@ -110,7 +107,7 @@ class Morph
     }
     public static function getByIsTested(bool $pIsTested): ?array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
         try {
             $sql = "SELECT * FROM morph WHERE is_tested = ?";
             $stmt = $dBConnection->prepare($sql);
@@ -139,7 +136,7 @@ class Morph
     }
     public static function getByIsTestedAndName(bool $pIsTested, array $pMorphNames): array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             // Build the SQL statement
@@ -179,7 +176,7 @@ class Morph
 
     public static function createMorph(string $pMorphName, bool $pIsTested): bool
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "INSERT INTO morph (morph_name, is_tested) VALUES (?, ?)";
@@ -203,7 +200,7 @@ class Morph
 
     public static function updateMorph(string $pMorphName, bool $pIsTested, int $pMorphId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "UPDATE morph SET morph_name = ?, is_tested = ? WHERE morph_id = ?";
@@ -226,7 +223,7 @@ class Morph
 
     public static function deleteMorph(int $pMorphId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "DELETE FROM morph WHERE morph_id = ?";

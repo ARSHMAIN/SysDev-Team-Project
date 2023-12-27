@@ -1,6 +1,4 @@
 <?php
-include_once 'Core/Controller.php';
-include_once "Models/User.php";
 class RegistrationController extends Controller
 {
     function registration(): void
@@ -9,6 +7,7 @@ class RegistrationController extends Controller
     }
     function register(): void
     {
-        $this->render();
+        User::createUserByRoleName($_POST);
+        header("Location: index.php?controller=login&action=login");
     }
 }

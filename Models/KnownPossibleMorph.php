@@ -1,7 +1,6 @@
 <?php
-include_once 'database.php';
 include_once "Models/SQLHelper.php";
-class KnownPossibleMorph
+class KnownPossibleMorph extends Model
 {
     private int $snakeId = -1;
     private int $morphId = -1;
@@ -36,7 +35,7 @@ class KnownPossibleMorph
 
     public static function getKnownAndPossibleMorphBySnakeId(int $pSnakeId): ?array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM knownpossiblemorph WHERE snake_id = ?";
@@ -68,7 +67,7 @@ class KnownPossibleMorph
 
     public static function getKnownPossibleMorphsBySnakeId(int $pSnakeId, bool $pIsKnown): ?array
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
         try {
             $sql = "SELECT * FROM knownpossiblemorph WHERE snake_id = ? AND  is_known = ?";
             $stmt = $dBConnection->prepare($sql);
@@ -101,7 +100,7 @@ class KnownPossibleMorph
 
     public static function getKnownPossibleMorphsByMorphId(int $pMorphId): ?KnownPossibleMorph
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM knownpossiblemorph k JOIN morph m on k.morph_id = m.morph_id WHERE k.morph_id = ? AND m.is_tested = TRUE";
@@ -129,7 +128,7 @@ class KnownPossibleMorph
     public static function create(int $pSnakeId, array $pMorphIds, bool $pIsKnown): bool
     {
         try {
-            $dBConnection = openDatabaseConnection();
+            $dBConnection = self::openDatabaseConnection();
             // Build the SQL statement
             $sql = "INSERT INTO knownpossiblemorph (snake_id, morph_id, is_known) VALUES ";
             $sql .= implode(',', array_fill(0, count($pMorphIds), '(?, ?, ?)'));
@@ -173,7 +172,7 @@ class KnownPossibleMorph
 
         $isSuccessful = false;
         try {
-            $dbConnection = openDatabaseConnection();
+            $dbConnection = self::openDatabaseConnection();
             $sqlQuery = "DELETE FROM knownpossiblemorph
                     WHERE snake_id = ? AND 
             ";
@@ -216,7 +215,7 @@ class KnownPossibleMorph
 
     public static function updateKnownPossibleMorph(int $pSnakeId, int $pMorphId, bool $pIsKnown): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "UPDATE knownpossiblemorph SET morph_id = ?, is_known = ? WHERE snake_id = ?";
@@ -239,7 +238,7 @@ class KnownPossibleMorph
 
     public static function deleteKnownPossibleMorph(int $pSnakeId, int $pMorphId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "DELETE FROM knownpossiblemorph WHERE snake_id = ? AND morph_id = ?";

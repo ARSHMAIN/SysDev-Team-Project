@@ -1,7 +1,5 @@
 <?php
-include_once 'database.php';
-
-class Role
+class Role extends Model
 {
     private int $roleId = -1;
     private string $roleName = "";
@@ -34,7 +32,7 @@ class Role
 
     private function getRoleById(int $pRoleId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM role WHERE role_id = ?";
@@ -59,7 +57,7 @@ class Role
     public static function getRoleByName(string $pRoleName): Role
     {
         $role = new Role();
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM role WHERE role_name = ?";

@@ -1,7 +1,5 @@
 <?php
-include_once 'database.php';
-
-class Address
+class Address extends Model
 {
     private int $addressId = -1;
     private string $streetNumber = "";
@@ -70,7 +68,7 @@ class Address
 
     private function getByUserId(int $pUserId): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             $sql = "SELECT * FROM address WHERE user_id = :user_id";
@@ -102,7 +100,7 @@ class Address
 
     public static function createAddress(int $pUserId, array $postFields): bool
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             foreach ($postFields as $key => $value) {
@@ -140,7 +138,7 @@ class Address
 
     public static function updateAddress(int $pUserId, array $postFields): void
     {
-        $dBConnection = openDatabaseConnection();
+        $dBConnection = self::openDatabaseConnection();
 
         try {
             foreach ($postFields as $key => $value) {
