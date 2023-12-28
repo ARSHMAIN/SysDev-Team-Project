@@ -3,8 +3,7 @@ class LoginController extends Controller
 {
     function login(): void
     {
-        session_unset();
-        session_destroy();
+        SessionMiddleware::destroySession();
         $this->render();
     }
     function validation(): void

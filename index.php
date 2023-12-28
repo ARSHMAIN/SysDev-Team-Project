@@ -16,6 +16,5 @@ else
 }
 
 $controller = new $controllerName;
-Controller::loadAuthentication();
 include_once 'autoloader.php';
 $controller->$action();
