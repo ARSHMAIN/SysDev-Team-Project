@@ -31,3 +31,40 @@ body {
 #submit {
     cursor: pointer;
 }
+
+.testDonationHeader {
+    max-width: 28%;
+    color: #FFFFFF;
+}
+
+.testDonationHeader hr {
+    border: 1px solid #b9b9b9;
+}
+
+/*
+    Change the cursor on hover and change the height of the image
+*/
+[type=radio] + img {
+    height: 4vh;
+    cursor: pointer;
+
+}
+
+/*
+    Hide the default radio button
+*/
+[type=radio] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+
+/*
+    Invert the color when the radio input is checked
+*/
+[type=radio]:checked + img {
+    transition: filter 0.3s ease-in-out;
+    filter: invert(100%);
+}
