@@ -3,7 +3,7 @@ class Model
 {
     protected static function openDatabaseConnection()
     {
-        $hostName = "localhost:3307";
+        $hostName = "localhost";
         $userName = "root";
         $password = "";
         $dataBase = "snake";
