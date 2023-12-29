@@ -6,7 +6,7 @@
         <link rel="stylesheet" type="text/css" href="Views/Styles/navbar.css">
         <link rel="stylesheet" type="text/css" href="Views/Styles/loginRegister.css">
         <script src="Views/Shared/Scripts/textFieldValidation.js" type="text/javascript"></script>
-        <script src="Views/Register/scripts/registrationValidation.js" type="text/javascript"></script>
+        <script src="Views/Registration/scripts/registrationValidation.js" type="text/javascript"></script>
     </head>
 
     <body>
