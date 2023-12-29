@@ -2,6 +2,11 @@ document.addEventListener("DOMContentLoaded", setUpEventHandlers);
 
 
 function setUpEventHandlers() {
+    setUpMorphEventHandlers();
+}
+
+
+function setUpMorphEventHandlers() {
     const removeBtnPossibleMorph = document.getElementById('removeBtnPossibleMorph');
     const removeBtnTestMorph = document.getElementById('removeBtnTestMorph');
 
@@ -10,4 +15,3 @@ function setUpEventHandlers() {
     removeBtnKnownMorph.addEventListener('click', () => removeInput('knownMorph'));
     removeBtnTestMorph.addEventListener('click', () => removeInput('testMorph'));
 }
-

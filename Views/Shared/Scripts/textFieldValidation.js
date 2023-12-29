@@ -4,7 +4,7 @@ function checkTextFieldEmpty(textField, errorLabelIdentifier, errorLabelText = "
     if(textField.value.trim().length === 0) {
         textFieldIsEmpty = true;
         if(!checkErrorLabelExists(errorLabelIdentifier)) {
-            addErrorLabel(textField, errorLabelIdentifier, errorLabelText);
+            addLoginErrorLabel(textField, errorLabelIdentifier, errorLabelText);
         }
     }
     else {
@@ -14,14 +14,21 @@ function checkTextFieldEmpty(textField, errorLabelIdentifier, errorLabelText = "
     return textFieldIsEmpty;
 }
 
-function addErrorLabel(textField, errorLabelIdentifier, errorLabelText = "") {
+function addLoginErrorLabel(textField, errorLabelIdentifier, errorLabelText = "") {
     var errorLabelTextDiv = createErrorLabel(errorLabelIdentifier, errorLabelText);
 
-    /*Insert an error input label after the input text field
+    /*Insert an error input label after the login input text field's div
         Because textField might return null, that is fine because it will implicitly add the node to the end of a parent node
      */
     var loginInputDiv = textField.parentNode;
     loginInputDiv.insertBefore(errorLabelTextDiv, textField.nextSibling);
+}
+
+
+function addMorphErrorLabel(textField, errorLabelIdentifier, errorLabelText = "") {
+    var errorLabelTextDiv = createErrorLabel(errorLabelIdentifier, errorLabelText);
+
+    textField.insertAdjacentElement("afterend", errorLabelTextDiv);
 }
 
 function checkErrorLabelExists(errorLabelIdentifier) {
@@ -59,4 +66,6 @@ function createErrorLabel(errorLabelIdentifier, errorLabelText = "") {
 
     return errorLabelTextDiv;
 }
+
+
 

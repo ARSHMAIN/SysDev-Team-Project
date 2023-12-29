@@ -9,6 +9,9 @@
     <link rel="stylesheet" type="text/css" href="Views/Styles/test.css">
     <script src="Views/Shared/Scripts/addRemoveInputs.js" defer></script>
     <script src="Views/Shared/Scripts/toggleGender.js" defer></script>
+    <script src="Views/Shared/Scripts/morphInputClass.js" defer></script>
+    <script src="Views/Shared/Scripts/domStringLibrary.js" defer></script>
+    <script src="Views/Shared/Scripts/textFieldValidation.js" defer></script>
     <script src="Views/Home/orderTest.js" defer></script>
 </head>
 <body>
@@ -67,6 +70,9 @@ echo "<h3>" . $data['user']->getFirstName() . ' ' . $data['user']->getLastName()
         ?>
         <input class="knownMorph" id="knownMorph1" type="text" name="knownMorph1" ><br>
         <input class="knownMorph" id="knownMorph2" type="text" name="knownMorph2" ><br>
+<!--        <div class="errorLabelText">-->
+<!--            <label>Known morph field(s) empty</label>-->
+<!--        </div>-->
         <label for="possibleMorphs" id="possibleMorphLabel">Possible morphs</label><br>
         <img id="addBtnPossibleMorph" class="add-remove" src="Views/Images/addSign.png" style="width: 2%; height: 2%" alt="addSign">
         <img id="removeBtnPossibleMorph" class="add-remove" src="Views/Images/removeSign.png" style="width: 2.25%; height: 2.25%" alt="removeSign"><br>
