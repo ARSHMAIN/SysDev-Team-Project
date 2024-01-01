@@ -1,17 +1,21 @@
 <?php
-function getPosts(string $className): array
+function getPosts(array $postArray): array
 {
-    $i = 1;
+//    $i = 1;
     $array = [];
-    while (true) {
-        $key = $className . $i;
-        if (isset($_POST[$key])) {
-            $array[] = $_POST[$key];
-        } else {
-            break;
-        }
-        $i++;
+
+    foreach($postArray as $morphInput) {
+        $array[] = $morphInput;
     }
+//    while (true) {
+//        $key = $post . $i;
+//        if (isset($_POST[$key])) {
+//            $array[] = $_POST[$key];
+//        } else {
+//            break;
+//        }
+//        $i++;
+//    }
     return $array;
 }
 function checkMorphs(array $morphs, string $error): array
@@ -86,11 +90,11 @@ $origin = $_POST['snakeOrigin'];
     Get the morphs that were sent by post
     and check whether if some that were sent are not morphs (no matter what if they were tested or not)
 */
-$knownMorphs = getPosts('knownMorph');
+$knownMorphs = getPosts($_POST['knownMorph']);
 $newKnownMorphs = checkMorphs($knownMorphs, 'knownMorphNonexistent');
-$possibleMorphs = getPosts('possibleMorph');
+$possibleMorphs = getPosts($_POST['possibleMorph']);
 $newPossibleMorphs = checkMorphs($possibleMorphs, 'possibleMorphNonexistent');
-$testMorphs = getPosts('testMorph');
+$testMorphs = getPosts($_POST['testMorph']);
 $newTestMorphs = checkMorphs($testMorphs, 'testMorphNonexistent');
 
 if (isset($_SESSION['error'])) header('Location: index.php?controller=order&action=test');

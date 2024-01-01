@@ -70,24 +70,24 @@
 //            }
             ?>
             <?php
-            foreach ($data['tests']['knownMorphs'] as $key => $knownMorph) {
-                echo "<input class='knownMorph' id='knownMorph".  $key + 1 . "' type='text' name='knownMorph" . $key + 1 . "' value='$knownMorph'><br>";
+            foreach ($data['tests']['knownMorphs'] as $knownMorph) {
+                echo "<input class='knownMorph' id='knownMorph' type='text' name='knownMorph[]' value='$knownMorph'><br>";
             }
             ?>
             <label for="possibleMorphs" id="possibleMorphLabel">Possible morphs</label><br>
 <!--            <img id="addBtnPossibleMorph" class="add-remove" src="Views/Images/addSign.png" style="width: 2%; height: 2%" alt="addSign">-->
 <!--            <img id="removeBtnPossibleMorph" class="add-remove" src="Views/Images/removeSign.png" style="width: 2.25%; height: 2.25%" alt="removeSign"><br>-->
             <?php
-            foreach ($data['tests']['possibleMorphs'] as $key => $possibleMorph) {
-                echo "<input class='possibleMorph' id='possibleMorph" . $key + 1  . "' type='text' name='possibleMorph" . $key + 1 . "' value='$possibleMorph' readonly><br>";
+            foreach ($data['tests']['possibleMorphs'] as $possibleMorph) {
+                echo "<input class='possibleMorph' id='possibleMorph' type='text' name='possibleMorph[]' value='$possibleMorph' readonly><br>";
             }
             ?>
             <label for="testMorphs" id="testMorphLabel">Test morphs</label><br>
             <img id="addBtnTestMorph" class="add-remove" src="Views/Images/addSign.png" style="width: 2%; height: 2%" alt="addSign">
             <img id="removeBtnTestMorph" class="add-remove" src="Views/Images/removeSign.png" style="width: 2.25%; height: 2.25%" alt="removeSign"><br>
             <?php
-            foreach ($data['tests']['testedMorphs'] as $key => $testMorph) {
-                echo "<input class='testMorph' id='testMorph" . $key + 1 . "' type='text' name='testMorph" . $key + 1 . "' value='$testMorph'><br>";
+            foreach ($data['tests']['testedMorphs'] as $testMorph) {
+                echo "<input class='testMorph' id='testMorph' type='text' name='testMorph[]' value='$testMorph'><br>";
             }
             ?>
             <label for="snakeOrigin">Snake Origin</label><br>

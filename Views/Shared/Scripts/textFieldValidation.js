@@ -26,9 +26,14 @@ function addLoginErrorLabel(textField, errorLabelIdentifier, errorLabelText = ""
 
 
 function addMorphErrorLabel(textField, errorLabelIdentifier, errorLabelText = "") {
-    var errorLabelTextDiv = createErrorLabel(errorLabelIdentifier, errorLabelText);
-
-    textField.insertAdjacentElement("afterend", errorLabelTextDiv);
+    /*
+        Add error label if it does not exist yet
+    */
+    var errorLabelExists = checkErrorLabelExists(errorLabelIdentifier);
+    if(!errorLabelExists) {
+        var errorLabelTextDiv = createErrorLabel(errorLabelIdentifier, errorLabelText);
+        textField.insertAdjacentElement("afterend", errorLabelTextDiv);
+    }
 }
 
 function checkErrorLabelExists(errorLabelIdentifier) {
@@ -67,5 +72,123 @@ function createErrorLabel(errorLabelIdentifier, errorLabelText = "") {
     return errorLabelTextDiv;
 }
 
+    function addOrRemoveMorphErrorLabel(htmlElement, shouldAddErrorLabel, morphErrorLabelIdentifier, morphErrorLabelText) {
+    /*
+        Determine whether an error label should be added or removed based on "shouldAddErrorLabel" boolean
+    */
+
+    if(shouldAddErrorLabel) {
+        addMorphErrorLabel(htmlElement, morphErrorLabelIdentifier, morphErrorLabelText);
+    }
+    else {
+        removeErrorLabel(morphErrorLabelIdentifier);
+    }
+}
+
+function deleteEmptyMorphTextFields(morphClassName, elementToAddAfter, keepOneTextField = false) {
+    /*
+        Check whether morph text fields are empty
+    */
+    let morphInputElements = document.getElementsByClassName(morphClassName);
+
+    let morphTextFieldsEmpty = true;
+    if(!keepOneTextField) {
+        morphTextFieldsEmpty = deleteEmptyTextFields(morphInputElements);
+    }
+    else {
+        morphTextFieldsEmpty = keepOneEmptyTextField(morphInputElements, elementToAddAfter, morphClassName);
+    }
+    return morphTextFieldsEmpty;
+}
+
+function deleteEmptyTextFields(elementHtmlCollection) {
+    let morphTextFieldsEmpty = true;
+    for(var inputEleIndex = elementHtmlCollection.length - 1, filledMorphFound = false; inputEleIndex >= 0; --inputEleIndex) {
+        if(elementHtmlCollection[inputEleIndex].value.length === 0) {
+            elementHtmlCollection[inputEleIndex].remove();
+            if(!filledMorphFound) {
+                morphTextFieldsEmpty = true;
+            }
+        }
+        else {
+            filledMorphFound = true;
+            morphTextFieldsEmpty = false;
+        }
+    }
+
+    return morphTextFieldsEmpty;
+}
+
+function keepOneEmptyTextField(elementHtmlCollection, elementToAddAfter, morphClassName) {
+    /*
+        Make sure at least one empty text field is present on the create/update test page
+        for better user experience.
+    */
+    let morphTextFieldsEmpty = true;
+
+    if(elementHtmlCollection.length > 0) {
+
+        for(let inputEleIndex = elementHtmlCollection.length - 1, filledTextFieldFound = false; inputEleIndex >= 0; --inputEleIndex) {
+            if(elementHtmlCollection[inputEleIndex].value.length > 0) {
+                // If the current text field contains characters, just leave it
+                morphTextFieldsEmpty = false;
+                filledTextFieldFound = true;
+                continue;
+            }
+
+
+            if(elementHtmlCollection[inputEleIndex].value.length === 0 && (inputEleIndex - 1 === -1) && !filledTextFieldFound) {
+                // Don't delete the empty text field because the next one does not exist
+                // We do this because this text field is required (e.g.: tested morphs)
+                // Unless there was a filled text field found
+                morphTextFieldsEmpty = true;
+
+            }
+            else if(elementHtmlCollection[inputEleIndex].value.length === 0) {
+                // If the text field is empty, and is before the last text field in the collection,
+                // Delete it
+                elementHtmlCollection[inputEleIndex].remove();
+                if(!filledTextFieldFound) {
+                    morphTextFieldsEmpty = true;
+                }
+            }
+        }
+    }
+    else {
+        let morphInputTextField = createMorphInputTextField(morphClassName);
+        elementToAddAfter.insertAdjacentElement("afterend", morphInputTextField);
+        let lineBreak = document.createElement("br");
+        elementToAddAfter.insertAdjacentElement("afterend", lineBreak);
+    }
+
+    return morphTextFieldsEmpty;
+}
+
+function createMorphInputTextField(morphClassName) {
+    let morphInputTextField = document.createElement("input");
+    morphInputTextField.setAttribute("type", "text");
+    morphInputTextField.classList.add(morphClassName);
+    morphInputTextField.setAttribute("name", morphClassName + "[]");
+    morphInputTextField.setAttribute("id", morphClassName);
+
+    return morphInputTextField;
+}
+
+function checkMorphDuplicates(morphClassName) {
+    /*
+        Get the values of text fields and check whether there are duplicates
+        Gets the text fields by class name
+    */
+    const morphInputElements = getValueOfInputElements(document.getElementsByClassName(morphClassName));
+    const uniqueMorphElements = new Set(morphInputElements);
+
+
+    /*
+        Creating a set will find the unique elements inside the morph inputs,
+        and if the array
+    */
+    let duplicatesExist = uniqueMorphElements.size !== morphInputElements.length;
+    return duplicatesExist;
+}
 
 

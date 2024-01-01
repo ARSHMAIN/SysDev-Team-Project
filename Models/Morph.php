@@ -298,22 +298,23 @@ class Morph extends Model
         return $morphNames;
     }
 
-    public static function getSnakeTestPosts(string $pInputClassName)
+    public static function getSnakeTestPosts(array $postArray)
     {
-        $i = 1;
+        //    $i = 1;
         $array = [];
-        while (true) {
-            /*
-                Get all the POSTs from the create/update test
-            */
-            $key = $pInputClassName . $i;
-            if (isset($_POST[$key])) {
-                $array[] = $_POST[$key];
-            } else {
-                break;
-            }
-            $i++;
+
+        foreach($postArray as $morphInput) {
+            $array[] = $morphInput;
         }
+//    while (true) {
+//        $key = $post . $i;
+//        if (isset($_POST[$key])) {
+//            $array[] = $_POST[$key];
+//        } else {
+//            break;
+//        }
+//        $i++;
+//    }
         return $array;
     }
 

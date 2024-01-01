@@ -4,12 +4,12 @@
     $snakeOrigin        = $_POST["snakeOrigin"];
 
 
-    $knownMorphs    = Morph::getSnakeTestPosts(MorphInputClass::KnownMorph->value);
+    $knownMorphs    = Morph::getSnakeTestPosts($_POST[MorphInputClass::KnownMorph->value]);
     $newKnownMorphs = Morph::checkMorphsExist($knownMorphs, MorphError::KnownMorphNonexistent->value);
-    $possibleMorphs    = Morph::getSnakeTestPosts(MorphInputClass::PossibleMorph->value);
+    $possibleMorphs    = Morph::getSnakeTestPosts($_POST[MorphInputClass::PossibleMorph->value]);
     $newPossibleMorphs = Morph::checkMorphsExist($possibleMorphs, MorphError::PossibleMorphNonexistent->value);
 
-    $testMorphs    = Morph::getSnakeTestPosts(MorphInputClass::TestMorph->value);
+    $testMorphs    = Morph::getSnakeTestPosts($_POST[MorphInputClass::TestMorph->value]);
     $newTestMorphs = Morph::checkMorphsExist($testMorphs, MorphError::TestMorphNonexistent->value);
     if(isset($_SESSION["error"])) {
         header("Location: ?controller=order&action=updateTest&id=" . $_GET["id"]);

@@ -10,7 +10,8 @@
     <script src="Views/Shared/Scripts/addRemoveInputs.js" defer></script>
     <script src="Views/Shared/Scripts/toggleGender.js" defer></script>
     <script src="Views/Shared/Scripts/morphInputClass.js" defer></script>
-    <script src="Views/Shared/Scripts/domStringLibrary.js" defer></script>
+    <script src="Views/Shared/Scripts/morphLabelIds.js" defer></script>
+    <script src="Views/Shared/Scripts/domManipulationLibrary.js" defer></script>
     <script src="Views/Shared/Scripts/textFieldValidation.js" defer></script>
     <script src="Views/Home/orderTest.js" defer></script>
 </head>
@@ -68,21 +69,21 @@ echo "<h3>" . $data['user']->getFirstName() . ' ' . $data['user']->getLastName()
             echo '<label class="error">Morph doesn\'t exists</label><br>';
         }
         ?>
-        <input class="knownMorph" id="knownMorph1" type="text" name="knownMorph1" ><br>
-        <input class="knownMorph" id="knownMorph2" type="text" name="knownMorph2" ><br>
+        <input class="knownMorph" id="knownMorph" type="text" name="knownMorph[]" ><br>
+        <input class="knownMorph" id="knownMorph" type="text" name="knownMorph[]" ><br>
 <!--        <div class="errorLabelText">-->
 <!--            <label>Known morph field(s) empty</label>-->
 <!--        </div>-->
         <label for="possibleMorphs" id="possibleMorphLabel">Possible morphs</label><br>
         <img id="addBtnPossibleMorph" class="add-remove" src="Views/Images/addSign.png" style="width: 2%; height: 2%" alt="addSign">
         <img id="removeBtnPossibleMorph" class="add-remove" src="Views/Images/removeSign.png" style="width: 2.25%; height: 2.25%" alt="removeSign"><br>
-        <input class="possibleMorph" id="possibleMorph1" type="text" name="possibleMorph1" ><br>
-        <input class="possibleMorph" id="possibleMorph2" type="text" name="possibleMorph2" ><br>
+        <input class="possibleMorph" id="possibleMorph" type="text" name="possibleMorph[]" ><br>
+        <input class="possibleMorph" id="possibleMorph" type="text" name="possibleMorph[]" ><br>
         <label for="testMorphs" id="testMorphLabel">Test morphs</label><br>
         <img id="addBtnTestMorph" class="add-remove" src="Views/Images/addSign.png" style="width: 2%; height: 2%" alt="addSign">
         <img id="removeBtnTestMorph" class="add-remove" src="Views/Images/removeSign.png" style="width: 2.25%; height: 2.25%" alt="removeSign"><br>
-        <input class="testMorph" id="testMorph1" type="text" name="testMorph1" ><br>
-        <input class="testMorph" id="testMorph2" type="text" name="testMorph2" ><br>
+        <input class="testMorph" id="testMorph" type="text" name="testMorph[]" ><br>
+        <input class="testMorph" id="testMorph" type="text" name="testMorph[]" ><br>
         <label for="snakeOrigin">Snake Origin</label><br>
         <input id="snakeOrigin" type="text" name="snakeOrigin" ><br>
         <input id="submit" type="submit" name="submit">
