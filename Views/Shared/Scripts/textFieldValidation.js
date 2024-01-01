@@ -72,7 +72,7 @@ function createErrorLabel(errorLabelIdentifier, errorLabelText = "") {
     return errorLabelTextDiv;
 }
 
-    function addOrRemoveMorphErrorLabel(htmlElement, shouldAddErrorLabel, morphErrorLabelIdentifier, morphErrorLabelText) {
+function addOrRemoveMorphErrorLabel(htmlElement, shouldAddErrorLabel, morphErrorLabelIdentifier, morphErrorLabelText) {
     /*
         Determine whether an error label should be added or removed based on "shouldAddErrorLabel" boolean
     */
@@ -191,4 +191,18 @@ function checkMorphDuplicates(morphClassName) {
     return duplicatesExist;
 }
 
+function checkInputsExistById(ids) {
+    /*
+        Check whether input fields exist,
+        and if they don't, don't allow the submission of the form
+    */
+    let inputsByIdExist = true;
+    for(let idIndex = 0; idIndex < ids.length; ++idIndex) {
+        if(!document.getElementById(ids[idIndex])) {
+            inputsByIdExist = false;
+            break;
+        }
+    }
+    return inputsByIdExist;
+}
 

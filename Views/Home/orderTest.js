@@ -26,82 +26,95 @@ function setUpSubmitEventHandler() {
     var createTestForm = document.getElementsByTagName("form")[0];
 
     createTestForm.addEventListener("submit", function(submitEvent) {
-        submitEvent.preventDefault();
+        const morphInputIds = [
+          "customerSnakeId",
+        ];
+        let inputsExist = checkInputsExistById(morphInputIds);
 
-
-        /*
+        if(inputsExist) {
+            /*
             Check whether the morph text fields are empty
             If test morphs are left empty, tell the user they must add something in the tested morphs
             because they are required
         */
-        let knownMorphLabel = document.getElementById(MorphLabelIds.KnownMorph);
-        deleteEmptyMorphTextFields(MorphInputClass.KnownMorph, knownMorphLabel);
 
-        let possibleMorphLabel = document.getElementById(MorphLabelIds.PossibleMorph);
-        deleteEmptyMorphTextFields(MorphInputClass.PossibleMorph, possibleMorphLabel);
+            let customerSnakeIdTextField = document.getElementById("customerSnakeId");
+            const customerSnakeIdErrorLabel = "customerSnakeIdErrorLabel";
+            let customerSnakeIdEmpty = checkTextFieldEmpty(customerSnakeIdTextField, customerSnakeIdErrorLabel, "Customer snake ID is required");
 
-        let testMorphLabel = document.getElementById(MorphLabelIds.TestMorph);
-        let testMorphLabelPlacement = testMorphLabel
-            .nextElementSibling
-            .nextElementSibling
-            .nextElementSibling
-            .nextElementSibling;
-        let testMorphTextFieldsEmpty = deleteEmptyMorphTextFields(MorphInputClass.TestMorph, testMorphLabelPlacement, true);
+            let knownMorphLabel = document.getElementById(MorphLabelIds.KnownMorph);
+            deleteEmptyMorphTextFields(MorphInputClass.KnownMorph, knownMorphLabel);
 
+            let possibleMorphLabel = document.getElementById(MorphLabelIds.PossibleMorph);
+            deleteEmptyMorphTextFields(MorphInputClass.PossibleMorph, possibleMorphLabel);
 
-        const testMorphErrorLabel = "testMorphErrorLabel";
-        let lastTestMorphTextField = getLastElementOfHtmlCollection(
-            document.getElementsByClassName(MorphInputClass.TestMorph)
-        );
-        addOrRemoveMorphErrorLabel(lastTestMorphTextField ?? testMorphLabelPlacement, testMorphTextFieldsEmpty, testMorphErrorLabel, "At least one tested morph is required");
+            let testMorphLabel = document.getElementById(MorphLabelIds.TestMorph);
+            let testMorphLabelPlacement = testMorphLabel
+                .nextElementSibling
+                .nextElementSibling
+                .nextElementSibling
+                .nextElementSibling;
+            let testMorphTextFieldsEmpty = deleteEmptyMorphTextFields(MorphInputClass.TestMorph, testMorphLabelPlacement, true);
 
 
-        let knownMorphsContainDuplicates = false;
-
-        knownMorphsContainDuplicates = checkMorphDuplicates(MorphInputClass.KnownMorph);
-        const dupKnownMorphErrorLabel = "dupKnownMorphErrorLabel";
-        let lastKnownMorphTextField = getLastElementOfHtmlCollection(
-            document.getElementsByClassName(MorphInputClass.KnownMorph)
-        );
-        addOrRemoveMorphErrorLabel(
-            lastKnownMorphTextField,
-            knownMorphsContainDuplicates,
-            dupKnownMorphErrorLabel,
-            "Known morphs cannot contain duplicates");
+            const testMorphErrorLabel = "testMorphErrorLabel";
+            let lastTestMorphTextField = getLastElementOfHtmlCollection(
+                document.getElementsByClassName(MorphInputClass.TestMorph)
+            );
+            addOrRemoveMorphErrorLabel(lastTestMorphTextField ?? testMorphLabelPlacement, testMorphTextFieldsEmpty, testMorphErrorLabel, "At least one tested morph is required");
 
 
+            let knownMorphsContainDuplicates = false;
 
-        let possibleMorphsContainDuplicates = false;
-
-        possibleMorphsContainDuplicates = checkMorphDuplicates(MorphInputClass.PossibleMorph);
-        const dupPossibleMorphErrorLabel = "dupPossibleMorphErrorLabel";
-        let lastPossibleMorphTextField = getLastElementOfHtmlCollection(
-            document.getElementsByClassName(MorphInputClass.PossibleMorph)
-        );
-        addOrRemoveMorphErrorLabel(
-            lastPossibleMorphTextField,
-            possibleMorphsContainDuplicates,
-            dupPossibleMorphErrorLabel,
-            "Possible morphs cannot contain duplicates");
-
-
-        let testMorphsContainDuplicates = false;
-
-        testMorphsContainDuplicates = checkMorphDuplicates(MorphInputClass.TestMorph);
-        const dupTestMorphErrorLabel = "dupTestMorphErrorLabel";
-        addOrRemoveMorphErrorLabel(
-            lastTestMorphTextField,
-            testMorphsContainDuplicates,
-            dupTestMorphErrorLabel,
-            "Tested morphs cannot contain duplicates");
+            knownMorphsContainDuplicates = checkMorphDuplicates(MorphInputClass.KnownMorph);
+            const dupKnownMorphErrorLabel = "dupKnownMorphErrorLabel";
+            let lastKnownMorphTextField = getLastElementOfHtmlCollection(
+                document.getElementsByClassName(MorphInputClass.KnownMorph)
+            );
+            addOrRemoveMorphErrorLabel(
+                lastKnownMorphTextField,
+                knownMorphsContainDuplicates,
+                dupKnownMorphErrorLabel,
+                "Known morphs cannot contain duplicates");
 
 
-        if(
-            testMorphTextFieldsEmpty
-            || knownMorphsContainDuplicates
-            || possibleMorphsContainDuplicates
-            || testMorphsContainDuplicates
-        ) {
+
+            let possibleMorphsContainDuplicates = false;
+
+            possibleMorphsContainDuplicates = checkMorphDuplicates(MorphInputClass.PossibleMorph);
+            const dupPossibleMorphErrorLabel = "dupPossibleMorphErrorLabel";
+            let lastPossibleMorphTextField = getLastElementOfHtmlCollection(
+                document.getElementsByClassName(MorphInputClass.PossibleMorph)
+            );
+            addOrRemoveMorphErrorLabel(
+                lastPossibleMorphTextField,
+                possibleMorphsContainDuplicates,
+                dupPossibleMorphErrorLabel,
+                "Possible morphs cannot contain duplicates");
+
+
+            let testMorphsContainDuplicates = false;
+
+            testMorphsContainDuplicates = checkMorphDuplicates(MorphInputClass.TestMorph);
+            const dupTestMorphErrorLabel = "dupTestMorphErrorLabel";
+            addOrRemoveMorphErrorLabel(
+                lastTestMorphTextField,
+                testMorphsContainDuplicates,
+                dupTestMorphErrorLabel,
+                "Tested morphs cannot contain duplicates");
+
+
+            if(
+                customerSnakeIdEmpty
+                || testMorphTextFieldsEmpty
+                || knownMorphsContainDuplicates
+                || possibleMorphsContainDuplicates
+                || testMorphsContainDuplicates
+            ) {
+                submitEvent.preventDefault();
+            }
+        }
+        else {
             submitEvent.preventDefault();
         }
     });
