@@ -1,6 +1,9 @@
 function checkTextFieldEmpty(textField, errorLabelIdentifier, errorLabelText = "") {
-    var textFieldValue = textField.value;
-    var textFieldIsEmpty = false;
+    let textFieldIsEmpty = false;
+    if(!textField) {
+        textFieldIsEmpty = true;
+        return textFieldIsEmpty;
+    }
     if(textField.value.trim().length === 0) {
         textFieldIsEmpty = true;
         if(!checkErrorLabelExists(errorLabelIdentifier)) {
@@ -15,12 +18,12 @@ function checkTextFieldEmpty(textField, errorLabelIdentifier, errorLabelText = "
 }
 
 function addLoginErrorLabel(textField, errorLabelIdentifier, errorLabelText = "") {
-    var errorLabelTextDiv = createErrorLabel(errorLabelIdentifier, errorLabelText);
+    let errorLabelTextDiv = createErrorLabel(errorLabelIdentifier, errorLabelText);
 
     /*Insert an error input label after the login input text field's div
         Because textField might return null, that is fine because it will implicitly add the node to the end of a parent node
      */
-    var loginInputDiv = textField.parentNode;
+    let loginInputDiv = textField.parentNode;
     loginInputDiv.insertBefore(errorLabelTextDiv, textField.nextSibling);
 }
 
@@ -179,15 +182,18 @@ function checkMorphDuplicates(morphClassName) {
         Get the values of text fields and check whether there are duplicates
         Gets the text fields by class name
     */
+    let duplicatesExist = false;
     const morphInputElements = getValueOfInputElements(document.getElementsByClassName(morphClassName));
-    const uniqueMorphElements = new Set(morphInputElements);
+    if(morphInputElements.length > 0) {
+        const uniqueMorphElements = new Set(morphInputElements);
 
 
-    /*
-        Creating a set will find the unique elements inside the morph inputs,
-        and if the array
-    */
-    let duplicatesExist = uniqueMorphElements.size !== morphInputElements.length;
+        /*
+            Creating a set will find the unique elements inside the morph inputs,
+            and if the array
+        */
+        duplicatesExist = uniqueMorphElements.size !== morphInputElements.length;
+    }
     return duplicatesExist;
 }
 
@@ -206,3 +212,20 @@ function checkInputsExistById(ids) {
     return inputsByIdExist;
 }
 
+function areThereDuplicatesBetweenHtmlCollectionsValues(htmlElementCollection1, htmlElementCollection2) {
+    /*
+        Checks the number of duplicates between two html collections (their values)
+    */
+    let duplicatesExist = false;
+
+    if(htmlElementCollection1.length > 0 && htmlElementCollection2.length > 0) {
+        let htmlElementCollection1Values = getValueOfInputElements(htmlElementCollection1);
+        let htmlElementCollection2Values = getValueOfInputElements(htmlElementCollection2);
+        let mergedHtmlElementCollections = [...htmlElementCollection1Values, ...htmlElementCollection2Values];
+        let uniqueElementsSet = new Set(mergedHtmlElementCollections);
+
+
+        duplicatesExist = uniqueElementsSet.size !== (htmlElementCollection1.length + htmlElementCollection2.length);
+    }
+    return duplicatesExist;
+}
