@@ -37,13 +37,13 @@ function setUpSubmitEventHandler() {
             const customerSnakeIdErrorLabel = "customerSnakeIdErrorLabel";
             let customerSnakeIdEmpty = checkTextFieldEmpty(customerSnakeIdTextField, customerSnakeIdErrorLabel, "Customer snake ID is required");
 
-            let knownMorphLabel = document.getElementById(MorphLabelIds.KnownMorph);
+            let knownMorphLabel = document.getElementById(MorphLabelClasses.KnownMorph);
             deleteEmptyMorphTextFields(MorphInputClass.KnownMorph, knownMorphLabel);
 
-            let possibleMorphLabel = document.getElementById(MorphLabelIds.PossibleMorph);
+            let possibleMorphLabel = document.getElementById(MorphLabelClasses.PossibleMorph);
             deleteEmptyMorphTextFields(MorphInputClass.PossibleMorph, possibleMorphLabel);
 
-            let testMorphLabel = document.getElementById(MorphLabelIds.TestMorph);
+            let testMorphLabel = document.getElementById(MorphLabelClasses.TestMorph);
             let testMorphLabelPlacement = testMorphLabel
                 .nextElementSibling
                 .nextElementSibling

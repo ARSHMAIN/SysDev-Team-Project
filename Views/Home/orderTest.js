@@ -23,7 +23,7 @@ function setUpMorphEventHandlers() {
 }
 
 function setUpSubmitEventHandler() {
-    let createTestForm = document.getElementById("order");
+    let createTestForm = document.getElementsByClassName("order")[0];
 
     createTestForm.addEventListener("submit", function(submitEvent) {
         const emptyValidationResults = performEmptyValidation();
@@ -61,7 +61,7 @@ function performEmptyValidation() {
         because they are required
         Also delete the empty morph text fields that are not needed before the form submission
     */
-    const customerSnakeIdTextField = document.getElementById("customerSnakeId");
+    const customerSnakeIdTextField = document.getElementsByClassName("customerSnakeId")[0];
     const customerSnakeIdLabel = document.getElementsByClassName("customerSnakeIdLabel")[0];
     const customerSnakeIdErrorLabel = "customerSnakeIdErrorLabel";
     const customerSnakeIdEmpty = checkTextFieldEmpty(customerSnakeIdTextField);
@@ -78,13 +78,13 @@ function performEmptyValidation() {
         customerSnakeIdErrorLabel,
         "Customer snake ID is required");
 
-    let knownMorphLabel = document.getElementById(MorphLabelIds.KnownMorph);
+    let knownMorphLabel = document.getElementsByClassName(MorphLabelClasses.KnownMorph)[0];
     deleteEmptyMorphTextFields(MorphInputClass.KnownMorph, knownMorphLabel);
 
-    let possibleMorphLabel = document.getElementById(MorphLabelIds.PossibleMorph);
+    let possibleMorphLabel = document.getElementsByClassName(MorphLabelClasses.PossibleMorph)[0];
     deleteEmptyMorphTextFields(MorphInputClass.PossibleMorph, possibleMorphLabel);
 
-    let testMorphLabel = document.getElementById(MorphLabelIds.TestMorph);
+    let testMorphLabel = document.getElementsByClassName(MorphLabelClasses.TestMorph)[0];
     let testMorphLabelPlacement = testMorphLabel
         .nextElementSibling
         .nextElementSibling

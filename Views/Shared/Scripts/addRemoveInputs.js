@@ -13,7 +13,6 @@ function addInput(insertClass) {
     const input = document.createElement('input');
     const lineBreak = document.createElement('br');
     input.setAttribute('class', `${insertClass}`);
-    input.setAttribute('id', `${insertClass}`);
     input.setAttribute('type', 'text');
     input.setAttribute('name', `${insertClass}[]`);
     // input.setAttribute('required', 'required');
@@ -25,7 +24,7 @@ function addInput(insertClass) {
             If there are no input elements, add an input element after the add and remove buttons for that
             respective category, such as knownMorph, possibleMorph or testMorph (the add and remove input element buttons)
         */
-        const label = document.querySelector(`#${insertClass}Label`);
+        const label = document.querySelector(`.${insertClass}Label`);
         const element = label.nextElementSibling.nextElementSibling.nextElementSibling;
         element.insertAdjacentElement('afterend', input);
         element.insertAdjacentElement('afterend', lineBreak);
