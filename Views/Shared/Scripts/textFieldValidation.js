@@ -1,4 +1,4 @@
-function checkTextFieldEmpty(textField, errorLabelIdentifier, errorLabelText = "") {
+function checkTextFieldEmpty(textField) {
     let textFieldIsEmpty = false;
     if(!textField) {
         textFieldIsEmpty = true;
@@ -6,12 +6,6 @@ function checkTextFieldEmpty(textField, errorLabelIdentifier, errorLabelText = "
     }
     if(textField.value.trim().length === 0) {
         textFieldIsEmpty = true;
-        if(!checkErrorLabelExists(errorLabelIdentifier)) {
-            addLoginErrorLabel(textField, errorLabelIdentifier, errorLabelText);
-        }
-    }
-    else {
-        removeErrorLabel(errorLabelIdentifier);
     }
 
     return textFieldIsEmpty;
@@ -23,8 +17,11 @@ function addLoginErrorLabel(textField, errorLabelIdentifier, errorLabelText = ""
     /*Insert an error input label after the login input text field's div
         Because textField might return null, that is fine because it will implicitly add the node to the end of a parent node
      */
-    let loginInputDiv = textField.parentNode;
-    loginInputDiv.insertBefore(errorLabelTextDiv, textField.nextSibling);
+    const errorLabelExists = checkErrorLabelExists(errorLabelIdentifier);
+    if(!errorLabelExists) {
+        let loginInputDiv = textField.parentNode;
+        loginInputDiv.insertBefore(errorLabelTextDiv, textField.nextSibling);
+    }
 }
 
 
@@ -32,7 +29,7 @@ function addMorphErrorLabel(textField, errorLabelIdentifier, errorLabelText = ""
     /*
         Add error label if it does not exist yet
     */
-    var errorLabelExists = checkErrorLabelExists(errorLabelIdentifier);
+    const errorLabelExists = checkErrorLabelExists(errorLabelIdentifier);
     if(!errorLabelExists) {
         var errorLabelTextDiv = createErrorLabel(errorLabelIdentifier, errorLabelText);
         textField.insertAdjacentElement("afterend", errorLabelTextDiv);
@@ -79,9 +76,33 @@ function addOrRemoveMorphErrorLabel(htmlElement, shouldAddErrorLabel, morphError
     /*
         Determine whether an error label should be added or removed based on "shouldAddErrorLabel" boolean
     */
+    if(!htmlElement) {
+        return;
+    }
 
     if(shouldAddErrorLabel) {
         addMorphErrorLabel(htmlElement, morphErrorLabelIdentifier, morphErrorLabelText);
+    }
+    else {
+        removeErrorLabel(morphErrorLabelIdentifier);
+    }
+}
+
+function addOrRemoveLoginRegisterErrorLabel(htmlElement, shouldAddErrorLabel, morphErrorLabelIdentifier, morphErrorLabelText) {
+    /*
+        Determine whether an error label should be added or removed based on "shouldAddErrorLabel" boolean
+        (for login or registration forms)
+    */
+    if(!htmlElement) {
+        /*
+            If the html element sent through the arguments does not exist, do not do anything
+            because we need this html element to add a new error label
+        */
+        return;
+    }
+
+    if(shouldAddErrorLabel) {
+        addLoginErrorLabel(htmlElement, morphErrorLabelIdentifier, morphErrorLabelText);
     }
     else {
         removeErrorLabel(morphErrorLabelIdentifier);
