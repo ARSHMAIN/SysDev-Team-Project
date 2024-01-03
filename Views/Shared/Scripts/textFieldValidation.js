@@ -76,11 +76,10 @@ function addOrRemoveMorphErrorLabel(htmlElement, shouldAddErrorLabel, morphError
     /*
         Determine whether an error label should be added or removed based on "shouldAddErrorLabel" boolean
     */
-    if(!htmlElement) {
-        return;
-    }
-
     if(shouldAddErrorLabel) {
+        if(!htmlElement) {
+            return;
+        }
         addMorphErrorLabel(htmlElement, morphErrorLabelIdentifier, morphErrorLabelText);
     }
     else {
