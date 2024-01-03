@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 03, 2024 at 05:00 AM
+-- Generation Time: Jan 03, 2024 at 05:07 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `cart_item` (
   KEY `cart_item_cart_user_id_cart_id_fk` (`user_id`,`cart_id`),
   KEY `cart_item_donation_donation_id_fk` (`donation_id`),
   KEY `cart_item_test_test_id_fk` (`test_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `cart_item`
@@ -107,9 +107,7 @@ INSERT INTO `cart_item` (`cart_item_id`, `cart_id`, `user_id`, `donation_id`, `t
 (7, 1, 1, NULL, 7),
 (8, 1, 1, NULL, 8),
 (9, 1, 1, NULL, 9),
-(10, 1, 1, NULL, 10),
-(11, 1, 1, NULL, 11),
-(12, 1, 1, NULL, 12);
+(10, 1, 1, NULL, 10);
 
 -- --------------------------------------------------------
 
@@ -146,9 +144,7 @@ INSERT INTO `customersnakename` (`customer_snake_id`, `user_id`, `snake_id`) VAL
 ('Cobratic', 1, 12),
 ('Viperic', 1, 13),
 ('Boatic', 1, 14),
-('Fangtastic', 1, 15),
-('LOGANSS', 1, 16),
-('Goodbye', 1, 17);
+('Fangtastic', 1, 15);
 
 -- --------------------------------------------------------
 
@@ -239,15 +235,7 @@ INSERT INTO `knownpossiblemorph` (`snake_id`, `morph_id`, `is_known`) VALUES
 (15, 3, 0),
 (15, 4, 1),
 (15, 7, 1),
-(15, 10, 0),
-(16, 1, 1),
-(16, 2, 1),
-(16, 5, 0),
-(16, 9, 0),
-(17, 1, 1),
-(17, 2, 1),
-(17, 3, 0),
-(17, 4, 0);
+(15, 10, 0);
 
 -- --------------------------------------------------------
 
@@ -390,10 +378,10 @@ CREATE TABLE IF NOT EXISTS `snake` (
   `sex_id` int(255) NOT NULL,
   `snake_origin` varchar(32) NOT NULL,
   PRIMARY KEY (`snake_id`),
-  UNIQUE KEY `SNAKE_CLIENT_ID_UK` (`client_snake_id`),
+  UNIQUE KEY `SNAKE_CLIENT_SNAKE_ID_UK` (`client_snake_id`),
   KEY `snake_sex_sex_id_fk` (`sex_id`),
   KEY `snake_user_user_id_fk` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `snake`
@@ -414,9 +402,7 @@ INSERT INTO `snake` (`snake_id`, `user_id`, `client_snake_id`, `sex_id`, `snake_
 (12, 1, NULL, 3, 'Canada'),
 (13, 1, NULL, 1, 'Canada'),
 (14, 1, NULL, 3, 'Canada'),
-(15, 1, NULL, 2, ''),
-(16, 1, NULL, 3, 'Canada'),
-(17, 1, NULL, 3, 'Canada');
+(15, 1, NULL, 2, '');
 
 -- --------------------------------------------------------
 
@@ -433,7 +419,7 @@ CREATE TABLE IF NOT EXISTS `test` (
   PRIMARY KEY (`test_id`),
   KEY `Test_user_user_id_fk` (`user_id`),
   KEY `test_snake_snake_id_fk` (`snake_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `test`
@@ -449,9 +435,7 @@ INSERT INTO `test` (`test_id`, `snake_id`, `order_id`, `user_id`) VALUES
 (7, 12, NULL, 1),
 (8, 13, NULL, 1),
 (9, 14, NULL, 1),
-(10, 15, NULL, 1),
-(11, 16, NULL, 1),
-(12, 17, NULL, 1);
+(10, 15, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -481,25 +465,20 @@ INSERT INTO `testedmorph` (`test_id`, `morph_id`, `result`, `comment`, `result_i
 (8, 3, NULL, NULL, NULL),
 (9, 3, NULL, NULL, NULL),
 (1, 4, NULL, NULL, NULL),
-(7, 4, NULL, NULL, NULL),
 (4, 6, NULL, NULL, NULL),
 (6, 6, NULL, NULL, NULL),
 (8, 6, NULL, NULL, NULL),
 (10, 6, NULL, NULL, NULL),
-(11, 6, NULL, NULL, NULL),
 (2, 7, NULL, NULL, NULL),
-(7, 7, NULL, NULL, NULL),
-(11, 7, NULL, NULL, NULL),
 (2, 8, NULL, NULL, NULL),
 (3, 8, NULL, NULL, NULL),
 (5, 8, NULL, NULL, NULL),
+(7, 8, NULL, NULL, NULL),
 (9, 8, NULL, NULL, NULL),
-(12, 8, NULL, NULL, NULL),
 (3, 10, NULL, NULL, NULL),
 (5, 10, NULL, NULL, NULL),
 (6, 10, NULL, NULL, NULL),
-(10, 10, NULL, NULL, NULL),
-(12, 10, NULL, NULL, NULL);
+(10, 10, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
