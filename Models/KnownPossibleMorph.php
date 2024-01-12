@@ -162,8 +162,63 @@ class KnownPossibleMorph extends Model
         return $isSuccessful ?? false;
     }
 
+    public static function createIfNotExists(int $snakeId, array $arrayOfMorphIds, bool $isKnown) {
+        try {
+            $dbConnection = self::openDatabaseConnection();
 
-    public static function deleteRemovedKnownMorphs(int $snakeId, array $morphIdsToKeep, bool $isKnown)
+            $sqlQuery = "INSERT INTO knownpossiblemorph (snake_id, morph_id, is_known) VALUES ";
+            $sqlQuery .= implode(",", array_fill(0, count($arrayOfMorphIds), "(?, ?, ?)"));
+            $sqlQuery .= " ON DUPLICATE KEY UPDATE snake_id = snake_id, morph_id = morph_id;";
+            $pdoStatement = $dbConnection->prepare($sqlQuery);
+
+            $currentBindValueIndex = 1;
+            foreach($arrayOfMorphIds as $morphId) {
+                $pdoStatement->bindValue($currentBindValueIndex++, $snakeId);
+                $pdoStatement->bindValue($currentBindValueIndex++, $morphId);
+                $pdoStatement->bindValue($currentBindValueIndex++, $isKnown);
+            }
+
+            $isSuccessful = $pdoStatement->execute();
+        }
+        catch(PDOException $pdoException) {
+            if ($pdoException->getCode() == '23000') {
+                // Handle duplicate key error or other specific error
+                die("Error: " . $pdoException->getMessage());
+            }
+        }
+        finally {
+            $pdoStatement->closeCursor();
+            $dbConnection = null;
+        }
+
+        return $isSuccessful ?? false;
+    }
+
+    public static function deleteAllRemovedKnownPossibleMorphs(int $snakeId,
+                                                               string $errorRedirectLocation,
+                                                               array $knownMorphIdsInputted,
+                                                               array $possibleMorphIdsInputted,
+    )
+    {
+        $deleteRemovedKnownMorphsIsSuccessful = KnownPossibleMorph::deleteRemovedKnownPossibleMorphs(
+            $snakeId,
+            $knownMorphIdsInputted,
+            true
+        );
+        ValidationHelper::shouldAddError(!$deleteRemovedKnownMorphsIsSuccessful, "An error occurred when deleting the known morphs");
+        ValidationHelper::checkErrorExists($errorRedirectLocation);
+
+        $deleteRemovedPossibleMorphsIsSuccessful = KnownPossibleMorph::deleteRemovedKnownPossibleMorphs(
+            $snakeId,
+            $possibleMorphIdsInputted,
+            false
+        );
+        ValidationHelper::shouldAddError(!$deleteRemovedPossibleMorphsIsSuccessful, "An error occurred when deleting the possible morphs");
+        ValidationHelper::checkErrorExists($errorRedirectLocation);
+    }
+
+
+    public static function deleteRemovedKnownPossibleMorphs(int $snakeId, array $morphIdsToKeep, bool $isKnown)
     {
         /*
             Delete the testedmorph rows that were removed by the customer on the create/update test form
@@ -171,14 +226,24 @@ class KnownPossibleMorph extends Model
         */
 
         $isSuccessful = false;
+
+        if(count($morphIdsToKeep) <= 0) {
+            // Not successful
+            return false;
+        }
+
         try {
             $dbConnection = self::openDatabaseConnection();
             $sqlQuery = "DELETE FROM knownpossiblemorph
                     WHERE snake_id = ? AND 
             ";
 
-            $sqlQuery = SQLHelper::concatenateConditions($morphIdsToKeep, $sqlQuery, "morph_id != ?");
-            $sqlQuery .= " AND is_known = ?;";
+            if(count($morphIdsToKeep) > 0) {
+                $sqlQuery = SQLHelper::concatenateConditions($morphIdsToKeep, $sqlQuery, "morph_id != ?");
+                $sqlQuery .= " AND ";
+            }
+
+            $sqlQuery .= "is_known = ?;";
             $pdoStatement = $dbConnection->prepare($sqlQuery);
             $currentBindValueIndex = 1;
             /*
@@ -186,10 +251,12 @@ class KnownPossibleMorph extends Model
             */
             $pdoStatement->bindValue($currentBindValueIndex++, $snakeId);
 
+            if(count($morphIdsToKeep) > 0) {
+                $bindValueResult = SQLHelper::bindValues($pdoStatement, $morphIdsToKeep, $currentBindValueIndex);
+                $pdoStatement = $bindValueResult["pdoStatement"];
+                $currentBindValueIndex = $bindValueResult["currentBindValue"];
+            }
 
-            $bindValueResult = SQLHelper::bindValues($pdoStatement, $morphIdsToKeep, $currentBindValueIndex);
-            $pdoStatement = $bindValueResult["pdoStatement"];
-            $currentBindValueIndex = $bindValueResult["currentBindValue"];
             /*
                 Bind value for knownpossiblemorph.is_known = ? in the query
             */

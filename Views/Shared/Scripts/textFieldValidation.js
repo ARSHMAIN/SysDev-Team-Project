@@ -232,20 +232,34 @@ function checkInputsExistById(ids) {
     return inputsByIdExist;
 }
 
-function areThereDuplicatesBetweenHtmlCollectionsValues(htmlElementCollection1, htmlElementCollection2) {
+function areThereDuplicatesBetweenHtmlCollectionsValues(htmlElementCollection1, htmlElementCollection2, isCaseInsensitive = true) {
     /*
         Checks the number of duplicates between two html collections (their values)
+        If isCaseInsensitive is true, values "empty" and "Empty" in different collections
+        will be considered as duplicates
     */
     let duplicatesExist = false;
+
+
 
     if(htmlElementCollection1.length > 0 && htmlElementCollection2.length > 0) {
         let htmlElementCollection1Values = getValueOfInputElements(htmlElementCollection1);
         let htmlElementCollection2Values = getValueOfInputElements(htmlElementCollection2);
-        let mergedHtmlElementCollections = [...htmlElementCollection1Values, ...htmlElementCollection2Values];
-        let uniqueElementsSet = new Set(mergedHtmlElementCollections);
+        let duplicateElements;
+        if(isCaseInsensitive) {
+            let lowercaseHtmlElementCollection1Values = strToLowerArray(htmlElementCollection1Values);
+            let lowercaseHtmlElementCollection2Values = strToLowerArray(htmlElementCollection2Values);
 
-
-        duplicatesExist = uniqueElementsSet.size !== (htmlElementCollection1.length + htmlElementCollection2.length);
+            duplicateElements = lowercaseHtmlElementCollection1Values.filter(
+                (firstLowerHtmlCollEle) => lowercaseHtmlElementCollection2Values.includes(firstLowerHtmlCollEle)
+            );
+        }
+        else {
+            duplicateElements = htmlElementCollection1Values.filter(
+                (firstHtmlCollEle) => htmlElementCollection2Values.includes(firstHtmlCollEle)
+            );
+        }
+        duplicatesExist = duplicateElements.length > 0;
     }
     return duplicatesExist;
 }

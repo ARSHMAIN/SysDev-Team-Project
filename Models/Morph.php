@@ -1,23 +1,4 @@
 <?php
-enum MorphError: string {
-    /*
-        Enumeration of all errors that happen when a morph does not exist
-        in the database
-    */
-        case KnownMorphNonexistent = "knownMorphNonexistent";
-        case PossibleMorphNonexistent = "possibleMorphNonexistent";
-        case TestMorphNonexistent = "testMorphNonexistent";
-}
-
-enum MorphInputClass : string {
-    /* Enumeration of all class names for input text fields in the create/update
-        test section
-    */
-    case KnownMorph = "knownMorph";
-    case PossibleMorph = "possibleMorph";
-    case TestMorph = "testMorph";
-}
-
 class Morph extends Model
 {
     private int $morphId = -1;
@@ -105,6 +86,8 @@ class Morph extends Model
             $dBConnection = null;
         }
     }
+
+
     public static function getByIsTested(bool $pIsTested): ?array
     {
         $dBConnection = self::openDatabaseConnection();
@@ -318,6 +301,32 @@ class Morph extends Model
         return $array;
     }
 
+    public static function detectDuplicatesBetweenMorphCategories(string $morphClass1, string $morphClass2) : bool {
+        if(isset($_POST[$morphClass1])
+            && isset($_POST[$morphClass2])
+        ) {
+            $duplicatesExistBetweenKnownPossibleMorphs = ValidationHelper::detectDuplicatesBetweenIndexedArrays(
+                $_POST[$morphClass1],
+                $_POST[$morphClass2]
+            );
+        }
+        return $duplicatesExistBetweenKnownPossibleMorphs ?? false;
+    }
+
+    public static function validateMorphTextFields(string $morphClass) : array {
+        // Perform validation that does not need to check the database
+
+        // Check if the POST value exists before getting the values and validating
+        if(isset($_POST[$morphClass])) {
+            $morphsContainEmptyFields = ValidationHelper::emptyStringsExist($_POST[$morphClass]);
+            $morphDuplicatesExist = ValidationHelper::detectDuplicatesIndexedArray($_POST[$morphClass]);
+        }
+        return [
+            "emptyTextFieldsExist" => $morphsContainEmptyFields ?? false,
+            "duplicateTextFieldsExist" => $morphDuplicatesExist ?? false
+        ];
+    }
+
     public static function checkMorphsExist(array $morphsToCheck, string $errorMessage): array
     {
         $newMorphs = [];
@@ -335,6 +344,22 @@ class Morph extends Model
             }
         }
         return $newMorphs;
+    }
+
+    public static function insertKnownPossibleMorphsIfNotExists(int $snakeId,
+                                                                string $errorRedirectLocation,
+                                                                array $knownMorphIdsInputted,
+                                                                array $possibleMorphIdsInputted,
+                                                                ) {
+        $knownMorphsInsertIsSuccessful = KnownPossibleMorph::createIfNotExists($snakeId, $knownMorphIdsInputted, true);
+        ValidationHelper::shouldAddError(!$knownMorphsInsertIsSuccessful, "An error occurred when inserting the known morphs");
+        ValidationHelper::checkErrorExists($errorRedirectLocation);
+
+        $possibleMorphsInsertIsSuccessful = KnownPossibleMorph::createIfNotExists($snakeId, $possibleMorphIdsInputted, false);
+        ValidationHelper::shouldAddError(!$possibleMorphsInsertIsSuccessful, "An error occurred when inserting the possible morphs");
+        ValidationHelper::checkErrorExists($errorRedirectLocation);
+
+
     }
 
     public function getMorphId(): int

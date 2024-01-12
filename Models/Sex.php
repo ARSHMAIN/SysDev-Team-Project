@@ -81,6 +81,16 @@ class Sex extends Model
         return $sex;
     }
 
+    public static function checkSexExists(string $pSexName) : array {
+        $snakeSex = Sex::getSexByName($pSexName);
+        $sexExists = $snakeSex->getSexId() != -1;
+
+        return [
+            "snakeSex" => $snakeSex,
+            "sexExists" => $sexExists
+        ];
+    }
+
     public function getSexId(): int
     {
         return $this->sexId;

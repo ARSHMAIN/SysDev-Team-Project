@@ -1,84 +1,117 @@
 <?php
-    $currentUser        = new User($_SESSION["user_id"]);
-    $snakeSex           = Sex::getSexByName($_POST["sex"]);
-    $snakeOrigin        = $_POST["snakeOrigin"];
+    $postNamesAccepted = [
+        "sex",
+        MorphInputClass::KnownMorph->value,
+        MorphInputClass::PossibleMorph->value,
+        MorphInputClass::TestMorph->value,
+        "snakeOrigin",
+        "submit"
+    ];
+
+    $postNamesRequired = [
+      "sex",
+      MorphInputClass::TestMorph->value,
+      "submit"
+    ];
+
+    $postDataAccepted = ValidationHelper::isPostDataAccepted($postNamesAccepted, $_POST);
+    $postDataRequired = ValidationHelper::isPostDataRequired($postNamesRequired, $_POST);
 
 
-    $knownMorphs    = Morph::getSnakeTestPosts($_POST[MorphInputClass::KnownMorph->value]);
-    $newKnownMorphs = Morph::checkMorphsExist($knownMorphs, MorphError::KnownMorphNonexistent->value);
-    $possibleMorphs    = Morph::getSnakeTestPosts($_POST[MorphInputClass::PossibleMorph->value]);
-    $newPossibleMorphs = Morph::checkMorphsExist($possibleMorphs, MorphError::PossibleMorphNonexistent->value);
 
-    $testMorphs    = Morph::getSnakeTestPosts($_POST[MorphInputClass::TestMorph->value]);
-    $newTestMorphs = Morph::checkMorphsExist($testMorphs, MorphError::TestMorphNonexistent->value);
-    if(isset($_SESSION["error"])) {
-        header("Location: ?controller=order&action=updateTest&id=" . $_GET["id"]);
-    }
-    /*
-        Check whether the customer snake ID was changed
-        because the customer is not allowed to change it
-    */
-    $customerSnakeIdToCompare    = $_POST["customerSnakeId"];
-    $areSnakeIdsEqual = CustomerSnakeName::areSnakeIdsEqual($_GET["id"],
-        $customerSnakeIdToCompare
-    );
+    $errorExistsRedirectLocation = "?controller=order&action=updateTest&id=" . $_GET["id"];
+    if($postDataAccepted && $postDataRequired) {
+
+        /*
+            Check whether the sex exists that was sent through the form
+        */
+
+        // Redirect location in case that there was an error when updating the test
+
+        
+        // Perform empty, duplicate validation checks on morphs
+        $allMorphsValidationResults = ValidationHelper::validateAllMorphTextFields();
+        ValidationHelper::checkErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
 
 
-    if(isset($_SESSION["error"])) {
-        header("Location: ?controller=order&action=updateTest&id=" . $_GET["id"]);
+        /*
+            Check whether the test actually exists because the ID sent through GET parameters may not be valid
+        */
+        $testExistsResults = [];
+        try {
+            $testExistsResults = Test::checkTestExists($_GET["id"]);
+
+            ValidationHelper::shouldAddError(!$testExistsResults["testExists"], "There was an error when updating the test");
+            ValidationHelper::checkErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
+        }
+        catch(InvalidArgumentException $argumentException) {
+            // An invalid argument exception could be thrown if the GET parameter is of incorrect type
+            ValidationHelper::shouldAddError(true, "There was an error when updating the test");
+            ValidationHelper::checkErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
+        }
+
+
+        $sexExistsResults = Sex::checkSexExists($_POST["sex"]);
+        ValidationHelper::shouldAddError(!$sexExistsResults["sexExists"], "Invalid snake sex");
+        ValidationHelper::checkErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
+
+
+
+        $customerSnakeName = new CustomerSnakeName($testExistsResults["associatedTest"]->getSnakeId());
+        /*
+            Update the snake's sex and its origin
+        */
+        $snakeOrigin                = $_POST["snakeOrigin"];
+        $snakeSexUpdateResults       = Snake::updateSnake($_SESSION["user_id"],
+            $sexExistsResults["snakeSex"]->getSexId(),
+            $snakeOrigin ?? null,
+            $customerSnakeName->getSnakeId());
+        $snakeSexUpdateIsSuccessful = $snakeSexUpdateResults["isSuccessful"];
+        ValidationHelper::shouldAddError(!$snakeSexUpdateIsSuccessful, "There was an error when updating the snake sex");
+        ValidationHelper::checkErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
+        /*
+            Get the IDs of known morphs and tested morphs and delete those that don't exist anymore
+        */
+        $knownMorphIdsByNameInputted = Morph::getMorphIds($_POST[MorphInputClass::KnownMorph->value]);
+        $possibleMorphIdsByNameInputted = Morph::getMorphIds($_POST[MorphInputClass::PossibleMorph->value]);
+        $testMorphIdsByNameInputted = Morph::getMorphIds($_POST[MorphInputClass::TestMorph->value]);
+
+        KnownPossibleMorph::deleteAllRemovedKnownPossibleMorphs(
+            $customerSnakeName->getSnakeId(),
+            ErrorRedirectLocation::UpdateTest->value . $testExistsResults["associatedTest"]->getTestId(),
+            $knownMorphIdsByNameInputted,
+            $possibleMorphIdsByNameInputted,
+        );
+
+        $deleteRemovedTestMorphIsSuccessful = TestedMorph::deleteRemovedTestedMorphs(
+            $testExistsResults["associatedTest"]->getTestId(),
+            $testMorphIdsByNameInputted
+        );
+        ValidationHelper::shouldAddError(!$deleteRemovedTestMorphIsSuccessful, "An error occurred when deleting the tested morphs");
+        ValidationHelper::checkErrorExists(ErrorRedirectLocation::UpdateTest->value . $testExistsResults["associatedTest"]->getTestId());
+
+        /*
+         * Insert known, possible, test morphs if they don't exist already
+        */
+        Morph::insertKnownPossibleMorphsIfNotExists(
+            $customerSnakeName->getSnakeId(),
+            ErrorRedirectLocation::UpdateTest->value . $_GET["id"],
+            $knownMorphIdsByNameInputted,
+            $possibleMorphIdsByNameInputted,
+        );
+
+        $testedMorphsInsertIsSuccessful = TestedMorph::createIfNotExists(
+            $testExistsResults["associatedTest"]->getTestId(),
+            $testMorphIdsByNameInputted
+        );
+        ValidationHelper::shouldAddError(!$testedMorphsInsertIsSuccessful, "An error occurred when inserting the tested morphs");
+        ValidationHelper::checkErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
+
+        header("Location: ?controller=cart&action=cart");
     }
     else {
-        /*
-            Get the new known morphs and tested morphs and check if
-            - For known morphs: if the morphs that they update are only added ones, not removed ones
-            - For tested morphs: check if all morphs are tested
-         */
-        $customerSnakeId = CustomerSnakeName::getByUserIdAndCustomerSnakeName($customerSnakeIdToCompare, $_SESSION["user_id"]);
-        $knownMorphsToInsert = Morph::getNewMorphs($customerSnakeId->getSnakeId(), $newKnownMorphs, MorphInputClass::KnownMorph->value, true);
-        $newPossibleMorphsCheck = Morph::getNewMorphs($customerSnakeId->getSnakeId(), $newPossibleMorphs, MorphInputClass::PossibleMorph->value, false);
-        $morphsIdsByNameInputted = Morph::getMorphIds($newKnownMorphs);
-        $deleteRemovedKnownMorphsIsSuccessful = KnownPossibleMorph::deleteRemovedKnownMorphs($customerSnakeId->getSnakeId(), $morphsIdsByNameInputted, true);
-        var_dump($deleteRemovedKnownMorphsIsSuccessful);
-        if(count($knownMorphsToInsert) > 0) {
-            /*
-                Get rows of the Morph table according to the names of the morphs inputted by the customer
-                and delete those that exist in the database
-            */
-
-            if($deleteRemovedKnownMorphsIsSuccessful) {
-                $knownMorphsInsertIsSuccessful = KnownPossibleMorph::create($customerSnakeId->getSnakeId(), Morph::getMorphIds($knownMorphsToInsert), true);
-
-            }
-            else {
-                header("Location: ?controller=order&action=updateTest&id=" . $_GET["id"]);
-                // TODO: session error
-            }
-        }
-
-        /*
-            Get all the morphs that are tested and are apart of this list of $newTestMorphs (which are morphs' names)
-        */
-        $checkedTestMorphs = Morph::getByIsTestedAndName(true, $newTestMorphs);
-        $checkedMorphs = [];
-        foreach ($checkedTestMorphs as $checkedTestMorph) {
-            $checkedMorphs[] = $checkedTestMorph->getMorphId();
-        }
-
-        if (sizeof($checkedMorphs) !== sizeof($newTestMorphs)) {
-            $_SESSION['error'][] = 'Morphs not for testing';
-            header('Location: /?controller=order&action=updateTest&id=' . $_GET["id"]);
-        }
-        else {
-            $test = new Test($_GET["id"]);
-            $testMorphIdsByNameInputted = Morph::getMorphIds($newTestMorphs);
-            $deleteRemovedTestMorphsIsSuccessful = TestedMorph::deleteRemovedTestedMorphs($test->getTestId(), $testMorphIdsByNameInputted);
-            if($deleteRemovedTestMorphsIsSuccessful) {
-                $testMorphs = TestedMorph::createTestedMorphsIfNotExists($test->getTestId(), $checkedMorphs);
-            }
-            else {
-                header("Location: ?controller=order&action=updateTest&id=" . $_GET["id"]);
-                // TODO: session error
-            }
-            header("Location: ?controller=cart&action=cart");
-        }
+        ValidationHelper::shouldAddError(!$postDataAccepted || !$postDataRequired,
+            "Input elements sent through POST request are not as expected
+             (there was an input element with an inappropriate name attribute sent through the POST request)");
+        ValidationHelper::checkErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
     }

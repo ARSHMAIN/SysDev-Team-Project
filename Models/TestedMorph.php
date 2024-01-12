@@ -149,7 +149,7 @@ class TestedMorph extends Model
         }
     }
 
-    public static function createTestedMorphsIfNotExists(int $pTestId, array $pMorphIds) : bool {
+    public static function createIfNotExists(int $pTestId, array $pMorphIds) : bool {
         $isSuccessful = false;
         try {
             $dbConnection = self::openDatabaseConnection();

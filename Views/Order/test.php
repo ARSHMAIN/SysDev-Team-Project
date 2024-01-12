@@ -8,9 +8,10 @@
     <link rel="stylesheet" type="text/css" href="Views/Styles/home.css">
     <link rel="stylesheet" type="text/css" href="Views/Styles/test.css">
     <script src="Views/Shared/Scripts/addRemoveInputs.js" defer></script>
-    <script src="Views/Shared/Scripts/toggleGender.js" defer></script>
+<!--    <script src="Views/Shared/Scripts/toggleGender.js" defer></script>-->
     <script src="Views/Shared/Scripts/morphInputClass.js" defer></script>
     <script src="Views/Shared/Scripts/morphLabelClasses.js" defer></script>
+    <script src="Views/Order/scripts/snakeTestValidation.js" defer></script>
     <script src="Views/Shared/Scripts/domManipulationLibrary.js" defer></script>
     <script src="Views/Shared/Scripts/textFieldValidation.js" defer></script>
     <script src="Views/Home/orderTest.js" defer></script>
@@ -38,7 +39,7 @@ echo "<h3>" . $data['user']->getFirstName() . ' ' . $data['user']->getLastName()
 
 <div class="form-container">
     <form class="order" name="order" action="index.php?controller=order&action=createTest" method="post">
-        <label class="customerSnakeIdLabel" for="customerSnakeId">Snake ID</label><br>
+        <label class="customerSnakeIdLabel">Snake ID</label><br>
         <input class="customerSnakeId" type="text" name="customerSnakeId"><br>
 <!--        <img id="maleGender" class="gender selected" src="Views/Images/maleGender.png" alt="maleGender">-->
 <!--        <img id="femaleGender" class="gender" src="Views/Images/femaleGender.png" alt="femaleGender">-->
@@ -59,7 +60,7 @@ echo "<h3>" . $data['user']->getFirstName() . ' ' . $data['user']->getLastName()
         </label>
 <!--        <input type="hidden" id="sex" name="sex" value="male">-->
         <br>
-            <label for="knownMorphs" class="knownMorphLabel">Known morphs</label>
+            <label class="knownMorphLabel">Known morphs</label>
         <br>
 
         <img id="addBtnKnownMorph" class="add-remove" src="Views/Images/addSign.png" style="width: 2%; height: 2%" alt="addSign">
@@ -74,18 +75,18 @@ echo "<h3>" . $data['user']->getFirstName() . ' ' . $data['user']->getLastName()
 <!--        <div class="errorLabelText">-->
 <!--            <label>Known morph field(s) empty</label>-->
 <!--        </div>-->
-        <label for="possibleMorphs" class="possibleMorphLabel">Possible morphs</label><br>
+        <label class="possibleMorphLabel">Possible morphs</label><br>
         <img id="addBtnPossibleMorph" class="add-remove" src="Views/Images/addSign.png" style="width: 2%; height: 2%" alt="addSign">
         <img id="removeBtnPossibleMorph" class="add-remove" src="Views/Images/removeSign.png" style="width: 2.25%; height: 2.25%" alt="removeSign"><br>
         <input class="possibleMorph" class="possibleMorph" type="text" name="possibleMorph[]" ><br>
         <input class="possibleMorph" class="possibleMorph" type="text" name="possibleMorph[]" ><br>
-        <label for="testMorphs" class="testMorphLabel">Test morphs</label><br>
+        <label class="testMorphLabel">Test morphs</label><br>
         <img id="addBtnTestMorph" class="add-remove" src="Views/Images/addSign.png" style="width: 2%; height: 2%" alt="addSign">
         <img id="removeBtnTestMorph" class="add-remove" src="Views/Images/removeSign.png" style="width: 2.25%; height: 2.25%" alt="removeSign"><br>
         <input class="testMorph" class="testMorph" type="text" name="testMorph[]" ><br>
         <input class="testMorph" class="testMorph" type="text" name="testMorph[]" ><br>
-        <label for="snakeOrigin">Snake Origin</label><br>
-        <input id="snakeOrigin" type="text" name="snakeOrigin" ><br>
+        <label>Snake Origin</label><br>
+        <input class="snakeOrigin" type="text" name="snakeOrigin" ><br>
         <input id="submit" type="submit" name="submit">
     </form>
 </body>
