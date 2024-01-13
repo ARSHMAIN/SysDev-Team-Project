@@ -55,7 +55,6 @@ function performDuplicateChecksBetweenKnownPossibleMorphs() {
     let possibleMorphInputs = document.getElementsByClassName(MorphInputClass.PossibleMorph);
 
     let duplicatesExistBetweenKnownPossibleMorphs = areThereDuplicatesBetweenHtmlCollectionsValues(knownMorphInputs, possibleMorphInputs);
-    console.log(duplicatesExistBetweenKnownPossibleMorphs);
     let lastKnownMorphTextField = getLastElementOfHtmlCollection(
         document.getElementsByClassName(MorphInputClass.KnownMorph)
     );

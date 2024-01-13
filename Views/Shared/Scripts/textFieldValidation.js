@@ -31,14 +31,14 @@ function addMorphErrorLabel(textField, errorLabelIdentifier, errorLabelText = ""
     */
     const errorLabelExists = checkErrorLabelExists(errorLabelIdentifier);
     if(!errorLabelExists) {
-        var errorLabelTextDiv = createErrorLabel(errorLabelIdentifier, errorLabelText);
+        let errorLabelTextDiv = createErrorLabel(errorLabelIdentifier, errorLabelText);
         textField.insertAdjacentElement("afterend", errorLabelTextDiv);
     }
 }
 
 function checkErrorLabelExists(errorLabelIdentifier) {
-    var errorLabelDiv = document.getElementsByClassName(errorLabelIdentifier)[0];
-    var errorLabelExists = false;
+    let errorLabelDiv = document.getElementsByClassName(errorLabelIdentifier)[0];
+    let errorLabelExists = false;
     /*
         We check if the error label exists before adding one because we do not want duplicates of the error label
     */
@@ -49,23 +49,23 @@ function checkErrorLabelExists(errorLabelIdentifier) {
 }
 
 function removeErrorLabel(errorLabelIdentifier) {
-    var errorLabelExists = checkErrorLabelExists(errorLabelIdentifier);
+    let errorLabelExists = checkErrorLabelExists(errorLabelIdentifier);
     if(errorLabelExists) {
-        var errorLabelDiv = document.getElementsByClassName(errorLabelIdentifier)[0];
+        const errorLabelDiv = document.getElementsByClassName(errorLabelIdentifier)[0];
         errorLabelDiv.remove();
     }
 
 }
 
 function createErrorLabel(errorLabelIdentifier, errorLabelText = "") {
-    var errorLabelTextDiv = document.createElement("div");
+    const errorLabelTextDiv = document.createElement("div");
     errorLabelTextDiv.classList.add("errorLabelText");
     /*Add an identifier to the error label because we want to be able to delete
       this div later
     */
     errorLabelTextDiv.classList.add(errorLabelIdentifier);
 
-    var errorLabel = document.createElement("label");
+    const errorLabel = document.createElement("label");
     errorLabel.innerHTML = errorLabelText;
     errorLabelTextDiv.appendChild(errorLabel);
 
@@ -114,7 +114,9 @@ function deleteEmptyMorphTextFields(morphClassName, elementToAddAfter, keepOneTe
     */
     let morphInputElements = document.getElementsByClassName(morphClassName);
 
-    let morphTextFieldsEmpty = true;
+
+    // morphTextFieldsEmpty is true by default
+    let morphTextFieldsEmpty;
     if(!keepOneTextField) {
         morphTextFieldsEmpty = deleteEmptyTextFields(morphInputElements);
     }
@@ -126,7 +128,7 @@ function deleteEmptyMorphTextFields(morphClassName, elementToAddAfter, keepOneTe
 
 function deleteEmptyTextFields(elementHtmlCollection) {
     let morphTextFieldsEmpty = true;
-    for(var inputEleIndex = elementHtmlCollection.length - 1, filledMorphFound = false; inputEleIndex >= 0; --inputEleIndex) {
+    for(let inputEleIndex = elementHtmlCollection.length - 1, filledMorphFound = false; inputEleIndex >= 0; --inputEleIndex) {
         if(elementHtmlCollection[inputEleIndex].value.length === 0) {
             elementHtmlCollection[inputEleIndex].remove();
             if(!filledMorphFound) {
@@ -197,22 +199,30 @@ function createMorphInputTextField(morphClassName) {
     return morphInputTextField;
 }
 
-function checkMorphDuplicates(morphClassName) {
+function checkMorphDuplicates(morphClassName, isCaseInsensitive = true) {
     /*
         Get the values of text fields and check whether there are duplicates
         Gets the text fields by class name
     */
     let duplicatesExist = false;
-    const morphInputElements = getValueOfInputElements(document.getElementsByClassName(morphClassName));
-    if(morphInputElements.length > 0) {
-        const uniqueMorphElements = new Set(morphInputElements);
+    const morphInputElementsValues = getValueOfInputElements(document.getElementsByClassName(morphClassName));
+    if(morphInputElementsValues.length > 0) {
+        let uniqueMorphElements;
+        if(isCaseInsensitive) {
+            let lowercaseMorphInputElementsValues = strToLowerArray(morphInputElementsValues);
+            uniqueMorphElements = new Set(lowercaseMorphInputElementsValues);
+        }
+        else {
+            uniqueMorphElements = new Set(morphInputElementsValues);
+        }
+
 
 
         /*
             Creating a set will find the unique elements inside the morph inputs,
             and if the array
         */
-        duplicatesExist = uniqueMorphElements.size !== morphInputElements.length;
+        duplicatesExist = uniqueMorphElements.size !== morphInputElementsValues.length;
     }
     return duplicatesExist;
 }

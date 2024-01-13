@@ -1,7 +1,6 @@
 <?php
 //include_once "Views/Shared/session.php";
 ?>
-
     <!DOCTYPE html>
     <html lang="en">
     <head>
