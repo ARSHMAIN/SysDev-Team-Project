@@ -5,4 +5,8 @@ class UserController extends Controller
     {
         $this->render();
     }
+
+    function editProfile() {
+        $this->render();
+    }
 }

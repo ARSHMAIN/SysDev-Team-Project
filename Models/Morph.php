@@ -305,7 +305,7 @@ class Morph extends Model
         if(isset($_POST[$morphClass1])
             && isset($_POST[$morphClass2])
         ) {
-            $duplicatesExistBetweenKnownPossibleMorphs = ValidationHelper::detectDuplicatesBetweenIndexedArrays(
+            $duplicatesExistBetweenKnownPossibleMorphs = ValidationHelper::duplicatesExistBetweenIndexedArrays(
                 $_POST[$morphClass1],
                 $_POST[$morphClass2]
             );

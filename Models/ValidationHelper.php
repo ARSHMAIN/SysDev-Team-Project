@@ -26,7 +26,9 @@
             /*
              * Check whether the length of the intersected array between allowed POSTS and the POST array
              * sent through the parameters because we want to check whether any item was denied
-             * If an item is denied, the intersected array length would be less than the post array's length
+             * If an item is denied, it would mean
+             * the intersected array length would be less than the post array's length
+             *
             */
             $postDataAccepted = count($intersectedArray) == count($postArray);
             return $postDataAccepted;
@@ -46,12 +48,12 @@
             return $postDataRequired;
         }
 
-        public static function emptyStringsExist(array $arrayToCheckWhetherEmptyValuesExist) : bool {
+        public static function emptyStringsExist(array $checkedArray) : bool {
             /*
                 Check whether empty strings exist within in the array provided
             */
-            $filteredArrayLength = count(array_filter($arrayToCheckWhetherEmptyValuesExist, "is_string"));
-            if($filteredArrayLength != count($arrayToCheckWhetherEmptyValuesExist)) {
+            $filteredArrayLength = count(array_filter($checkedArray, "is_string"));
+            if($filteredArrayLength != count($checkedArray)) {
                 /*
                  * Reject array values where they are integers or other values
                  * because this function only checks if empty strings are
@@ -61,7 +63,7 @@
             }
 
             $emptyValuesExist = false;
-            foreach($arrayToCheckWhetherEmptyValuesExist as $value) {
+            foreach($checkedArray as $value) {
                 if(mb_strlen($value, "UTF-8") == 0) {
                     $emptyValuesExist = true;
                     break;
@@ -84,15 +86,18 @@
             if($isCaseInsensitive) {
                 $lowercaseArray = self::strArrayToLower($arrayToDetectDuplicatesIn);
             }
+            /*
+             * Flipped array helps us find the duplicate array
+             * because duplicate values are discarded in the array_flip function
+            */
             $flippedArray = array_flip($lowercaseArray ?? $arrayToDetectDuplicatesIn);
             $duplicatesExist = count($flippedArray) != count($arrayToDetectDuplicatesIn);
             return $duplicatesExist;
         }
 
-        public static function detectDuplicatesBetweenIndexedArrays(array $firstArray, array $secondArray, bool $isCaseInsensitive = true) : bool {
+        public static function duplicatesExistBetweenIndexedArrays(array $firstArray, array $secondArray, bool $isCaseInsensitive = true) : bool {
             if(!array_is_list($firstArray) || !array_is_list($secondArray)) {
-                $duplicatesExist = false;
-                return $duplicatesExist;
+                return false;
             }
             if($isCaseInsensitive) {
                 /*
@@ -172,7 +177,6 @@
         public static function validateAllMorphTextFields() : array {
             $knownMorphsValidationResults = Morph::validateMorphTextFields(MorphInputClass::KnownMorph->value);
             ValidationHelper::shouldAddError($knownMorphsValidationResults["emptyTextFieldsExist"], "Invalid known morphs");
-            var_dump($knownMorphsValidationResults["emptyTextFieldsExist"]);
             ValidationHelper::shouldAddError($knownMorphsValidationResults["duplicateTextFieldsExist"], "Duplicate known morphs");
 
             $possibleMorphsValidationResults = Morph::validateMorphTextFields(MorphInputClass::PossibleMorph->value);
@@ -194,6 +198,47 @@
               "possibleMorphsValidationResults" => $possibleMorphsValidationResults,
               "testMorphsValidationResults" => $testMorphsValidationResults,
                 "duplicatesExistBetweenKnownPossibleMorphs" => $duplicatesExistBetweenKnownPossibleMorphs
+            ];
+        }
+
+        public static function validateSnakeSexAndOrigin(): array
+        {
+            if(isset($_POST["sex"])) {
+                $sexPostIsString = ValidationHelper::checkFormValueType($_POST["sex"], "string");
+                ValidationHelper::shouldAddError(!$sexPostIsString, "Invalid snake sex");
+            }
+
+            if(isset($_POST["snakeOrigin"])) {
+                $snakeOriginPostIsString = ValidationHelper::checkFormValueType($_POST["snakeOrigin"], "string");
+                ValidationHelper::shouldAddError(!$snakeOriginPostIsString, "Invalid snake origin");
+            }
+
+            return [
+              "sexPostIsString" => $sexPostIsString ?? true,
+              "snakeOriginPostIsString" => $snakeOriginPostIsString ?? true
+            ];
+        }
+
+        public static function checkFormValueType(mixed $variableToCheck, string $variableTypeToCheck): bool
+        {
+            // This function checks whether a value is of a certain datatype
+            // The available datatypes in PHP are here: https://www.php.net/manual/en/function.gettype.php
+            $variableIsCorrectType = false;
+            if(gettype($variableToCheck) == $variableTypeToCheck) {
+                $variableIsCorrectType = true;
+            }
+            return $variableIsCorrectType;
+        }
+
+        public static function validateCustomerSnakeId(): array
+        {
+            if(isset($_POST["customerSnakeId"])) {
+                $customerSnakeIdPostIsString = ValidationHelper::checkFormValueType($_POST["customerSnakeId"], "string");
+                ValidationHelper::shouldAddError(!$customerSnakeIdPostIsString, "Invalid customer snake ID");
+            }
+
+            return [
+              "customerSnakeIdPostIsString" => $customerSnakeIdPostIsString ?? true
             ];
         }
     }

@@ -28,7 +28,14 @@
 
         // Redirect location in case that there was an error when updating the test
 
-        
+        // Validate that sex and snake origin associative pairs are of length 1
+
+        // Validate the snake's sex and origin's data types because
+        // they might be arrays, and if they are,
+        // it means the user tampered with the form using developer tools
+        // and the data is invalid
+        ValidationHelper::validateSnakeSexAndOrigin();
+
         // Perform empty, duplicate validation checks on morphs
         $allMorphsValidationResults = ValidationHelper::validateAllMorphTextFields();
         ValidationHelper::checkErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
