@@ -203,42 +203,53 @@
 
         public static function validateSnakeSexAndOrigin(): array
         {
-            if(isset($_POST["sex"])) {
-                $sexPostIsString = ValidationHelper::checkFormValueType($_POST["sex"], "string");
-                ValidationHelper::shouldAddError(!$sexPostIsString, "Invalid snake sex");
-            }
+            $sexPostIsString = ValidationHelper::checkFormValueType(
+                $_POST["sex"],
+                "string",
+                "Invalid snake sex",
+            );
 
-            if(isset($_POST["snakeOrigin"])) {
-                $snakeOriginPostIsString = ValidationHelper::checkFormValueType($_POST["snakeOrigin"], "string");
-                ValidationHelper::shouldAddError(!$snakeOriginPostIsString, "Invalid snake origin");
-            }
+            $snakeOriginPostIsString = ValidationHelper::checkFormValueType(
+                $_POST["snakeOrigin"],
+                "string",
+                "Invalid snake origin"
+            );
 
             return [
-              "sexPostIsString" => $sexPostIsString ?? true,
-              "snakeOriginPostIsString" => $snakeOriginPostIsString ?? true
+              "sexPostIsString" => $sexPostIsString,
+              "snakeOriginPostIsString" => $snakeOriginPostIsString
             ];
         }
 
-        public static function checkFormValueType(mixed $variableToCheck, string $variableTypeToCheck): bool
+        public static function checkFormValueType(mixed $postVariable,
+                                                  string $variableTypeToCheck,
+                                                  string $sessionErrorText = "",
+                                                  bool $addError = true): bool
         {
             // This function checks whether a value is of a certain datatype
-            // The available datatypes in PHP are here: https://www.php.net/manual/en/function.gettype.php
+            // The available data types in PHP are here: https://www.php.net/manual/en/function.gettype.php
             $variableIsCorrectType = false;
-            if(gettype($variableToCheck) == $variableTypeToCheck) {
-                $variableIsCorrectType = true;
+            if(isset($postVariable)) {
+                $variableIsCorrectType = gettype($postVariable) == $variableTypeToCheck;
+            }
+
+            if($addError) {
+                ValidationHelper::shouldAddError(!$variableIsCorrectType, $sessionErrorText);
             }
             return $variableIsCorrectType;
         }
 
         public static function validateCustomerSnakeId(): array
         {
-            if(isset($_POST["customerSnakeId"])) {
-                $customerSnakeIdPostIsString = ValidationHelper::checkFormValueType($_POST["customerSnakeId"], "string");
-                ValidationHelper::shouldAddError(!$customerSnakeIdPostIsString, "Invalid customer snake ID");
-            }
+            $customerSnakeIdPostIsString = ValidationHelper::checkFormValueType(
+                $_POST["customerSnakeId"],
+                "string",
+                "Invalid customer snake ID"
+            );
 
             return [
-              "customerSnakeIdPostIsString" => $customerSnakeIdPostIsString ?? true
+              "customerSnakeIdPostIsString" => $customerSnakeIdPostIsString
             ];
         }
+
     }

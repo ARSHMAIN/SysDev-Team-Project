@@ -11,14 +11,16 @@ class RegistrationController extends Controller
             "firstName",
             "lastName",
             "email",
-            "password"
+            "password",
+            "submit"
         ];
 
         $postNamesRequired = [
           "firstName",
           "lastName",
           "email",
-          "password"
+          "password",
+            "submit"
         ];
 
         $postDataAccepted = ValidationHelper::isPostDataAccepted($postNamesAccepted, $_POST);
