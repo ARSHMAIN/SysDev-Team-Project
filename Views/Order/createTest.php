@@ -87,12 +87,17 @@ $postDataAccepted = ValidationHelper::isPostDataAccepted($postNamesAccepted, $_P
 $postDataRequired = ValidationHelper::isPostDataRequired($postNamesRequired, $_POST);
 
 if($postDataAccepted && $postDataRequired) {
-    /* Validate the snake's sex and origin's data types because
+    /* Validate the customer snake ID, snake's sex and origin's data types because
        they might be arrays, and if they are,
        it means the user tampered with the form using developer tools
        and the data is invalid
     */
-    ValidationHelper::validateCustomerSnakeId();
+     ValidationHelper::validateRequiredSingleFormValue(
+        $_POST["customerSnakeId"],
+        "string",
+         true,
+         "Invalid customer snake ID"
+    );
     ValidationHelper::validateSnakeSexAndOrigin();
 
     // Perform empty, duplicate validation checks on morphs

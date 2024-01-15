@@ -26,7 +26,7 @@ class RegistrationController extends Controller
         $postDataAccepted = ValidationHelper::isPostDataAccepted($postNamesAccepted, $_POST);
         $postDataRequired = ValidationHelper::isPostDataRequired($postNamesRequired, $_POST);
         if($postDataAccepted && $postDataRequired) {
-
+            $emailPasswordValidationResults =
 
             User::createUserByRoleName($_POST);
             header("Location: index.php?controller=login&action=login");

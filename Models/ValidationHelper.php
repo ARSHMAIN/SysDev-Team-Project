@@ -203,28 +203,33 @@
 
         public static function validateSnakeSexAndOrigin(): array
         {
-            $sexPostIsString = ValidationHelper::checkFormValueType(
+            // Validate the snake's sex and the origin of the snake
+
+            $sexPostValidationResults = ValidationHelper::validateRequiredSingleFormValue(
                 $_POST["sex"],
                 "string",
-                "Invalid snake sex",
+                true,
+                "Invalid snake sex"
             );
 
             $snakeOriginPostIsString = ValidationHelper::checkFormValueType(
                 $_POST["snakeOrigin"],
                 "string",
+                true,
                 "Invalid snake origin"
             );
 
             return [
-              "sexPostIsString" => $sexPostIsString,
+              "sexPostValidationResults" => $sexPostValidationResults,
               "snakeOriginPostIsString" => $snakeOriginPostIsString
             ];
         }
 
         public static function checkFormValueType(mixed $postVariable,
-                                                  string $variableTypeToCheck,
+                                                  string $variableTypeToCheck = "string",
+                                                  bool $addError = true,
                                                   string $sessionErrorText = "",
-                                                  bool $addError = true): bool
+                                                  ): bool
         {
             // This function checks whether a value is of a certain datatype
             // The available data types in PHP are here: https://www.php.net/manual/en/function.gettype.php
@@ -233,23 +238,79 @@
                 $variableIsCorrectType = gettype($postVariable) == $variableTypeToCheck;
             }
 
-            if($addError) {
-                ValidationHelper::shouldAddError(!$variableIsCorrectType, $sessionErrorText);
+            if($addError && !$variableIsCorrectType) {
+                ValidationHelper::shouldAddError(true, $sessionErrorText);
             }
             return $variableIsCorrectType;
         }
 
-        public static function validateCustomerSnakeId(): array
+
+        public static function validateRequiredSingleFormValue(
+            mixed $postVariable,
+            string $variableTypeToCheck = "string",
+            bool $addError = true,
+            string $sessionErrorText = ""
+        ): array
         {
-            $customerSnakeIdPostIsString = ValidationHelper::checkFormValueType(
-                $_POST["customerSnakeId"],
-                "string",
-                "Invalid customer snake ID"
+            // Validate a required single form value for its emptiness or its data type (array or string)
+            // This checks whether the POST variable matches a certain variable type
+            // and whether or not the POST variable sent was empty
+            $postValueIsCorrectType = ValidationHelper::checkFormValueType(
+                $postVariable,
+                $variableTypeToCheck,
+                 false
             );
 
+            $postValueIsEmpty = true;
+            if($postValueIsCorrectType && ($variableTypeToCheck == "string")) {
+                // If the variable type checked is a string, check if the post variable is empty
+                $utf8Encoding = "UTF-8";
+                $postValueIsEmpty = mb_strlen($postVariable, $utf8Encoding) == 0;
+
+            }
+
+            if($addError && (!$postValueIsCorrectType || $postValueIsEmpty)) {
+                ValidationHelper::shouldAddError(true, $sessionErrorText);
+            }
+
             return [
-              "customerSnakeIdPostIsString" => $customerSnakeIdPostIsString
+                "postValueIsCorrectType" => $postValueIsCorrectType,
+                "postValueIsEmpty" => $postValueIsEmpty
             ];
         }
 
+        public static function validateEmailAndPassword(): array
+        {
+            $emailPostIsString = ValidationHelper::checkFormValueType(
+                $_POST["email"],
+                "string",
+                "Email is invalid"
+            );
+
+            $passwordPostIsString = ValidationHelper::checkFormValueType(
+              $_POST["password"],
+              "string",
+              "Password is invalid"
+            );
+
+
+            // By default, email is empty if the $_POST is not of the correct format
+            // because the array format for this value is not allowed
+            $emailIsEmpty = true;
+            if($emailPostIsString) {
+                $emailIsEmpty = mb_strlen($_POST["email"], "UTF-8") == 0;
+            }
+
+            $passwordIsEmpty = true;
+            if($passwordPostIsString) {
+                $passwordIsEmpty = mb_strlen($_POST["password"], "UTF-8") == 0;
+            }
+
+            return [
+                "emailPostIsString" => $emailPostIsString,
+                "passwordPostIsString" => $passwordPostIsString,
+                "emailIsEmpty" => $emailIsEmpty,
+                "passwordIsEmpty" => $passwordIsEmpty
+            ];
+        }
     }

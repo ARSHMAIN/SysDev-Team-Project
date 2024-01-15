@@ -40,7 +40,6 @@
         $allMorphsValidationResults = ValidationHelper::validateAllMorphTextFields();
         ValidationHelper::checkErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
 
-
         /*
             Check whether the test actually exists because the ID sent through GET parameters may not be valid
         */
