@@ -206,7 +206,7 @@ class KnownPossibleMorph extends Model
             true
         );
         ValidationHelper::shouldAddError(!$deleteRemovedKnownMorphsIsSuccessful, "An error occurred when deleting the known morphs");
-        ValidationHelper::checkErrorExists($errorRedirectLocation);
+        ValidationHelper::checkSessionErrorExists($errorRedirectLocation);
 
         $deleteRemovedPossibleMorphsIsSuccessful = KnownPossibleMorph::deleteRemovedKnownPossibleMorphs(
             $snakeId,
@@ -214,7 +214,7 @@ class KnownPossibleMorph extends Model
             false
         );
         ValidationHelper::shouldAddError(!$deleteRemovedPossibleMorphsIsSuccessful, "An error occurred when deleting the possible morphs");
-        ValidationHelper::checkErrorExists($errorRedirectLocation);
+        ValidationHelper::checkSessionErrorExists($errorRedirectLocation);
     }
 
 

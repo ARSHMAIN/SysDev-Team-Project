@@ -111,7 +111,7 @@ class User extends Model
         }
     }
 
-    public static function getUserByCredentials(string $pEmail, string $pPassword): ?User
+    public static function getUserByCredentials(string $pEmail, string $pPassword, string $sessionErrorText): ?User
     {
         $dBConnection = self::openDatabaseConnection();
         try {
@@ -120,8 +120,10 @@ class User extends Model
             $stmt->bindParam(1, $pEmail, PDO::PARAM_STR);
             $stmt->bindParam(2, $pPassword, PDO::PARAM_STR);
             $stmt->execute();
-
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $isSuccessful = $stmt->rowCount() > 0;
+
             if ($result) {
                 $user = new User();
                 $user->userId = $result['user_id'];
@@ -138,10 +140,14 @@ class User extends Model
             }
         } catch (PDOException $e) {
             // Handle the exception as per your application's requirements
-            die("Error: " . $e->getMessage());
+            ValidationHelper::shouldAddError(true, $sessionErrorText);
         } finally {
             $stmt->closeCursor();
             $dBConnection = null;
+        }
+
+        if(!$isSuccessful) {
+            ValidationHelper::shouldAddError(true, $sessionErrorText);
         }
 
         return null;

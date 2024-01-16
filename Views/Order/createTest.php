@@ -102,7 +102,7 @@ if($postDataAccepted && $postDataRequired) {
 
     // Perform empty, duplicate validation checks on morphs
     $allMorphsValidationResults = ValidationHelper::validateAllMorphTextFields();
-    ValidationHelper::checkErrorExists(ErrorRedirectLocation::CreateTest->value);
+    ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
 
 
     $customerSnakeName = CustomerSnakeName::getByUserIdAndCustomerSnakeName($_POST['customerSnakeId'], $_SESSION['user_id']);
@@ -117,38 +117,38 @@ if($postDataAccepted && $postDataRequired) {
         $snakeSexUpdateIsSuccessful = $snakeSexUpdateResults["sexExists"];
 
         ValidationHelper::shouldAddError(!$snakeSexUpdateIsSuccessful, "There was an error creating the snake (invalid sex)");
-        ValidationHelper::checkErrorExists(ErrorRedirectLocation::CreateTest->value);
+        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
 
         $snakeInsertionResults = Snake::createSnake($_SESSION['user_id'], $snakeSexUpdateResults["snakeSex"]->getSexId(), $_POST['snakeOrigin'] ?? null);
         ValidationHelper::shouldAddError(!$snakeInsertionResults["isSuccessful"], "There was an error creating the snake");
-        ValidationHelper::checkErrorExists(ErrorRedirectLocation::CreateTest->value);
+        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
 
         $customerSnakeNameInsertionResults = CustomerSnakeName::create($_POST['customerSnakeId'], $_SESSION['user_id'], $snakeInsertionResults['newSnakeId']);
         ValidationHelper::shouldAddError(!$customerSnakeNameInsertionResults["isSuccessful"], "There was an error creating the customer snake name");
-        ValidationHelper::checkErrorExists(ErrorRedirectLocation::CreateTest->value);
+        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
 
         // Create rows for KnownPossibleMorph and TestedMorph tables
         // Also create a Test record
         $knownMorphsIdsByNameInputted = Morph::getMorphIds($_POST[MorphInputClass::KnownMorph->value]);
         $knownMorphsInsertionIsSuccessful = KnownPossibleMorph::create($snakeInsertionResults['newSnakeId'], $knownMorphsIdsByNameInputted, true);
         ValidationHelper::shouldAddError(!$knownMorphsInsertionIsSuccessful, "Known morphs could not be correctly inserted");
-        ValidationHelper::checkErrorExists(ErrorRedirectLocation::CreateTest->value);
+        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
 
 
         $possibleMorphIdsByNameInputted = Morph::getMorphIds($_POST[MorphInputClass::PossibleMorph->value]);
         $possibleMorphsInsertionIsSuccessful = KnownPossibleMorph::create($snakeInsertionResults['newSnakeId'], $possibleMorphIdsByNameInputted, false);
         ValidationHelper::shouldAddError(!$possibleMorphsInsertionIsSuccessful, "Possible morphs could not be correctly inserted");
-        ValidationHelper::checkErrorExists(ErrorRedirectLocation::CreateTest->value);
+        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
 
 
         $testInsertionResults = Test::create($snakeInsertionResults['newSnakeId'], $_SESSION['user_id']);
         ValidationHelper::shouldAddError(!$testInsertionResults["isSuccessful"], "Test could not be correctly inserted");
-        ValidationHelper::checkErrorExists(ErrorRedirectLocation::CreateTest->value);
+        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
 
         $testMorphIdsByNameInputted = Morph::getMorphIds($_POST[MorphInputClass::TestMorph->value]);
         $testMorphsInsertionIsSuccessful = TestedMorph::create($testInsertionResults['newTestId'], $testMorphIdsByNameInputted);
         ValidationHelper::shouldAddError(!$testMorphsInsertionIsSuccessful, "Tested morphs could not be correctly inserted");
-        ValidationHelper::checkErrorExists(ErrorRedirectLocation::CreateTest->value);
+        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
 
         header('Location: index.php?controller=cart&action=addTestToCart&id=' . $testInsertionResults['newTestId']);
     }

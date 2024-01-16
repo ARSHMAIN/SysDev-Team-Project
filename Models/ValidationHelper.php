@@ -166,7 +166,7 @@
             }
         }
 
-        public static function checkErrorExists(string $redirectLocation) : void {
+        public static function checkSessionErrorExists(string $redirectLocation) : void {
             /*
              Redirect the user in case there is an error to the redirectLocation variable
             */
@@ -319,9 +319,11 @@
               "Invalid password"
             );
 
+
             return [
                 "emailValidationResults" => $emailValidationResults,
                 "passwordValidationResults" => $passwordValidationResults,
             ];
         }
+
     }

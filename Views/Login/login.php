@@ -14,6 +14,12 @@
 
     <section class="loginRegisterWrapper marginAuto">
         <div>
+            <?php
+             if(isset($_SESSION["error"])) {
+                    var_dump($_SESSION["error"]);
+                }
+            ?>
+
             <header class="loginRegisterHeader textAlignCenter">
                 <label>Login</label>
             </header>

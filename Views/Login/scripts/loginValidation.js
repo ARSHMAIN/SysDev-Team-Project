@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", setUpEventHandlers);
 
 
 function setUpEventHandlers() {
-    setUpSignUpClickEvent();
+    // setUpSignUpClickEvent();
 }
 
 function setUpSignUpClickEvent() {

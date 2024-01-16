@@ -353,11 +353,11 @@ class Morph extends Model
                                                                 ) {
         $knownMorphsInsertIsSuccessful = KnownPossibleMorph::createIfNotExists($snakeId, $knownMorphIdsInputted, true);
         ValidationHelper::shouldAddError(!$knownMorphsInsertIsSuccessful, "An error occurred when inserting the known morphs");
-        ValidationHelper::checkErrorExists($errorRedirectLocation);
+        ValidationHelper::checkSessionErrorExists($errorRedirectLocation);
 
         $possibleMorphsInsertIsSuccessful = KnownPossibleMorph::createIfNotExists($snakeId, $possibleMorphIdsInputted, false);
         ValidationHelper::shouldAddError(!$possibleMorphsInsertIsSuccessful, "An error occurred when inserting the possible morphs");
-        ValidationHelper::checkErrorExists($errorRedirectLocation);
+        ValidationHelper::checkSessionErrorExists($errorRedirectLocation);
 
 
     }
