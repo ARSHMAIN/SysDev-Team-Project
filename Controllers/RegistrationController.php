@@ -26,9 +26,18 @@ class RegistrationController extends Controller
         $postDataAccepted = ValidationHelper::isPostDataAccepted($postNamesAccepted, $_POST);
         $postDataRequired = ValidationHelper::isPostDataRequired($postNamesRequired, $_POST);
         if($postDataAccepted && $postDataRequired) {
-            $emailPasswordValidationResults =
+            // Temporary measure to clear out the session error to give the correct error message
+            $_SESSION["error"] = null;
+            ValidationHelper::validateFirstNameAndLastName();
+            ValidationHelper::validateEmailAndPassword();
+            ValidationHelper::checkErrorExists(ErrorRedirectLocation::Registration->value);
 
-            User::createUserByRoleName($_POST);
+
+            // If the validation passed, create the user
+            // because the credentials are correct
+            User::createUserByRoleName($_POST, "There was an error when creating the account");
+            ValidationHelper::checkErrorExists(ErrorRedirectLocation::Registration->value);
+
             header("Location: index.php?controller=login&action=login");
         }
         else {

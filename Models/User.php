@@ -181,10 +181,10 @@ class User extends Model
         return $user;
     }
 
-    public static function createUserByRoleName(array $postFields): array
+    public static function createUserByRoleName(array $postFields, string $sessionErrorText): array
     {
         $dBConnection = self::openDatabaseConnection();
-
+        $isSuccessful = false;
         try {
             foreach ($postFields as $key => $value) {
                 if ($value === '') {
@@ -214,7 +214,11 @@ class User extends Model
             ];
         } catch (PDOException $e) {
             // Handle the exception as per your application's requirements
-            die("Error: " . $e->getMessage());
+            ValidationHelper::shouldAddError(!$isSuccessful, $sessionErrorText);
+            return [
+                'isSuccessful' => false,
+                'newRegisteredUserId' => -1
+            ];
         } finally {
             $stmt->closeCursor();
             $dBConnection = null;

@@ -2,10 +2,10 @@ document.addEventListener("DOMContentLoaded", setUpEventHandlers);
 
 
 function setUpEventHandlers() {
-    setUpSignUpClickEvent();
+    setUpSignUpClickEventHandler();
 }
 
-function setUpSignUpClickEvent() {
+function setUpSignUpClickEventHandler() {
     let registrationForm = document.getElementById("registration");
 
     registrationForm.addEventListener("submit", function(formSubmitEvent) {

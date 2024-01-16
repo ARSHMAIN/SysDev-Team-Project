@@ -73,7 +73,8 @@
             return $emptyValuesExist;
         }
 
-        public static function detectDuplicatesIndexedArray(array $arrayToDetectDuplicatesIn, bool $isCaseInsensitive = true){
+        public static function detectDuplicatesIndexedArray(array $arrayToDetectDuplicatesIn, bool $isCaseInsensitive = true): bool
+        {
             /*
                 Detect duplicates inside an indexed array
                 Returns false if the array passed is an associative array (string keys)
@@ -161,6 +162,7 @@
                     If the data is invalid then there is an error
                 */
                 $_SESSION["error"][] = $sessionErrorText;
+                $_SESSION["error"] = array_unique($_SESSION["error"]);
             }
         }
 
@@ -279,38 +281,47 @@
             ];
         }
 
-        public static function validateEmailAndPassword(): array
+        public static function validateFirstNameAndLastName(): array
         {
-            $emailPostIsString = ValidationHelper::checkFormValueType(
-                $_POST["email"],
+            $firstNameValidationResults = ValidationHelper::validateRequiredSingleFormValue(
+                $_POST["firstName"],
                 "string",
-                "Email is invalid"
+                true,
+                "Invalid first name"
             );
 
-            $passwordPostIsString = ValidationHelper::checkFormValueType(
-              $_POST["password"],
+            $lastNameValidationResults = ValidationHelper::validateRequiredSingleFormValue(
+              $_POST["lastName"],
               "string",
-              "Password is invalid"
+              true,
+              "Invalid last name"
             );
-
-
-            // By default, email is empty if the $_POST is not of the correct format
-            // because the array format for this value is not allowed
-            $emailIsEmpty = true;
-            if($emailPostIsString) {
-                $emailIsEmpty = mb_strlen($_POST["email"], "UTF-8") == 0;
-            }
-
-            $passwordIsEmpty = true;
-            if($passwordPostIsString) {
-                $passwordIsEmpty = mb_strlen($_POST["password"], "UTF-8") == 0;
-            }
 
             return [
-                "emailPostIsString" => $emailPostIsString,
-                "passwordPostIsString" => $passwordPostIsString,
-                "emailIsEmpty" => $emailIsEmpty,
-                "passwordIsEmpty" => $passwordIsEmpty
+              "firstNameValidationResults" => $firstNameValidationResults,
+              "lastNameValidationResults" => $lastNameValidationResults
+            ];
+        }
+
+        public static function validateEmailAndPassword(): array
+        {
+            $emailValidationResults = ValidationHelper::validateRequiredSingleFormValue(
+                $_POST["email"],
+                "string",
+                true,
+                "Invalid email"
+            );
+
+            $passwordValidationResults = ValidationHelper::validateRequiredSingleFormValue(
+              $_POST["password"],
+              "string",
+              true,
+              "Invalid password"
+            );
+
+            return [
+                "emailValidationResults" => $emailValidationResults,
+                "passwordValidationResults" => $passwordValidationResults,
             ];
         }
     }

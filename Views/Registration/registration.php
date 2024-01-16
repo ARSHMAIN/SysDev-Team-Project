@@ -14,6 +14,13 @@
             include_once "Views/Shared/navbar.php";
         ?>
 
+        <div>
+            <?php
+                if(isset($_SESSION["error"])) {
+                    var_dump($_SESSION["error"]);
+                }
+            ?>
+        </div>
         <section class="loginRegisterWrapper marginAuto">
             <div class="textAlignCenter">
                 <header class="loginRegisterHeader">
