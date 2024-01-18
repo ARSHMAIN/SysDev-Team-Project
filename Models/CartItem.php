@@ -2,20 +2,17 @@
 class CartItem extends Model
 {
     private int $cartItemId;
-    private int $cartId;
     private int $userId;
     private ?int $donationId;
     private ?int $testId;
     public function __construct(
         int $pCartItemId = -1,
-        int $pCartId = -1,
         int $pUserId = -1,
         ?int $pDonationId = -1,
         ?int $pTestId = -1
     ) {
         $this->initializeProperties(
             $pCartItemId,
-            $pCartId,
             $pUserId,
             $pDonationId,
             $pTestId
@@ -24,7 +21,6 @@ class CartItem extends Model
 
     private function initializeProperties(
         int $pCartItemId,
-        int $pCartId,
         int $pUserId,
         ?int $pDonationId,
         ?int $pTestId
@@ -33,13 +29,11 @@ class CartItem extends Model
         if ($pCartItemId < 0) return;
         else if (
             $pCartItemId > 0
-            && $pCartId > 0
             && $pUserId > 0
             && $pDonationId > 0
             && $pTestId > 0
         ) {
             $this->cartItemId = $pCartItemId;
-            $this->cartId = $pCartId;
             $this->userId = $pUserId;
             $this->donationId = $pDonationId;
             $this->testId = $pTestId;
@@ -63,7 +57,6 @@ class CartItem extends Model
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($result) {
                 $this->cartItemId = $result['cart_item_id'];
-                $this->cartId = $result['cart_id'];
                 $this->userId = $result['user_id'];
                 $this->donationId = $result['donation_id'];
                 $this->testId = $result['test_id'];
@@ -77,11 +70,11 @@ class CartItem extends Model
         }
 
     }
-    public static function geCartItemByCartIdAndUserId(int $pUserId)
+    public static function geCartItemByUserId(int $pUserId)
     {
         $dBConnection = self::openDatabaseConnection();
         try {
-            $sql = "SELECT * FROM cart_item WHERE cart_id = 1 AND user_id = ?";
+            $sql = "SELECT * FROM cart_item WHERE user_id = ?";
             $stmt = $dBConnection->prepare($sql);
 
             $stmt->bindParam(1, $pUserId, PDO::PARAM_INT);
@@ -94,7 +87,6 @@ class CartItem extends Model
                 foreach ($results as $row) {
                     $cartItem = new CartItem();
                     $cartItem->cartItemId = $row['cart_item_id'];
-                    $cartItem->cartId = $row['cart_id'];
                     $cartItem->userId = $row['user_id'];
                     $cartItem->donationId = $row['donation_id'];
                     $cartItem->testId = $row['test_id'];
@@ -116,7 +108,7 @@ class CartItem extends Model
         $dBConnection = self::openDatabaseConnection();
 
         try {
-            $sql = "INSERT INTO cart_item (cart_id, user_id, donation_id, test_id) VALUES (1, ?, ?, ?)";
+            $sql = "INSERT INTO cart_item (user_id, donation_id, test_id) VALUES (?, ?, ?)";
             $stmt = $dBConnection->prepare($sql);
 
             $stmt->bindValue(1, $pUserId, PDO::PARAM_INT);     // user_id
@@ -207,16 +199,6 @@ class CartItem extends Model
     public function setCartItemId(int $cartItemId): void
     {
         $this->cartItemId = $cartItemId;
-    }
-
-    public function getCartId(): int
-    {
-        return $this->cartId;
-    }
-
-    public function setCartId(int $cartId): void
-    {
-        $this->cartId = $cartId;
     }
 
     public function getUserId(): int

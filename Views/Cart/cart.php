@@ -35,42 +35,58 @@
             }
             ?>
             <h2>Tests</h2>
-            <?php
-            if (!empty($data['tests'])) {
-                ?>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Snake Name</th>
-                            <th>Sex</th>
-                            <th>Origin</th>
-                            <th>Known Morphs</th>
-                            <th>Possible Morphs</th>
-                            <th>Tested Morphs</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        foreach ($data['tests'] as $test) {
-                            echo "<td>" . $test['customerSnakeId'] . "</td>";
-                            echo "<td>" . $test['sex'] . "</td>";
-                            echo "<td>" . $test['origin'] . "</td>";
-                            $stringKnownMorph = implode(', ', $test['knownMorphs']);
-                            $stringPossibleMorph = implode(', ', $test['possibleMorphs']);
-                            $stringTestedMorph = implode(', ', $test['testedMorphs']);
-                            echo "<td>" . $stringKnownMorph . "</td>";
-                            echo "<td>" . $stringPossibleMorph . "</td>";
-                            echo "<td>" . $stringTestedMorph . "</td>";
-                            echo "<td><a href='index.php?controller=order&action=updateTest&id=" . $test['testId'] . "'>Update</a></td>";
-                            echo "<td><a href='index.php?controller=order&action=deleteTest&id=" . $test['testId'] . "'>Delete</a></td></tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            <?php } ?>
-
+            <?php if (!empty($data['mainSnakeInfo'])) { ?>
             <div class="contain-contents">
                 <!-- WHERE THE CART CONTENTS ARE DISPLAYED -->
+                <?php
+                foreach ($data['mainSnakeInfo'] as $mainSnakeInfo) {
+                ?>
+                    <table id="table">
+                        <!-- TODO: APPEND DATA ID TO THIS ITEM SO THEY CAN BE GENERIC AND UNIQUE-->
+                        <tr id="item">
+                            <td>
+                                <div class="photo">
+                                    <i class="bi bi-camera-fill"></i>
+                                </div>
+                            </td>
+                            <!--TODO unknown icon doesn't work-->
+                            <td>
+                                <h3><?php echo $mainSnakeInfo['customerSnakeName']->getCustomerSnakeId() ?> <i class='<?php echo "bi bi-gender-" . strtolower($mainSnakeInfo['sex']->getSexName()) ?>'></i></h3>
+                                <strong>Known morphs:</strong>
+                                <?php
+                                if (array_key_exists($mainSnakeInfo['snake']->getSnakeId(), $data['knownAndPossibleMorphs'])) {
+                                    $knownMorphs = join(", ", $data['knownAndPossibleMorphs'][$mainSnakeInfo['snake']->getSnakeId()]['known']);
+                                    echo "<p> $knownMorphs, <a href='#'>More...</a></p>";
+                                }
+                                ?>
+                                <strong>Possible morphs:</strong>
+                                <?php
+                                if (array_key_exists($mainSnakeInfo['snake']->getSnakeId(), $data['knownAndPossibleMorphs'])) {
+                                    $possibleMorphs = join(", ", $data['knownAndPossibleMorphs'][$mainSnakeInfo['snake']->getSnakeId()]['possible']);
+                                    echo "<p> $possibleMorphs, <a href='#'>More...</a></p>";
+                                }
+                                ?>
+                                <strong>Morphs to test for:</strong>
+                                <?php
+                                if (array_key_exists($mainSnakeInfo['snake']->getSnakeId(), $data['testedMorphs'])) {
+                                    $testedMorphs = join(", ", $data['testedMorphs'][$mainSnakeInfo['snake']->getSnakeId()]);
+                                    echo "<p> $testedMorphs, <a href='#'>More...</a></p>";
+                                }
+                                ?>
+                                <strong>Snake origin:</strong>
+                                <p><?php echo $mainSnakeInfo['snake']->getSnakeOrigin() ?></p>
+
+                            </td>
+                            <td>
+                                <div class="crud-icons">
+                                    <a href="#" id="copy" name="copy"><i class="bi bi-copy"></i></a>
+                                    <a href="#" id="edit" name="edit"><i class="bi bi-pencil"></i></a>
+                                    <a href="#" id="delete" name="delete"><i class="bi bi-trash3"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                <?php } ?>
                 <table id="table">
                     <!-- TODO: APPEND DATA ID TO THIS ITEM SO THEY CAN BE GENERIC AND UNIQUE-->
                     <tr id="item">
@@ -99,6 +115,8 @@
                     </tr>
                 </table>
             </div>
+            <?php } ?>
+
             <br><br><br>
             
             <h2>Donations</h2>
@@ -133,12 +151,14 @@
                 <footer>
                     <hr>
                     <label>Total: $</label></br></br>
+                    <?php if (!empty($data)) { ?>
                     <div class="signButtons widthMinContent marginAuto">
                         <div class="loginSignUpButton">
                             <input style="color: black" type="submit" name="submit"
                                 class="cursorPointer width100Percent" value="Continue">
                         </div>
                     </div>
+                    <?php } ?>
                 </footer>
             </div>
         </div>

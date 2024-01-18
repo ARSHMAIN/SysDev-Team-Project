@@ -49,7 +49,7 @@ class TestedMorph extends Model
         $dBConnection = self::openDatabaseConnection();
 
         try {
-            $sql = "SELECT * FROM testedmorph WHERE test_id = ?";
+            $sql = "SELECT * FROM tested_morph WHERE test_id = ?";
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindParam(1, $pTestId, PDO::PARAM_INT);
             $stmt->execute();
@@ -85,7 +85,7 @@ class TestedMorph extends Model
 
         try {
             // Build the SQL statement
-            $sql = "INSERT INTO testedmorph (test_id, morph_id) VALUES ";
+            $sql = "INSERT INTO tested_morph (test_id, morph_id) VALUES ";
             $sql .= implode(',', array_fill(0, count($pMorphIds), "($pTestId, ?)"));
 
             // Prepare the statement
@@ -121,7 +121,7 @@ class TestedMorph extends Model
         try {
             $dbConnection = self::openDatabaseConnection();
             $sqlQuery = "
-                DELETE FROM testedmorph
+                DELETE FROM tested_morph
                     WHERE test_id = ? AND
             ";
 
@@ -153,7 +153,7 @@ class TestedMorph extends Model
         $isSuccessful = false;
         try {
             $dbConnection = self::openDatabaseConnection();
-            $sqlQuery = "INSERT INTO testedmorph (test_id, morph_id) VALUES ";
+            $sqlQuery = "INSERT INTO tested_morph (test_id, morph_id) VALUES ";
             $sqlQuery .= implode(',', array_fill(0, count($pMorphIds), "($pTestId, ?)"));
             $sqlQuery .= " ON DUPLICATE KEY UPDATE testedmorph.test_id = testedmorph.test_id, testedmorph.morph_id = testedmorph.morph_id;
             ";
@@ -199,7 +199,7 @@ class TestedMorph extends Model
         }
 
         try {
-            $sql = "UPDATE testedmorph SET result = ?, comment = ?, result_image_path = ? WHERE test_id = ? AND morph_id = ?";
+            $sql = "UPDATE tested_morph SET result = ?, comment = ?, result_image_path = ? WHERE test_id = ? AND morph_id = ?";
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindParam(1, $postFields['result'], PDO::PARAM_STR);
             $stmt->bindParam(2, $postFields['comment'], PDO::PARAM_STR);
@@ -220,7 +220,7 @@ class TestedMorph extends Model
         $dBConnection = self::openDatabaseConnection();
 
         try {
-            $sql = "DELETE FROM testedmorph WHERE test_id = ? AND morph_id = ?";
+            $sql = "DELETE FROM tested_morph WHERE test_id = ? AND morph_id = ?";
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindParam(1, $pTestId, PDO::PARAM_INT);
             $stmt->bindParam(2, $pMorphId, PDO::PARAM_INT);

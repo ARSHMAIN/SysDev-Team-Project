@@ -44,7 +44,7 @@ class CustomerSnakeName extends Model
     {
         $dBConnection = self::openDatabaseConnection();
         try {
-            $sql = "SELECT * FROM customersnakename WHERE snake_id = ?";
+            $sql = "SELECT * FROM customer_snake_name WHERE snake_id = ?";
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
             $stmt->execute();
@@ -68,7 +68,7 @@ class CustomerSnakeName extends Model
     {
         $dBConnection = self::openDatabaseConnection();
         try {
-            $sql = "SELECT * FROM customersnakename WHERE user_id = ?";
+            $sql = "SELECT * FROM customer_snake_name WHERE user_id = ?";
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindParam(1, $pUserId, PDO::PARAM_INT);
             $stmt->execute();
@@ -97,7 +97,7 @@ class CustomerSnakeName extends Model
     {
         $dBConnection = self::openDatabaseConnection();
         try {
-            $sql = "SELECT * FROM customersnakename WHERE customer_snake_id = ? AND user_id = ?";
+            $sql = "SELECT * FROM customer_snake_name WHERE customer_snake_id = ? AND user_id = ?";
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindParam(1, $pCustomerSnakeId, PDO::PARAM_STR);
             $stmt->bindParam(2, $pUserId, PDO::PARAM_INT);
@@ -125,7 +125,7 @@ class CustomerSnakeName extends Model
     {
         $dBConnection = self::openDatabaseConnection();
         try {
-            $sql = "SELECT * FROM customersnakename WHERE customer_snake_id LIKE ? AND user_id = ?";
+            $sql = "SELECT * FROM customer_snake_name WHERE customer_snake_id LIKE ? AND user_id = ?";
             $stmt = $dBConnection->prepare($sql);
             $pCustomerSnakeId = "%$pCustomerSnakeId%";
             $stmt->bindParam(1, $pCustomerSnakeId, PDO::PARAM_STR);
@@ -155,7 +155,7 @@ class CustomerSnakeName extends Model
 
         try {
             $dBConnection = self::openDatabaseConnection();
-            $sql = "INSERT INTO customersnakename (customer_snake_id, user_id, snake_id) VALUES (?, ?, ?)";
+            $sql = "INSERT INTO customer_snake_name (customer_snake_id, user_id, snake_id) VALUES (?, ?, ?)";
             $stmt = $dBConnection->prepare($sql);
 
             // Bind parameters after checking for empty strings
@@ -206,7 +206,7 @@ class CustomerSnakeName extends Model
 
         try {
             $dBConnection = self::openDatabaseConnection();
-            $sql = "UPDATE customersnakename SET customer_snake_id = ? WHERE snake_id = ? AND user_id = ?";
+            $sql = "UPDATE customer_snake_name SET customer_snake_id = ? WHERE snake_id = ? AND user_id = ?";
             $stmt = $dBConnection->prepare($sql);
 
             // Bind parameters after checking for empty strings
@@ -268,10 +268,10 @@ class CustomerSnakeName extends Model
                 customer put in the form
             */
             $sqlQuery = "
-                SELECT COUNT(customersnakename.customer_snake_id) as sameCustomerSnakeIdCount
+                SELECT COUNT(customer_snake_name.customer_snake_id) as sameCustomerSnakeIdCount
                 FROM TEST
-                JOIN CUSTOMERSNAKENAME on test.snake_id = customersnakename.snake_id
-                WHERE customersnakename.customer_snake_id = ?
+                JOIN customer_snake_name on test.snake_id = customer_snake_name.snake_id
+                WHERE customer_snake_name.customer_snake_id = ?
                 AND test.test_id = ?;
             ";
             $pdoStatement = $dbConnection->prepare($sqlQuery);
@@ -301,7 +301,7 @@ class CustomerSnakeName extends Model
 
         try {
             $dBConnection = self::openDatabaseConnection();
-            $sql = "DELETE FROM customersnakename WHERE snake_id = ? AND user_id = ?";
+            $sql = "DELETE FROM customer_snake_name WHERE snake_id = ? AND user_id = ?";
             $stmt = $dBConnection->prepare($sql);
 
             // Bind parameters after checking for empty strings

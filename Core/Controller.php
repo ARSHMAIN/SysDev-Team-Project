@@ -1,5 +1,5 @@
 <?php
-include_once 'Middleware/AuthenticationMiddleware.php';
+include_once 'Middleware/SessionMiddleware.php';
 class Controller
 {
     public function __construct()

@@ -36,9 +36,8 @@ class KnownPossibleMorph extends Model
     public static function getKnownAndPossibleMorphBySnakeId(int $pSnakeId): ?array
     {
         $dBConnection = self::openDatabaseConnection();
-
         try {
-            $sql = "SELECT * FROM knownpossiblemorph WHERE snake_id = ?";
+            $sql = "SELECT * FROM known_possible_morph WHERE snake_id = ?";
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
             $stmt->execute();
@@ -69,7 +68,7 @@ class KnownPossibleMorph extends Model
     {
         $dBConnection = self::openDatabaseConnection();
         try {
-            $sql = "SELECT * FROM knownpossiblemorph WHERE snake_id = ? AND  is_known = ?";
+            $sql = "SELECT * FROM known_possible_morph WHERE snake_id = ? AND  is_known = ?";
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindValue(1, $pSnakeId, PDO::PARAM_INT);
             $stmt->bindValue(2, $pIsKnown, PDO::PARAM_BOOL);
@@ -103,7 +102,7 @@ class KnownPossibleMorph extends Model
         $dBConnection = self::openDatabaseConnection();
 
         try {
-            $sql = "SELECT * FROM knownpossiblemorph k JOIN morph m on k.morph_id = m.morph_id WHERE k.morph_id = ? AND m.is_tested = TRUE";
+            $sql = "SELECT * FROM known_possible_morph k JOIN morph m on k.morph_id = m.morph_id WHERE k.morph_id = ? AND m.is_tested = TRUE";
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindParam(1, $pMorphId, PDO::PARAM_INT);
             $stmt->execute();
@@ -130,7 +129,7 @@ class KnownPossibleMorph extends Model
         try {
             $dBConnection = self::openDatabaseConnection();
             // Build the SQL statement
-            $sql = "INSERT INTO knownpossiblemorph (snake_id, morph_id, is_known) VALUES ";
+            $sql = "INSERT INTO known_possible_morph (snake_id, morph_id, is_known) VALUES ";
             $sql .= implode(',', array_fill(0, count($pMorphIds), '(?, ?, ?)'));
 
             // Prepare the statement
@@ -173,7 +172,7 @@ class KnownPossibleMorph extends Model
         $isSuccessful = false;
         try {
             $dbConnection = self::openDatabaseConnection();
-            $sqlQuery = "DELETE FROM knownpossiblemorph
+            $sqlQuery = "DELETE FROM known_possible_morph
                     WHERE snake_id = ? AND 
             ";
 
@@ -218,7 +217,7 @@ class KnownPossibleMorph extends Model
         $dBConnection = self::openDatabaseConnection();
 
         try {
-            $sql = "UPDATE knownpossiblemorph SET morph_id = ?, is_known = ? WHERE snake_id = ?";
+            $sql = "UPDATE known_possible_morph SET morph_id = ?, is_known = ? WHERE snake_id = ?";
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindParam(1, $pMorphId, PDO::PARAM_INT);
             $stmt->bindParam(2, $pIsKnown, PDO::PARAM_BOOL);
@@ -241,7 +240,7 @@ class KnownPossibleMorph extends Model
         $dBConnection = self::openDatabaseConnection();
 
         try {
-            $sql = "DELETE FROM knownpossiblemorph WHERE snake_id = ? AND morph_id = ?";
+            $sql = "DELETE FROM known_possible_morph WHERE snake_id = ? AND morph_id = ?";
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindParam(1, $pSnakeId, PDO::PARAM_INT);
             $stmt->bindParam(2, $pMorphId, PDO::PARAM_INT);

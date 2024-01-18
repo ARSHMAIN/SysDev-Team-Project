@@ -3,37 +3,14 @@ class CartController extends Controller
 {
     function cart(): void
     {
-        $cartItems = CartItem::geCartItemByCartIdAndUserId($_SESSION['user_id']);
-        $donations = [];
-        $tests = [];
-        if ($cartItems) {
-            foreach ($cartItems as $item) {
-                if ($item->getDonationId() !== null) {
-                    $donation = null;
-                    $donations[] = $donation;
-                } else if ($item->getTestId() !== null) {
-                    $test = new Test($item->getTestId());
-                    $snake = new Snake($test->getSnakeId());
-                    $customerSnakeId = new CustomerSnakeName($snake->getSnakeId());
-                    $sex = new Sex($snake->getSexId());
-                    $knownMorphs = KnownPossibleMorph::getKnownPossibleMorphsBySnakeId($snake->getSnakeId(), true);
-                    $possibleMorphs = KnownPossibleMorph::getKnownPossibleMorphsBySnakeId($snake->getSnakeId(), false);
-                    $testedMorphs = TestedMorph::getAllTestedMorphById($test->getTestId());
-                    $tests[] = [
-                        'testId' => $test->getTestId(),
-                        'customerSnakeId' => $customerSnakeId->getCustomerSnakeId(),
-                        'sex' => $sex->getSexName(),
-                        'origin' => $snake->getSnakeOrigin(),
-                        'knownMorphs' => Morph::getMorphNames($knownMorphs),
-                        'possibleMorphs' => Morph::getMorphNames($possibleMorphs),
-                        'testedMorphs' => Morph::getMorphNames($testedMorphs)
-                    ];
-                }
-            }
-            $this->render(['tests' => $tests, 'donations' => $donations]);
-        } else {
-            $this->render();
-        }
+        $mainSnakeInfo = Cart::getMainSnakeInfo($_SESSION['user_id']);
+        $knownAndPossibleMorphs = Cart::getKnownAndPossibleMorphs($_SESSION['user_id']);
+        $testedMorphs = Cart::getTestedMorphs($_SESSION['user_id']);
+        $this->render([
+            'mainSnakeInfo' => $mainSnakeInfo,
+            'knownAndPossibleMorphs' => $knownAndPossibleMorphs,
+            'testedMorphs' => $testedMorphs
+        ]);
     }
     function addTestToCart(): void
     {

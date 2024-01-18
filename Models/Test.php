@@ -314,12 +314,12 @@ class Test extends Model
         $this->snakeId = $snakeId;
     }
 
-    public function getOrderId(): int
+    public function getOrderId(): ?int
     {
         return $this->orderId;
     }
 
-    public function setOrderId(int $orderId): void
+    public function setOrderId(?int $orderId): void
     {
         $this->orderId = $orderId;
     }
