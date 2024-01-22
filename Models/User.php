@@ -263,6 +263,42 @@ class User extends Model
         }
     }
 
+    public static function updateInsensitivePersonalInformation(int $pUserId,
+                                                                array $postArray,
+                                                                string $sessionErrorText): bool
+    {
+        $dbConnection = self::openDatabaseConnection();
+
+        $isSuccessful = false;
+        try{
+            $sqlQuery = "UPDATE user SET first_name = :firstName,
+                last_name = :lastName,
+                phone_number = :phoneNumber,
+                company_name = :companyName
+                WHERE user_id = :userId
+                ;
+            ";
+
+            $pdoStatement = $dbConnection->prepare($sqlQuery);
+            $pdoStatement->bindValue(":firstName", $postArray["firstName"]);
+            $pdoStatement->bindValue(":lastName", $postArray["lastName"]);
+            $pdoStatement->bindValue(":phoneNumber", mb_strlen($postArray["phoneNumber"], "UTF-8") == 0? null : $postArray["phoneNumber"]);
+            $pdoStatement->bindValue(":companyName", mb_strlen($postArray["companyName"], "UTF-8") == 0? null : $postArray["companyName"]);
+            $pdoStatement->bindValue(":userId", $pUserId);
+
+            $isSuccessful = $pdoStatement->execute();
+        }
+        catch(PDOException $pdoException) {
+            ValidationHelper::shouldAddError(true, $sessionErrorText);
+        }
+        finally {
+            $pdoStatement->closeCursor();
+            $dbConnection = null;
+        }
+
+        return $isSuccessful;
+    }
+
     public static function deleteUserById(int $pUserId): void
     {
         $dBConnection = self::openDatabaseConnection();
@@ -333,22 +369,22 @@ class User extends Model
         $this->password = $password;
     }
 
-    public function getPhoneNumber(): string
+    public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
     }
 
-    public function setPhoneNumber(string $phoneNumber): void
+    public function setPhoneNumber(?string $phoneNumber): void
     {
         $this->phoneNumber = $phoneNumber;
     }
 
-    public function getCompanyName(): string
+    public function getCompanyName(): ?string
     {
         return $this->companyName;
     }
 
-    public function setCompanyName(string $companyName): void
+    public function setCompanyName(?string $companyName): void
     {
         $this->companyName = $companyName;
     }
@@ -363,12 +399,12 @@ class User extends Model
         $this->registeredDate = $registeredDate;
     }
 
-    public function getLastLogin(): string
+    public function getLastLogin(): ?string
     {
         return $this->lastLogin;
     }
 
-    public function setLastLogin(string $lastLogin): void
+    public function setLastLogin(?string $lastLogin): void
     {
         $this->lastLogin = $lastLogin;
     }

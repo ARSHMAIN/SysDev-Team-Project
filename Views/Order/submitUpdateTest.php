@@ -86,7 +86,7 @@
             $customerSnakeName->getSnakeId(),
             ErrorRedirectLocation::UpdateTest->value . $testExistsResults["associatedTest"]->getTestId(),
             $knownMorphIdsByNameInputted,
-            $possibleMorphIdsByNameInputted,
+            $possibleMorphIdsByNameInputted
         );
 
         $deleteRemovedTestMorphIsSuccessful = TestedMorph::deleteRemovedTestedMorphs(

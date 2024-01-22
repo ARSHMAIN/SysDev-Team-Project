@@ -5,7 +5,7 @@ class Address extends Model
     private string $streetNumber = "";
     private string $streetName = "";
     private string $city = "";
-    private string $stateOrRegion = "";
+    private ?string $stateOrRegion = "";
     private string $postalCode = "";
     private string $country = "";
     private int $userId = -1;
@@ -112,11 +112,11 @@ class Address extends Model
             $sql = "INSERT INTO address (street_number, street_name, city, state_or_region, postal_code, country, user_id) 
                     VALUES (:street_number, :street_name, :city, :state_or_region, :postal_code, :country, :user_id)";
             $stmt = $dBConnection->prepare($sql);
-            $stmt->bindParam(':street_number', $postFields['street_number'], PDO::PARAM_STR);
-            $stmt->bindParam(':street_name', $postFields['street_name'], PDO::PARAM_STR);
+            $stmt->bindParam(':street_number', $postFields['streetNumber'], PDO::PARAM_STR);
+            $stmt->bindParam(':street_name', $postFields['streetName'], PDO::PARAM_STR);
             $stmt->bindParam(':city', $postFields['city'], PDO::PARAM_STR);
-            $stmt->bindParam(':state_or_region', $postFields['state_or_region'], PDO::PARAM_STR);
-            $stmt->bindParam(':postal_code', $postFields['postal_code'], PDO::PARAM_STR);
+            $stmt->bindParam(':state_or_region', $postFields['stateOrRegion'], PDO::PARAM_STR);
+            $stmt->bindParam(':postal_code', $postFields['postalCode'], PDO::PARAM_STR);
             $stmt->bindParam(':country', $postFields['country'], PDO::PARAM_STR);
             $stmt->bindParam(':user_id', $pUserId, PDO::PARAM_INT);
 
@@ -136,10 +136,12 @@ class Address extends Model
         return $isSuccessful;
     }
 
-    public static function updateAddress(int $pUserId, array $postFields): void
+    public static function updateAddress(int $pUserId, array $postFields): bool
     {
         $dBConnection = self::openDatabaseConnection();
 
+
+        $isSuccessful = false;
         try {
             foreach ($postFields as $key => $value) {
                 if ($value === '') {
@@ -152,15 +154,15 @@ class Address extends Model
                         state_or_region = :state_or_region, postal_code = :postal_code, country = :country 
                     WHERE user_id = :user_id";
             $stmt = $dBConnection->prepare($sql);
-            $stmt->bindParam(':street_number', $postFields['street_number'], PDO::PARAM_STR);
-            $stmt->bindParam(':street_name', $postFields['street_name'], PDO::PARAM_STR);
+            $stmt->bindParam(':street_number', $postFields['streetNumber'], PDO::PARAM_STR);
+            $stmt->bindParam(':street_name', $postFields['streetName'], PDO::PARAM_STR);
             $stmt->bindParam(':city', $postFields['city'], PDO::PARAM_STR);
-            $stmt->bindParam(':state_or_region', $postFields['state_or_region'], PDO::PARAM_STR);
-            $stmt->bindParam(':postal_code', $postFields['postal_code'], PDO::PARAM_STR);
+            $stmt->bindParam(':state_or_region', $postFields['stateOrRegion'], PDO::PARAM_STR);
+            $stmt->bindParam(':postal_code', $postFields['postalCode'], PDO::PARAM_STR);
             $stmt->bindParam(':country', $postFields['country'], PDO::PARAM_STR);
             $stmt->bindParam(':user_id', $pUserId, PDO::PARAM_INT);
 
-            $stmt->execute();
+            $isSuccessful = $stmt->execute();
         } catch (PDOException $e) {
             // Handle specific error conditions
             if ($e->getCode() == '23000') {
@@ -170,6 +172,7 @@ class Address extends Model
         } finally {
             $stmt?->closeCursor();
             $dBConnection = null;
+            return $isSuccessful;
         }
     }
 
@@ -213,12 +216,12 @@ class Address extends Model
         $this->city = $city;
     }
 
-    public function getStateOrRegion(): string
+    public function getStateOrRegion(): ?string
     {
         return $this->stateOrRegion;
     }
 
-    public function setStateOrRegion(string $stateOrRegion): void
+    public function setStateOrRegion(?string $stateOrRegion): void
     {
         $this->stateOrRegion = $stateOrRegion;
     }

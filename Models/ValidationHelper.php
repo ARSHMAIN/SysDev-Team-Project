@@ -326,4 +326,75 @@
             ];
         }
 
+        public static function validateEditProfileInformation(): array
+        {
+            $firstNameLastNameValidationResults = ValidationHelper::validateFirstNameAndLastName();
+
+            $phoneNumberValidationResults = ValidationHelper::checkFormValueType(
+              $_POST["phoneNumber"],
+                "string",
+                true,
+                "Invalid phone number"
+            );
+
+            $companyNameValidationResults = ValidationHelper::checkFormValueType(
+              $_POST["companyName"],
+              "string",
+              true,
+              "Invalid company name"
+            );
+
+            $streetNumberValidationResults = ValidationHelper::validateRequiredSingleFormValue(
+              $_POST["streetNumber"],
+                "string",
+                true,
+                "Invalid street number"
+            );
+
+            $streetNameValidationResults = ValidationHelper::validateRequiredSingleFormValue(
+              $_POST["streetName"],
+                "string",
+                true,
+                "Invalid street name"
+            );
+
+            $cityValidationResults = ValidationHelper::validateRequiredSingleFormValue(
+              $_POST["city"],
+              "string",
+              true,
+              "Invalid city"
+            );
+
+            $stateOrRegionValidationResults = ValidationHelper::checkFormValueType(
+              $_POST["stateOrRegion"],
+              "string",
+              true,
+              "Invalid state/region"
+            );
+
+            $postalCodeValidationResults = ValidationHelper::validateRequiredSingleFormValue(
+                $_POST["postalCode"],
+                "string",
+                true,
+                "Invalid postal code"
+            );
+
+            $countryValidationResults = ValidationHelper::validateRequiredSingleFormValue(
+              $_POST["country"],
+              "string",
+              true,
+              "Invalid country"
+            );
+
+            return [
+                "firstNameLastNameValidationResults" => $firstNameLastNameValidationResults,
+                "phoneNumberValidationResults" => $phoneNumberValidationResults,
+                "streetNumberValidationResults" => $streetNumberValidationResults,
+                "streetNameValidationResults" => $streetNameValidationResults,
+                "cityValidationResults" => $cityValidationResults,
+                "stateOrRegionValidationResults" => $stateOrRegionValidationResults,
+                "postalCodeValidationResults" => $postalCodeValidationResults,
+                "countryValidationResults" => $countryValidationResults
+            ];
+        }
     }

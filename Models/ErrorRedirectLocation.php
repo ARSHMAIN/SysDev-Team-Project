@@ -9,4 +9,6 @@ enum ErrorRedirectLocation : string {
     case Registration = "?controller=registration&action=registration";
     case Login = "?controller=login&action=login";
 
+    case EditProfile = "?controller=user&action=editProfile";
+
 }
