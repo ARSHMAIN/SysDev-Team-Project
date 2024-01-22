@@ -25,7 +25,7 @@ function addLoginErrorLabel(textField, errorLabelIdentifier, errorLabelText = ""
 }
 
 
-function addMorphErrorLabel(textField, errorLabelIdentifier, errorLabelText = "") {
+function addErrorLabel(textField, errorLabelIdentifier, errorLabelText = "") {
     /*
         Add error label if it does not exist yet
     */
@@ -72,7 +72,7 @@ function createErrorLabel(errorLabelIdentifier, errorLabelText = "") {
     return errorLabelTextDiv;
 }
 
-function addOrRemoveMorphErrorLabel(htmlElement, shouldAddErrorLabel, morphErrorLabelIdentifier, morphErrorLabelText) {
+function addOrRemoveErrorLabel(htmlElement, shouldAddErrorLabel, errorLabelIdentifier, errorLabelText) {
     /*
         Determine whether an error label should be added or removed based on "shouldAddErrorLabel" boolean
     */
@@ -80,10 +80,10 @@ function addOrRemoveMorphErrorLabel(htmlElement, shouldAddErrorLabel, morphError
         if(!htmlElement) {
             return;
         }
-        addMorphErrorLabel(htmlElement, morphErrorLabelIdentifier, morphErrorLabelText);
+        addErrorLabel(htmlElement, errorLabelIdentifier, errorLabelText);
     }
     else {
-        removeErrorLabel(morphErrorLabelIdentifier);
+        removeErrorLabel(errorLabelIdentifier);
     }
 }
 
@@ -260,6 +260,8 @@ function areThereDuplicatesBetweenHtmlCollectionsValues(htmlElementCollection1, 
             let lowercaseHtmlElementCollection1Values = strToLowerArray(htmlElementCollection1Values);
             let lowercaseHtmlElementCollection2Values = strToLowerArray(htmlElementCollection2Values);
 
+            // Check if one of the first HTML element collection's values exists in the second HTML element collection
+            // because we want to check if one of the elements exists in the other collection
             duplicateElements = lowercaseHtmlElementCollection1Values.filter(
                 (firstLowerHtmlCollEle) => lowercaseHtmlElementCollection2Values.includes(firstLowerHtmlCollEle)
             );
@@ -272,4 +274,17 @@ function areThereDuplicatesBetweenHtmlCollectionsValues(htmlElementCollection1, 
         duplicatesExist = duplicateElements.length > 0;
     }
     return duplicatesExist;
+}
+
+function validateTextFieldEmpty(textField, textLabel, errorLabelIdentifier, errorLabelText) {
+    // Checks if a certain text field is empty and returns a boolean (empty = true, not empty = false)
+    // textLabel is used as a fallback html element to display the error text
+    let textFieldIsEmpty = checkTextFieldEmpty(textField);
+    addOrRemoveErrorLabel(
+        textField ?? textLabel,
+        textFieldIsEmpty,
+        errorLabelIdentifier,
+        errorLabelText
+    );
+    return textFieldIsEmpty;
 }

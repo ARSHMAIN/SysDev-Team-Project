@@ -5,7 +5,7 @@ function performDuplicateChecks() {
         document.getElementsByClassName(MorphInputClass.KnownMorph)
     );
 
-    addOrRemoveMorphErrorLabel(
+    addOrRemoveErrorLabel(
         lastKnownMorphTextField,
         knownMorphsContainDuplicates,
         dupKnownMorphErrorLabel,
@@ -18,7 +18,7 @@ function performDuplicateChecks() {
         document.getElementsByClassName(MorphInputClass.PossibleMorph)
     );
 
-    addOrRemoveMorphErrorLabel(
+    addOrRemoveErrorLabel(
         lastPossibleMorphTextField,
         possibleMorphsContainDuplicates,
         dupPossibleMorphErrorLabel,
@@ -31,7 +31,7 @@ function performDuplicateChecks() {
     const lastTestMorphTextField = getLastElementOfHtmlCollection(
         document.getElementsByClassName(MorphInputClass.TestMorph)
     );
-    addOrRemoveMorphErrorLabel(
+    addOrRemoveErrorLabel(
         lastTestMorphTextField,
         testMorphsContainDuplicates,
         dupTestMorphErrorLabel,
@@ -64,12 +64,12 @@ function performDuplicateChecksBetweenKnownPossibleMorphs() {
 
     const dupBetweenKnownMorphErrorLabel = "dupBetweenKnownMorphErrorLabel";
     const dupBetweenPossibleMorphErrorLabel = "dupBetweenPossibleMorphErrorLabel";
-    addOrRemoveMorphErrorLabel(
+    addOrRemoveErrorLabel(
         lastKnownMorphTextField,
         duplicatesExistBetweenKnownPossibleMorphs,
         dupBetweenKnownMorphErrorLabel,
         "Duplicate morphs between known and possible morphs");
-    addOrRemoveMorphErrorLabel(
+    addOrRemoveErrorLabel(
         lastPossibleMorphTextField,
         duplicatesExistBetweenKnownPossibleMorphs,
         dupBetweenPossibleMorphErrorLabel,

@@ -4,6 +4,8 @@
         <title>Edit Profile</title>
         <link rel="stylesheet" type="text/css" href="Views/Styles/shared.css">
         <link rel="stylesheet" type="text/css" href="Views/Styles/navbar.css">
+        <script src="Views/User/Scripts/editProfile.js" defer></script>
+        <script src="Views/Shared/Scripts/textFieldValidation.js" defer></script>
     </head>
 
     <body>
@@ -16,14 +18,14 @@
                     var_dump($_SESSION["error"]);
                 }
             ?>
-            <form action="?controller=user&action=submitEditProfile" method="POST">
+            <form action="?controller=user&action=submitEditProfile" method="POST" class="editProfileForm">
                 <section class="textAlignCenter">
                     <h1>
                         User information:
                     </h1>
                     <div>
                         <div>
-                            <label for="firstName">
+                            <label class="firstNameLabel" for="firstName">
                                 First Name:
                             </label>
                             <span class="requiredAsterisk">
@@ -38,7 +40,7 @@
 
                     <div>
                         <div>
-                            <label for="lastName">
+                            <label class="lastNameLabel" for="lastName">
                                 Last Name:
                                 <span class="requiredAsterisk">
                                 *
@@ -86,7 +88,7 @@
 
                     <div>
                         <div>
-                            <label for="phoneNumber">
+                            <label class="phoneNumberLabel" for="phoneNumber">
                                 Phone Number:
                             </label>
                         </div>
@@ -98,7 +100,7 @@
 
                     <div>
                         <div>
-                            <label for="companyName">
+                            <label class="companyNameLabel" for="companyName">
                                 Company Name:
                             </label>
                         </div>
@@ -113,7 +115,7 @@
                     </h2>
                     <div>
                         <div>
-                            <label for="streetNumber">
+                            <label class="streetNumberLabel" for="streetNumber">
                                 Street Number:
                                 <span class="requiredAsterisk">
                                 *
@@ -128,7 +130,7 @@
 
                     <div>
                         <div>
-                            <label for="streetName">
+                            <label class="streetNameLabel" for="streetName">
                                 Street Name:
                                 <span class="requiredAsterisk">
                                 *
@@ -143,7 +145,7 @@
 
                     <div>
                         <div>
-                            <label for="city">
+                            <label class="cityLabel" for="city">
                                 City:
                                 <span class="requiredAsterisk">
                                 *
@@ -159,7 +161,7 @@
 
                     <div>
                         <div>
-                            <label for="stateOrRegion">
+                            <label class="stateOrRegionLabel" for="stateOrRegion">
                                 State/Region:
                             </label>
                         </div>
@@ -171,7 +173,7 @@
 
                     <div>
                         <div>
-                            <label for="postalCode">
+                            <label class="postalCodeLabel" for="postalCode">
                                 Postal Code:
                                 <span class="requiredAsterisk">
                                 *
@@ -186,7 +188,7 @@
 
                     <div>
                         <div>
-                            <label for="country">
+                            <label class="countryLabel" for="country">
                                 Country:
                                 <span class="requiredAsterisk">
                                 *

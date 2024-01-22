@@ -66,7 +66,7 @@ function performEmptyValidationUpdateTest() {
     const lastTestMorphTextField = getLastElementOfHtmlCollection(
         document.getElementsByClassName(MorphInputClass.TestMorph)
     );
-    addOrRemoveMorphErrorLabel(lastTestMorphTextField ?? testMorphLabelPlacement, testMorphTextFieldsEmpty, testMorphErrorLabel, "At least one tested morph is required");
+    addOrRemoveErrorLabel(lastTestMorphTextField ?? testMorphLabelPlacement, testMorphTextFieldsEmpty, testMorphErrorLabel, "At least one tested morph is required");
 
     const emptyValidationResults = {
         TestMorphTextFieldsEmpty: testMorphTextFieldsEmpty

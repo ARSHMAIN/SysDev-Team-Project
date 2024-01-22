@@ -65,7 +65,7 @@ function performEmptyValidationOrderTest() {
     const customerSnakeIdLabel = document.getElementsByClassName("customerSnakeIdLabel")[0];
     const customerSnakeIdErrorLabel = "customerSnakeIdErrorLabel";
     const customerSnakeIdEmpty = checkTextFieldEmpty(customerSnakeIdTextField);
-    addOrRemoveMorphErrorLabel(
+    addOrRemoveErrorLabel(
         customerSnakeIdTextField ?? customerSnakeIdLabel,
         customerSnakeIdEmpty,
         customerSnakeIdErrorLabel,
@@ -94,7 +94,7 @@ function performEmptyValidationOrderTest() {
     const lastTestMorphTextField = getLastElementOfHtmlCollection(
         document.getElementsByClassName(MorphInputClass.TestMorph)
     );
-    addOrRemoveMorphErrorLabel(lastTestMorphTextField ?? testMorphLabelPlacement, testMorphTextFieldsEmpty, testMorphErrorLabel, "At least one tested morph is required");
+    addOrRemoveErrorLabel(lastTestMorphTextField ?? testMorphLabelPlacement, testMorphTextFieldsEmpty, testMorphErrorLabel, "At least one tested morph is required");
 
     const emptyValidationResults = {
         CustomerSnakeIdEmpty: customerSnakeIdEmpty,
