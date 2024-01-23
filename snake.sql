@@ -166,7 +166,7 @@ INSERT INTO `donation` (`donation_id`, `user_id`, `order_id`, `snake_id`) VALUES
 -- Table structure for table `knownpossiblemorph`
 --
 
-DROP TABLE IF EXISTS `knownpossiblemorph`;
+DROP TABLE IF EXISTS known_possible_morph;
 CREATE TABLE `knownpossiblemorph` (
   `snake_id` int(255) NOT NULL,
   `morph_id` int(255) NOT NULL,
@@ -177,7 +177,7 @@ CREATE TABLE `knownpossiblemorph` (
 -- Dumping data for table `knownpossiblemorph`
 --
 
-INSERT INTO `knownpossiblemorph` (`snake_id`, `morph_id`, `is_known`) VALUES
+INSERT INTO known_possible_morph (`snake_id`, `morph_id`, `is_known`) VALUES
 (1, 1, 1),
 (1, 2, 1),
 (1, 6, 0),
@@ -411,7 +411,7 @@ INSERT INTO `test` (`test_id`, `snake_id`, `order_id`, `user_id`) VALUES
 -- Table structure for table `testedmorph`
 --
 
-DROP TABLE IF EXISTS `testedmorph`;
+DROP TABLE IF EXISTS tested_morph;
 CREATE TABLE `testedmorph` (
   `test_id` int(255) NOT NULL,
   `morph_id` int(255) NOT NULL,
@@ -424,7 +424,7 @@ CREATE TABLE `testedmorph` (
 -- Dumping data for table `testedmorph`
 --
 
-INSERT INTO `testedmorph` (`test_id`, `morph_id`, `result`, `comment`, `result_image_path`) VALUES
+INSERT INTO tested_morph (`test_id`, `morph_id`, `result`, `comment`, `result_image_path`) VALUES
 (1, 3, NULL, NULL, NULL),
 (4, 3, NULL, NULL, NULL),
 (7, 3, NULL, NULL, NULL),
@@ -524,7 +524,7 @@ ALTER TABLE `donation`
 --
 -- Indexes for table `knownpossiblemorph`
 --
-ALTER TABLE `knownpossiblemorph`
+ALTER TABLE known_possible_morph
   ADD PRIMARY KEY (`snake_id`,`morph_id`),
   ADD KEY `KnownPossibleMorph_morph_morph_id_fk` (`morph_id`);
 
@@ -579,7 +579,7 @@ ALTER TABLE `test`
 --
 -- Indexes for table `testedmorph`
 --
-ALTER TABLE `testedmorph`
+ALTER TABLE tested_morph
   ADD PRIMARY KEY (`morph_id`,`test_id`),
   ADD KEY `TestedMorph_test_test_id_fk` (`test_id`);
 
@@ -703,7 +703,7 @@ ALTER TABLE `donation`
 --
 -- Constraints for table `knownpossiblemorph`
 --
-ALTER TABLE `knownpossiblemorph`
+ALTER TABLE known_possible_morph
   ADD CONSTRAINT `KnownPossibleMorph_morph_morph_id_fk` FOREIGN KEY (`morph_id`) REFERENCES `morph` (`morph_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `KnownPossibleMorph_snake_snake_id_fk` FOREIGN KEY (`snake_id`) REFERENCES `snake` (`snake_id`) ON DELETE CASCADE;
 
@@ -731,7 +731,7 @@ ALTER TABLE `test`
 --
 -- Constraints for table `testedmorph`
 --
-ALTER TABLE `testedmorph`
+ALTER TABLE tested_morph
   ADD CONSTRAINT `TestedMorph_morph_morph_id_fk` FOREIGN KEY (`morph_id`) REFERENCES `morph` (`morph_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `TestedMorph_test_test_id_fk` FOREIGN KEY (`test_id`) REFERENCES `test` (`test_id`) ON DELETE CASCADE;
 

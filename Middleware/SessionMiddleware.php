@@ -1,4 +1,5 @@
 <?php
+namespace Middleware;
 class SessionMiddleware
 {
     public static function initializeSession(): void

@@ -1,20 +1,20 @@
 <?php
-namespace Core;
+namespace Config;
 
 use PDO;
 use PDOException;
 
-class Model
+class Database
 {
     protected static function openDatabaseConnection()
     {
-        $hostName = "localhost";
-        $userName = "root";
+        $hostname = "localhost";
+        $username = "root";
         $password = "";
-        $dataBase = "snake";
+        $database = "snake";
 
         try {
-            $conn = new PDO("mysql:host=$hostName;dbname=$dataBase;charset=utf8", $userName, $password);
+            $conn = new PDO("mysql:host=$hostname;dbname=$database;charset=utf8", $username, $password);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             die("Connection Error: " . $e->getMessage());

@@ -1,0 +1,13 @@
+{
+  "autoload": {
+    "psr-4": {
+      "MyApp\\": "src/app",
+      "Core\\": "Core",
+      "Middleware\\": "Middleware",
+      "Config\\": "config"
+    }
+  },
+  "require": {
+    "ext-pdo": "*"
+  }
+}

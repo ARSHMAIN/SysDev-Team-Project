@@ -1,5 +1,8 @@
 <?php
-include_once 'Middleware/SessionMiddleware.php';
+namespace Core;
+
+use Middleware\SessionMiddleware;
+
 class Controller
 {
     public function __construct()
@@ -11,7 +14,7 @@ class Controller
     {
         global $controllerPrefix, $action;
         extract($data);
-        include_once "Views/$controllerPrefix/$action.php";
+        include_once "src/app/Views/$controllerPrefix/$action.php";
     }
 
 }

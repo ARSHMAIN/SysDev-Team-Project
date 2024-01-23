@@ -1,20 +1,20 @@
 <?php
+require_once 'vendor/autoload.php';
+
 $controllerPrefix = $_GET["controller"] ?? "home";
 $controllerName = ucfirst($controllerPrefix) . "Controller";
 
 $action = $_GET["action"] ?? "home";
 
-if (file_exists("Controllers/$controllerName.php"))
-{
-    // Parent Controller included into each individual Controller
-    include_once 'Core/Controller.php';
-    include_once "Controllers/$controllerName.php";
-}
-else
-{   
-    include_once "Views/Shared/error404.php";
-}
+$controllerClass = "MyApp\\Controllers\\$controllerName";
 
-$controller = new $controllerName;
-include_once 'autoloader.php';
-$controller->$action();
+if (class_exists($controllerClass)) {
+    $controller = new $controllerClass();
+    if (method_exists($controller, $action)) {
+        $controller->$action();
+    } else {
+        include_once "src/app/Views/Shared/error404.php";
+    }
+} else {
+    include_once "src/app/Views/Shared/error404.php";
+}

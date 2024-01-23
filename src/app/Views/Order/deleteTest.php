@@ -1,0 +1,17 @@
+<?php
+
+use MyApp\Models\Snake;
+use MyApp\Models\Test;
+
+if (isset($_GET['id'])) {
+    $test = new Test($_GET['id']);
+    if ($test->getTestId() !== null) {
+        $allTests = Test::getBySnakeId($test->getSnakeId());
+        if ($allTests['isSuccessful'] === true && sizeof($allTests['tests']) <= 1) {
+            Snake::deleteSnake($test->getSnakeId());
+        } else {
+            $deletedTest = Test::deleteTest($test->getTestId());
+        }
+    }
+}
+header('Location: index.php?controller=cart&action=cart');

@@ -1,4 +1,12 @@
 <?php
+
+use MyApp\Models\CartItem;
+use MyApp\Models\KnownPossibleMorph;
+use MyApp\Models\Sex;
+use MyApp\Models\Snake;
+use MyApp\Models\Test;
+use MyApp\Models\TestedMorph;
+
 class CacheMiddleware
 {
     public static function cacheCart(): void
