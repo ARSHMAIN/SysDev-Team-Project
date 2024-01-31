@@ -13,15 +13,20 @@
 }
 
 /*Input field label text and input fields*/
-.loginRegisterInputLabelText {
-    font-size: 20px;
+.loginRegisterInputLabelText, .errorLabelText{
+    font-size: 1.25rem;
     width: 70%;
+
+}
+
+.loginRegisterInputlabelText {
     color: white;
 }
 
 .loginRegisterInputLabelText input {
-    height: 5%;
-    font-size: 24px;
+    min-height: 1vh;
+    font-size: 1.5rem;
+    padding: 0.25em 0.15em;
 }
 
 .loginRegisterInputLabelText div {

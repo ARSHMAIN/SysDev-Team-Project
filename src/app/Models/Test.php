@@ -305,6 +305,32 @@ class Test extends Database
         }
     }
 
+
+    public static function checkTestExists($pTestId) : array {
+        /*
+            Check whether a test exists with $pTestId because it may be a fake
+            test ID (not integer or invalid test ID)
+        */
+
+
+        /*
+            filter_var with FILTER_VALIDATE_INT flag returns the integer sent
+            through $pTestId if it's an integer greater or equal to 1.
+            We use this because we want to know whether the parameter sent is actually
+            an integer
+        */
+        if(!filter_var($pTestId, FILTER_VALIDATE_INT)) {
+            throw new InvalidArgumentException();
+        }
+
+        $associatedTest = new Test($pTestId);
+        $testExists = $associatedTest->getTestId() != -1;
+        return [
+            "associatedTest" => $associatedTest,
+            "testExists" => $testExists
+        ];
+    }
+
     public function getTestId(): int
     {
         return $this->testId;

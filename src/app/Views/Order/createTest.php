@@ -87,111 +87,130 @@ function getMorphId(array $morphs): array
     return $morphIds;
 }
 $user = new User($_SESSION['user_id']);
-$customerSnakeId = CustomerSnakeName::getByUserIdAndCustomerSnakeName($_POST['customerSnakeId'], $_SESSION['user_id']);
-$sex = Sex::getSexByName($_POST['sex']);
 $origin = $_POST['snakeOrigin'];
-/*
-    Get the morphs that were sent by post
-    and check whether if some that were sent are not morphs (no matter what if they were tested or not)
-*/
-$knownMorphs = getPosts('knownMorph');
-$newKnownMorphs = checkMorphs($knownMorphs, 'knownMorphNonexistent');
-$possibleMorphs = getPosts('possibleMorph');
-$newPossibleMorphs = checkMorphs($possibleMorphs, 'possibleMorphNonexistent');
-$testMorphs = getPosts('testMorph');
-$newTestMorphs = checkMorphs($testMorphs, 'testMorphNonexistent');
 
-if (isset($_SESSION['error'])) header('Location: index.php?controller=order&action=test');
-/*
-    If there is no customer snake ID with this particular customer snake ID that exists,
-    create a new snake with these known, possible and tested morphs
-*/
-if (!$customerSnakeId) {
-    /*
-        Check whether all the old morphs + the new tested morphs (ones that were written client-side)
-        are tested
+$postNamesAccepted = [
+    "customerSnakeId",
+    "sex",
+    MorphInputClass::KnownMorph->value,
+    MorphInputClass::PossibleMorph->value,
+    MorphInputClass::TestMorph->value,
+    "snakeOrigin",
+    "submit"
+];
+
+$postNamesRequired = [
+    "customerSnakeId",
+    "sex",
+    MorphInputClass::TestMorph->value,
+    "submit"
+];
+
+$postDataAccepted = ValidationHelper::isPostDataAccepted($postNamesAccepted, $_POST);
+$postDataRequired = ValidationHelper::isPostDataRequired($postNamesRequired, $_POST);
+
+if($postDataAccepted && $postDataRequired) {
+    /* Validate the customer snake ID, snake's sex and origin's data types because
+       they might be arrays, and if they are,
+       it means the user tampered with the form using developer tools
+       and the data is invalid
     */
-    $checkedTestMorphs = Morph::getByIsTestedAndName(true, $newTestMorphs);
-    $checkedMorphs = [];
-    foreach ($checkedTestMorphs as $checkedTestMorph) {
-        $checkedMorphs[] = $checkedTestMorph->getMorphId();
-    }
-    /*
-        If the list of real morphs (checked by getByIsTestedAndName function)
-        is not the same size as the morphs that were sent by the customer, it means that some of the tested
-        morphs sent by the customer are not real tested morphs
-    */
-    if (sizeof($checkedMorphs) !== sizeof($newTestMorphs)) {
-        $_SESSION['error'][] = 'Morphs not for testing';
-        header('Location: index.php?controller=order&action=test');
-    } else {
+     ValidationHelper::validateRequiredSingleFormValue(
+        $_POST["customerSnakeId"],
+        "string",
+         true,
+         "Invalid customer snake ID"
+    );
+    ValidationHelper::validateSnakeSexAndOrigin();
+
+    // Perform empty, duplicate validation checks on morphs
+    $allMorphsValidationResults = ValidationHelper::validateAllMorphTextFields();
+    ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
+
+
+    $customerSnakeName = CustomerSnakeName::getByUserIdAndCustomerSnakeName($_POST['customerSnakeId'], $_SESSION['user_id']);
+    // If the customer snake ID does not exist, then create a new snake and other records in other tables
+    if (!$customerSnakeName) {
         /*
             Create a new snake (insert into Snake, CustomerSnakeName, KnownPossibleMorph, Test, TestedMorph tables)
         */
-        $snake = Snake::createSnake($_SESSION['user_id'], $sex->getSexId(), $_POST['snakeOrigin']);
-        $customerSnakeId = CustomerSnakeName::create($_POST['customerSnakeId'], $_SESSION['user_id'], $snake['newSnakeId']);
-        $known = KnownPossibleMorph::create($snake['newSnakeId'], getMorphId($newKnownMorphs), true);
-        $possible = KnownPossibleMorph::create($snake['newSnakeId'], getMorphId($newPossibleMorphs), false);
-        $test = Test::create($snake['newSnakeId'], $_SESSION['user_id']);
-        $testMorphs = TestedMorph::create($test['newTestId'], $checkedMorphs);
-        header('Location: index.php?controller=cart&action=addTestToCart&id=' . $test['newTestId']);
-    }
-} else {
-    /*
-     * If there is already a snake with this customer snake ID,
-     * it means we update the old info with the new information
-    */
-    $snake = new Snake($customerSnakeId->getSnakeId());
-    $oldSex = new Sex($snake->getSexId());
-    /*
-     * If the sex chosen in the POST variable is not the same as the sex
-     * found in the database, add an error that the sex of the snake is wrong to
-     * the MissingFieldError session variable
-     * Same goes for the snake's origin
-    */
-    if (ucfirst($_POST['sex']) !== $oldSex->getSexName()) {
-        $_SESSION['MissingFieldError']['sex'] = $oldSex->getSexName();
-    } if ($origin !== $snake->getSnakeOrigin()) {
-        $_SESSION['MissingFieldError']['origin'] = $snake->getSnakeOrigin();
-    }
-    /*
-        Check whether the old known and possible morphs were not deleted
-        when they were typed by the customer on the client-side
-        If there is an old morph that was deleted, it will throw an error
-        because it only accepts old morphs + new morphs as input
-    */
-    $knownMorphs =  checkOldMorphsInfo($customerSnakeId->getSnakeId(), $newKnownMorphs, 'knownMorph', true);
-    $possibleMorphs =  checkOldMorphsInfo($customerSnakeId->getSnakeId(), $newPossibleMorphs, 'possibleMorph', false);
-    if (isset($_SESSION['MissingFieldError'])) {
-        header('Location: /?controller=order&action=test');
-    }
-    /*
-        Add the new known, possible morphs to the database tables
-    */
-    if ($knownMorphs !== null) {
-        $known = KnownPossibleMorph::create($customerSnakeId->getSnakeId(), getMorphId($knownMorphs), true);
-    } if ($possibleMorphs !== null) {
-        KnownPossibleMorph::create($customerSnakeId->getSnakeId(), getMorphId($possibleMorphs), false);
-    }
-    /*
-        Check whether all the old morphs + the new tested morphs (ones that were written client-side)
-        are tested morphs
-    */
-    $checkedTestMorphs = Morph::getByIsTestedAndName(true, $newTestMorphs);
-    $checkedMorphs = [];
-    foreach ($checkedTestMorphs as $checkedTestMorph) {
-        $checkedMorphs[] = $checkedTestMorph->getMorphId();
-    }
-    if (sizeof($checkedMorphs) !== sizeof($newTestMorphs)) {
-        $_SESSION['error'][] = 'Morphs not for testing';
-        header('Location: /?controller=order&action=test');
-    } else {
-        $test = Test::create($customerSnakeId->getSnakeId(), $_SESSION['user_id']);
-        $testMorphs = TestedMorph::create($test['newTestId'], $checkedMorphs);
-        header('Location: /?controller=cart&action=addTestToCart&id=' . $test['newTestId']);
 
+        // Check whether the sex the ID sent is actually a real value that is available to be put
+        $snakeSexUpdateResults = Sex::checkSexExists($_POST["sex"]);
+        $snakeSexUpdateIsSuccessful = $snakeSexUpdateResults["sexExists"];
+
+        ValidationHelper::shouldAddError(!$snakeSexUpdateIsSuccessful, "There was an error creating the snake (invalid sex)");
+        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
+
+        $snakeInsertionResults = Snake::createSnake($_SESSION['user_id'], $snakeSexUpdateResults["snakeSex"]->getSexId(), $_POST['snakeOrigin'] ?? null);
+        ValidationHelper::shouldAddError(!$snakeInsertionResults["isSuccessful"], "There was an error creating the snake");
+        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
+
+        $customerSnakeNameInsertionResults = CustomerSnakeName::create($_POST['customerSnakeId'], $_SESSION['user_id'], $snakeInsertionResults['newSnakeId']);
+        ValidationHelper::shouldAddError(!$customerSnakeNameInsertionResults["isSuccessful"], "There was an error creating the customer snake name");
+        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
+
+        // Create rows for KnownPossibleMorph and TestedMorph tables
+        // Also create a Test record
+        $knownMorphsIdsByNameInputted = Morph::getMorphIds($_POST[MorphInputClass::KnownMorph->value]);
+        $knownMorphsInsertionIsSuccessful = KnownPossibleMorph::create($snakeInsertionResults['newSnakeId'], $knownMorphsIdsByNameInputted, true);
+        ValidationHelper::shouldAddError(!$knownMorphsInsertionIsSuccessful, "Known morphs could not be correctly inserted");
+        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
+
+
+        $possibleMorphIdsByNameInputted = Morph::getMorphIds($_POST[MorphInputClass::PossibleMorph->value]);
+        $possibleMorphsInsertionIsSuccessful = KnownPossibleMorph::create($snakeInsertionResults['newSnakeId'], $possibleMorphIdsByNameInputted, false);
+        ValidationHelper::shouldAddError(!$possibleMorphsInsertionIsSuccessful, "Possible morphs could not be correctly inserted");
+        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
+
+
+        $testInsertionResults = Test::create($snakeInsertionResults['newSnakeId'], $_SESSION['user_id']);
+        ValidationHelper::shouldAddError(!$testInsertionResults["isSuccessful"], "Test could not be correctly inserted");
+        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
+
+        $testMorphIdsByNameInputted = Morph::getMorphIds($_POST[MorphInputClass::TestMorph->value]);
+        $testMorphsInsertionIsSuccessful = TestedMorph::create($testInsertionResults['newTestId'], $testMorphIdsByNameInputted);
+        ValidationHelper::shouldAddError(!$testMorphsInsertionIsSuccessful, "Tested morphs could not be correctly inserted");
+        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::CreateTest->value);
+
+        header('Location: index.php?controller=cart&action=addTestToCart&id=' . $testInsertionResults['newTestId']);
+    }
+    else {
+        /*
+         * If there is already a snake with this customer snake ID,
+         * it means we update the old info with the new information
+        */
+        $associatedSnake = new Snake($customerSnakeName->getSnakeId());
+
+        /*
+            Delete the ones removed by the customer on the website
+            And add the new known, possible morphs to the database tables
+        */
+        $knownMorphsIdsByNameInputted = Morph::getMorphIds($_POST[MorphInputClass::KnownMorph->value]);
+        $possibleMorphsIdsByNameInputted = Morph::getMorphIds($_POST[MorphInputClass::PossibleMorph->value]);
+
+        KnownPossibleMorph::deleteAllRemovedKnownPossibleMorphs(
+            $customerSnakeName->getSnakeId(),
+            ErrorRedirectLocation::CreateTest->value,
+            $knownMorphsIdsByNameInputted,
+            $possibleMorphsIdsByNameInputted
+        );
+
+        Morph::insertKnownPossibleMorphsIfNotExists(
+            $customerSnakeName->getSnakeId(),
+            ErrorRedirectLocation::CreateTest->value,
+            $knownMorphsIdsByNameInputted,
+            $possibleMorphsIdsByNameInputted,
+        );
+
+        // Create test and TestedMorph rows (shows which morphs are being tested)
+        $testMorphIdsByNameInputted = Morph::getMorphIds($_POST[MorphInputClass::TestMorph->value]);
+        $testInsertionResults = Test::create($customerSnakeName->getSnakeId(), $_SESSION['user_id']);
+        $testMorphs = TestedMorph::create($testInsertionResults['newTestId'], $testMorphIdsByNameInputted);
+        header('Location: /?controller=cart&action=addTestToCart&id=' . $testInsertionResults['newTestId']);
     }
 }
+
 // Leave this commented code
 //if (!$customerSnakeId) {
     /*$sex = Sex::getSexByName($_POST['sex']);

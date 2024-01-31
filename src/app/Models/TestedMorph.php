@@ -7,8 +7,7 @@ use PDO;
 use PDOException;
 
 include_once "SQLHelper.php";
-
-class TestedMorph extends Database
+class TestedMorph extends Model
 {
     private int $testId = -1;
     private int $morphId = -1;
@@ -17,13 +16,12 @@ class TestedMorph extends Database
     private ?string $resultImagePath = null;
 
     public function __construct(
-        int     $pTestId = -1,
-        int     $pMorphId = -1,
+        int $pTestId = -1,
+        int $pMorphId = -1,
         ?string $pResult = null,
         ?string $pComment = null,
         ?string $pResultImagePath = null
-    )
-    {
+    ) {
         $this->initializeProperties(
             $pTestId,
             $pMorphId,
@@ -34,13 +32,12 @@ class TestedMorph extends Database
     }
 
     private function initializeProperties(
-        int     $pTestId,
-        int     $pMorphId,
+        int $pTestId,
+        int $pMorphId,
         ?string $pResult,
         ?string $pComment,
         ?string $pResultImagePath
-    ): void
-    {
+    ): void {
         if ($pTestId < 0) return;
         else if (
             $pTestId > 0
@@ -59,7 +56,7 @@ class TestedMorph extends Database
         $dBConnection = self::openDatabaseConnection();
 
         try {
-            $sql = "SELECT * FROM tested_morph WHERE test_id = ?";
+            $sql = "SELECT * FROM testedmorph WHERE test_id = ?";
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindParam(1, $pTestId, PDO::PARAM_INT);
             $stmt->execute();
@@ -95,7 +92,7 @@ class TestedMorph extends Database
 
         try {
             // Build the SQL statement
-            $sql = "INSERT INTO tested_morph (test_id, morph_id) VALUES ";
+            $sql = "INSERT INTO testedmorph (test_id, morph_id) VALUES ";
             $sql .= implode(',', array_fill(0, count($pMorphIds), "($pTestId, ?)"));
 
             // Prepare the statement
@@ -157,12 +154,12 @@ class TestedMorph extends Database
         }
     }
 
-    public static function createTestedMorphsIfNotExists(int $pTestId, array $pMorphIds): bool
+    public static function createIfNotExists(int $pTestId, array $pMorphIds): bool
     {
         $isSuccessful = false;
         try {
             $dbConnection = self::openDatabaseConnection();
-            $sqlQuery = "INSERT INTO tested_morph (test_id, morph_id) VALUES ";
+            $sqlQuery = "INSERT INTO testedmorph (test_id, morph_id) VALUES ";
             $sqlQuery .= implode(',', array_fill(0, count($pMorphIds), "($pTestId, ?)"));
             $sqlQuery .= " ON DUPLICATE KEY UPDATE testedmorph.test_id = testedmorph.test_id, testedmorph.morph_id = testedmorph.morph_id;
             ";
@@ -205,7 +202,7 @@ class TestedMorph extends Database
         }
 
         try {
-            $sql = "UPDATE tested_morph SET result = ?, comment = ?, result_image_path = ? WHERE test_id = ? AND morph_id = ?";
+            $sql = "UPDATE testedmorph SET result = ?, comment = ?, result_image_path = ? WHERE test_id = ? AND morph_id = ?";
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindParam(1, $postFields['result'], PDO::PARAM_STR);
             $stmt->bindParam(2, $postFields['comment'], PDO::PARAM_STR);
@@ -226,7 +223,7 @@ class TestedMorph extends Database
         $dBConnection = self::openDatabaseConnection();
 
         try {
-            $sql = "DELETE FROM tested_morph WHERE test_id = ? AND morph_id = ?";
+            $sql = "DELETE FROM testedmorph WHERE test_id = ? AND morph_id = ?";
             $stmt = $dBConnection->prepare($sql);
             $stmt->bindParam(1, $pTestId, PDO::PARAM_INT);
             $stmt->bindParam(2, $pMorphId, PDO::PARAM_INT);

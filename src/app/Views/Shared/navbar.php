@@ -14,7 +14,7 @@
                         <label>First Name, Last Name</label>
                     </div>
 
-                    <a class="displayBlock userProfileDropdownItem" href="">Edit Profile</a>
+                    <a class="displayBlock userProfileDropdownItem" href="?controller=user&action=editProfile">Edit Profile</a>
                     <div class="dropdownItemDivider marginAuto"></div>
                     <a class="displayBlock userProfileDropdownItem" href="?controller=login&action=login">Logout</a>
                 </div>

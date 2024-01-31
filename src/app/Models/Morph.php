@@ -33,11 +33,10 @@ class Morph extends Database
     private bool $isTested = false;
 
     public function __construct(
-        int    $pMorphId = -1,
+        int $pMorphId = -1,
         string $pMorphName = "",
-        bool   $pIsTested = false
-    )
-    {
+        bool $pIsTested = false
+    ) {
         $this->initializeProperties(
             $pMorphId,
             $pMorphName,
@@ -46,11 +45,10 @@ class Morph extends Database
     }
 
     private function initializeProperties(
-        int    $pMorphId,
+        int $pMorphId,
         string $pMorphName,
-        bool   $pIsTested
-    ): void
-    {
+        bool $pIsTested
+    ): void {
         if ($pMorphId < 0) return;
         else if (
             $pMorphId > 0
@@ -115,7 +113,6 @@ class Morph extends Database
             $dBConnection = null;
         }
     }
-
     public static function getByIsTested(bool $pIsTested): ?array
     {
         $dBConnection = self::openDatabaseConnection();
@@ -145,7 +142,6 @@ class Morph extends Database
             $dBConnection = null;
         }
     }
-
     public static function getByIsTestedAndName(bool $pIsTested, array $pMorphNames): array
     {
         $dBConnection = self::openDatabaseConnection();
@@ -302,7 +298,6 @@ class Morph extends Database
         }
         return $morphIds;
     }
-
     public static function getMorphNames(array $morphs): array
     {
         $morphNames = [];
@@ -313,23 +308,50 @@ class Morph extends Database
         return $morphNames;
     }
 
-    public static function getSnakeTestPosts(string $pInputClassName)
+    public static function getSnakeTestPosts(array $postArray)
     {
-        $i = 1;
+        //    $i = 1;
         $array = [];
-        while (true) {
-            /*
-                Get all the POSTs from the create/update test
-            */
-            $key = $pInputClassName . $i;
-            if (isset($_POST[$key])) {
-                $array[] = $_POST[$key];
-            } else {
-                break;
-            }
-            $i++;
+
+        foreach($postArray as $morphInput) {
+            $array[] = $morphInput;
         }
+//    while (true) {
+//        $key = $post . $i;
+//        if (isset($_POST[$key])) {
+//            $array[] = $_POST[$key];
+//        } else {
+//            break;
+//        }
+//        $i++;
+//    }
         return $array;
+    }
+
+    public static function detectDuplicatesBetweenMorphCategories(string $morphClass1, string $morphClass2) : bool {
+        if(isset($_POST[$morphClass1])
+            && isset($_POST[$morphClass2])
+        ) {
+            $duplicatesExistBetweenKnownPossibleMorphs = ValidationHelper::duplicatesExistBetweenIndexedArrays(
+                $_POST[$morphClass1],
+                $_POST[$morphClass2]
+            );
+        }
+        return $duplicatesExistBetweenKnownPossibleMorphs ?? false;
+    }
+
+    public static function validateMorphTextFields(string $morphClass) : array {
+        // Perform validation that does not need to check the database
+
+        // Check if the POST value exists before getting the values and validating
+        if(isset($_POST[$morphClass])) {
+            $morphsContainEmptyFields = ValidationHelper::emptyStringsExist($_POST[$morphClass]);
+            $morphDuplicatesExist = ValidationHelper::detectDuplicatesIndexedArray($_POST[$morphClass]);
+        }
+        return [
+            "emptyTextFieldsExist" => $morphsContainEmptyFields ?? false,
+            "duplicateTextFieldsExist" => $morphDuplicatesExist ?? false
+        ];
     }
 
     public static function checkMorphsExist(array $morphsToCheck, string $errorMessage): array
@@ -348,6 +370,22 @@ class Morph extends Database
             }
         }
         return $newMorphs;
+    }
+
+    public static function insertKnownPossibleMorphsIfNotExists(int $snakeId,
+                                                                string $errorRedirectLocation,
+                                                                array $knownMorphIdsInputted,
+                                                                array $possibleMorphIdsInputted,
+                                                                ) {
+        $knownMorphsInsertIsSuccessful = KnownPossibleMorph::createIfNotExists($snakeId, $knownMorphIdsInputted, true);
+        ValidationHelper::shouldAddError(!$knownMorphsInsertIsSuccessful, "An error occurred when inserting the known morphs");
+        ValidationHelper::checkSessionErrorExists($errorRedirectLocation);
+
+        $possibleMorphsInsertIsSuccessful = KnownPossibleMorph::createIfNotExists($snakeId, $possibleMorphIdsInputted, false);
+        ValidationHelper::shouldAddError(!$possibleMorphsInsertIsSuccessful, "An error occurred when inserting the possible morphs");
+        ValidationHelper::checkSessionErrorExists($errorRedirectLocation);
+
+
     }
 
     public function getMorphId(): int

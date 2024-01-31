@@ -14,22 +14,28 @@
 
     <section class="loginRegisterWrapper marginAuto">
         <div>
+            <?php
+             if(isset($_SESSION["error"])) {
+                    var_dump($_SESSION["error"]);
+                }
+            ?>
+
             <header class="loginRegisterHeader textAlignCenter">
                 <label>Login</label>
             </header>
 
-            <form action="index.php?controller=login&action=validation" method="POST">
+            <form id="login" action="index.php?controller=login&action=validation" method="POST">
                 <section class="textAlignStart">
                         <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                             <div>
-                                <label for="email">Email</label> <br/>
+                                <label class="emailLabel" for="email">Email</label> <br/>
                             </div>
 
                             <input id="email" type="text" name="email" class="width100Percent">
                         </div>
                         <div class="loginRegisterInputLabelText widthMinContent marginAuto">
                             <div>
-                                <label for="password">Password</label> <br/>
+                                <label class="passwordLabel" for="password">Password</label> <br/>
                             </div>
                             <input id="password" type="password" name="password" class="width100Percent">
                         </div>

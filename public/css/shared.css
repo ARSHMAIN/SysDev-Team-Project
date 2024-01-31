@@ -93,7 +93,7 @@ p, li, button
 
 .errorLabelText {
     color: #ff3d3d;
-    margin-top: 2%;
+    margin-top: 0.5em;
 }
 
 .positionAbsolute {

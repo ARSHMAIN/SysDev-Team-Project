@@ -6,7 +6,7 @@
         <link rel="stylesheet" type="text/css" href="../../../../public/css/navbar.css">
         <link rel="stylesheet" type="text/css" href="../../../../public/css/loginRegister.css">
         <script src="Views/Shared/Scripts/textFieldValidation.js" type="text/javascript"></script>
-        <script src="Views/Register/scripts/registrationValidation.js" type="text/javascript"></script>
+        <script src="Views/Registration/scripts/registrationValidation.js" type="text/javascript"></script>
     </head>
 
     <body>
@@ -14,6 +14,13 @@
             include_once "Views/Shared/navbar.php";
         ?>
 
+        <div>
+            <?php
+                if(isset($_SESSION["error"])) {
+                    var_dump($_SESSION["error"]);
+                }
+            ?>
+        </div>
         <section class="loginRegisterWrapper marginAuto">
             <div class="textAlignCenter">
                 <header class="loginRegisterHeader">
@@ -23,11 +30,11 @@
                 </header>
             </div>
 
-            <form action="index.php?controller=registration&action=register" method="POST">
+            <form id="registration" action="index.php?controller=registration&action=register" method="POST">
                 <section>
                     <div class="loginRegisterInputLabelText registrationMargin widthMinContent marginAuto">
                         <div>
-                            <label for="firstName">First Name</label> <span class="requiredAsterisk"> *</span>
+                            <label class="firstNameLabel" for="firstName">First Name <span class="requiredAsterisk"> *</span></label>
                         </div>
 
                         <input id="email" type="text" name="firstName" class="width100Percent" >
@@ -35,7 +42,7 @@
 
                     <div class="loginRegisterInputLabelText registrationMargin widthMinContent marginAuto">
                         <div>
-                            <label for="lastName">Last Name</label> <span class="requiredAsterisk"> *</span>
+                            <label class="lastNameLabel" for="lastName">Last Name <span class="requiredAsterisk"> *</span></label>
                         </div>
 
                         <input id="email" type="text" name="lastName" class="width100Percent" >
@@ -43,7 +50,7 @@
 
                     <div class="loginRegisterInputLabelText registrationMargin widthMinContent marginAuto">
                         <div>
-                            <label for="email">Email</label> <span class="requiredAsterisk"> *</span>
+                            <label class="emailLabel" for="email">Email<span class="requiredAsterisk"> *</span></label>
                         </div>
 
                         <input id="email" type="text" name="email" class="width100Percent" >
@@ -51,13 +58,10 @@
 
                     <div class="loginRegisterInputLabelText registrationMargin widthMinContent marginAuto">
                         <div>
-                            <label for="password">Password</label><span class="requiredAsterisk"> *</span>
+                            <label class="passwordLabel" for="password">Password<span class="requiredAsterisk"> *</span></label>
                         </div>
 
                         <input id="password" type="password" name="password" class="width100Percent" >
-                        <!--<div class="errorLabelText">
-                            <label>Password is empty</label>
-                        </div>-->
                     </div>
 
 

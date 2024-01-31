@@ -118,7 +118,7 @@ class User extends Database
         }
     }
 
-    public static function getUserByCredentials(string $pEmail, string $pPassword): ?User
+    public static function getUserByCredentials(string $pEmail, string $pPassword, string $sessionErrorText): ?User
     {
         $dBConnection = self::openDatabaseConnection();
         try {
@@ -127,8 +127,10 @@ class User extends Database
             $stmt->bindParam(1, $pEmail, PDO::PARAM_STR);
             $stmt->bindParam(2, $pPassword, PDO::PARAM_STR);
             $stmt->execute();
-
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $isSuccessful = $stmt->rowCount() > 0;
+
             if ($result) {
                 $user = new User();
                 $user->userId = $result['user_id'];
@@ -145,10 +147,14 @@ class User extends Database
             }
         } catch (PDOException $e) {
             // Handle the exception as per your application's requirements
-            die("Error: " . $e->getMessage());
+            ValidationHelper::shouldAddError(true, $sessionErrorText);
         } finally {
             $stmt->closeCursor();
             $dBConnection = null;
+        }
+
+        if(!$isSuccessful) {
+            ValidationHelper::shouldAddError(true, $sessionErrorText);
         }
 
         return null;
@@ -188,10 +194,10 @@ class User extends Database
         return $user;
     }
 
-    public static function createUserByRoleName(array $postFields): array
+    public static function createUserByRoleName(array $postFields, string $sessionErrorText): array
     {
         $dBConnection = self::openDatabaseConnection();
-
+        $isSuccessful = false;
         try {
             foreach ($postFields as $key => $value) {
                 if ($value === '') {
@@ -221,7 +227,11 @@ class User extends Database
             ];
         } catch (PDOException $e) {
             // Handle the exception as per your application's requirements
-            die("Error: " . $e->getMessage());
+            ValidationHelper::shouldAddError(!$isSuccessful, $sessionErrorText);
+            return [
+                'isSuccessful' => false,
+                'newRegisteredUserId' => -1
+            ];
         } finally {
             $stmt->closeCursor();
             $dBConnection = null;
@@ -258,6 +268,42 @@ class User extends Database
             $stmt->closeCursor();
             $dBConnection = null;
         }
+    }
+
+    public static function updateInsensitivePersonalInformation(int $pUserId,
+                                                                array $postArray,
+                                                                string $sessionErrorText): bool
+    {
+        $dbConnection = self::openDatabaseConnection();
+
+        $isSuccessful = false;
+        try{
+            $sqlQuery = "UPDATE user SET first_name = :firstName,
+                last_name = :lastName,
+                phone_number = :phoneNumber,
+                company_name = :companyName
+                WHERE user_id = :userId
+                ;
+            ";
+
+            $pdoStatement = $dbConnection->prepare($sqlQuery);
+            $pdoStatement->bindValue(":firstName", $postArray["firstName"]);
+            $pdoStatement->bindValue(":lastName", $postArray["lastName"]);
+            $pdoStatement->bindValue(":phoneNumber", mb_strlen($postArray["phoneNumber"], "UTF-8") == 0? null : $postArray["phoneNumber"]);
+            $pdoStatement->bindValue(":companyName", mb_strlen($postArray["companyName"], "UTF-8") == 0? null : $postArray["companyName"]);
+            $pdoStatement->bindValue(":userId", $pUserId);
+
+            $isSuccessful = $pdoStatement->execute();
+        }
+        catch(PDOException $pdoException) {
+            ValidationHelper::shouldAddError(true, $sessionErrorText);
+        }
+        finally {
+            $pdoStatement->closeCursor();
+            $dbConnection = null;
+        }
+
+        return $isSuccessful;
     }
 
     public static function deleteUserById(int $pUserId): void
@@ -330,22 +376,22 @@ class User extends Database
         $this->password = $password;
     }
 
-    public function getPhoneNumber(): string
+    public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
     }
 
-    public function setPhoneNumber(string $phoneNumber): void
+    public function setPhoneNumber(?string $phoneNumber): void
     {
         $this->phoneNumber = $phoneNumber;
     }
 
-    public function getCompanyName(): string
+    public function getCompanyName(): ?string
     {
         return $this->companyName;
     }
 
-    public function setCompanyName(string $companyName): void
+    public function setCompanyName(?string $companyName): void
     {
         $this->companyName = $companyName;
     }
@@ -360,12 +406,12 @@ class User extends Database
         $this->registeredDate = $registeredDate;
     }
 
-    public function getLastLogin(): string
+    public function getLastLogin(): ?string
     {
         return $this->lastLogin;
     }
 
-    public function setLastLogin(string $lastLogin): void
+    public function setLastLogin(?string $lastLogin): void
     {
         $this->lastLogin = $lastLogin;
     }
