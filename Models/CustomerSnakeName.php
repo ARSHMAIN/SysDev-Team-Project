@@ -1,7 +1,4 @@
 <?php
-enum CustomerSnakeNameError: string{
-    case CustomerSnakeIdsNotEqual = "Customer snake IDs are not equal.";
-}
 
 class CustomerSnakeName extends Model
 {
@@ -290,7 +287,7 @@ class CustomerSnakeName extends Model
             $dBConnection = null;
 
             if(!$snakeIdsAreEqual) {
-                $_SESSION["error"][] = CustomerSnakeNameError::CustomerSnakeIdsNotEqual->value;
+                $_SESSION["error"][] = "Customer snake IDs are not equal.";
             }
             return $snakeIdsAreEqual;
         }

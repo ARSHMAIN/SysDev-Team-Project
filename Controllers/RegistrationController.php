@@ -30,19 +30,19 @@ class RegistrationController extends Controller
             $_SESSION["error"] = null;
             ValidationHelper::validateFirstNameAndLastName();
             ValidationHelper::validateEmailAndPassword();
-            ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::Registration->value);
+            ValidationHelper::checkSessionErrorExists(RedirectLocation::Registration->value);
 
 
             // If the validation passed, create the user
             // because the credentials are correct
-            User::createUserByRoleName($_POST, "There was an error when creating the account");
-            ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::Registration->value);
+            User::createUserByRoleName($_POST, true, "There was an error when creating the account");
+            ValidationHelper::checkSessionErrorExists(RedirectLocation::Registration->value);
 
             header("Location: index.php?controller=login&action=login");
         }
         else {
             ValidationHelper::shouldAddError(!$postDataRequired, "Invalid registration credentials");
-            ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::Registration->value);
+            ValidationHelper::checkSessionErrorExists(RedirectLocation::Registration->value);
         }
     }
 }

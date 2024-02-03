@@ -32,6 +32,7 @@ class LoginController extends Controller
             $user = User::getUserByCredentials(
                 $_POST['email'],
                 md5($_POST['password']),
+                true,
                 "There was an error when logging in");
 //            ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::Login->value);
             if (!$user)  {

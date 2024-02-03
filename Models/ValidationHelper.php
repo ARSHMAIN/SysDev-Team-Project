@@ -170,7 +170,7 @@
             /*
              Redirect the user in case there is an error to the redirectLocation variable
             */
-            if(isset($_SESSION["error"])) {
+            if(array_key_exists("error", $_SESSION)) {
                 header("Location: " . $redirectLocation);
                 exit;
             }
@@ -389,6 +389,7 @@
             return [
                 "firstNameLastNameValidationResults" => $firstNameLastNameValidationResults,
                 "phoneNumberValidationResults" => $phoneNumberValidationResults,
+                "companyNameValidationResults" => $companyNameValidationResults,
                 "streetNumberValidationResults" => $streetNumberValidationResults,
                 "streetNameValidationResults" => $streetNameValidationResults,
                 "cityValidationResults" => $cityValidationResults,
@@ -396,5 +397,54 @@
                 "postalCodeValidationResults" => $postalCodeValidationResults,
                 "countryValidationResults" => $countryValidationResults
             ];
+        }
+
+        public static function validateEditEmailInformation(): array
+        {
+            $newEmailAddressValidationResults = ValidationHelper::validateRequiredSingleFormValue(
+                $_POST["newEmailAddress"],
+                "string",
+                true,
+                "Invalid new email address"
+            );
+
+            $currentPasswordValidationResults = ValidationHelper::validateRequiredSingleFormValue(
+                $_POST["password"],
+                "string",
+                true,
+                "Invalid password (invalid password format)"
+            );
+
+            $currentUser = User::getUserByIdAndPassword(
+                $_SESSION["user_id"],
+                md5($_POST["password"]),
+                true,
+                "Wrong password"
+            );
+            $passwordBelongsToAccount = $currentUser->getUserId() > 0;
+            return [
+                "newEmailAddressValidationResults" => $newEmailAddressValidationResults,
+                "passwordBelongsToAccount" => $passwordBelongsToAccount,
+                "currentPasswordValidationResults" => $currentPasswordValidationResults
+            ];
+        }
+
+        public static function shouldAddSuccess(bool $shouldAddSuccess, string $sessionSuccessText): void
+        {
+            if($shouldAddSuccess) {
+                /*
+                    If the data is invalid then there is an error
+                */
+                $_SESSION["success"][] = $sessionSuccessText;
+                $_SESSION["success"] = array_unique($_SESSION["success"]);
+            }
+        }
+
+        public static function checkSessionSuccessExists(string $successLocation): void
+        {
+            if(array_key_exists("success", $_SESSION)) {
+                header("Location: " . $successLocation);
+                exit;
+            }
         }
     }

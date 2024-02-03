@@ -111,7 +111,7 @@ class User extends Model
         }
     }
 
-    public static function getUserByCredentials(string $pEmail, string $pPassword, string $sessionErrorText): ?User
+    public static function getUserByCredentials(string $pEmail, string $pPassword, bool $addError, string $sessionErrorText): ?User
     {
         $dBConnection = self::openDatabaseConnection();
         try {
@@ -140,19 +140,60 @@ class User extends Model
             }
         } catch (PDOException $e) {
             // Handle the exception as per your application's requirements
-            ValidationHelper::shouldAddError(true, $sessionErrorText);
+            if($addError) {
+                ValidationHelper::shouldAddError(true, $sessionErrorText);
+            }
         } finally {
             $stmt->closeCursor();
             $dBConnection = null;
         }
 
-        if(!$isSuccessful) {
-            ValidationHelper::shouldAddError(true, $sessionErrorText);
-        }
-
         return null;
     }
 
+    public static function getUserByIdAndPassword(int $userId, string $hashedPassword, bool $addError, string $sessionErrorText): User
+    {
+        try {
+            $dbConnection = self::openDatabaseConnection();
+            $sqlQuery = "SELECT * FROM user WHERE user_id = :userId AND password = :password;";
+            $pdoStatement = $dbConnection->prepare($sqlQuery);
+
+            $pdoStatement->bindValue(":userId", $userId);
+            $pdoStatement->bindValue(":password", $hashedPassword);
+
+            $isSuccessful = $pdoStatement->execute();
+            $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+
+            if($pdoStatement->rowCount() > 0 && $isSuccessful) {
+                $user = new User(
+                    $result["user_id"],
+                    $result["first_name"],
+                    $result["email"],
+                    $result["password"],
+                    $result["phone_number"],
+                    $result["company_name"],
+                    $result["registration_date"],
+                    $result["last_login"],
+                    $result["role_id"]
+                );
+            }
+            else if($addError) {
+                ValidationHelper::shouldAddError(true, $sessionErrorText);
+                var_dump("hello");
+            }
+            $pdoStatement->closeCursor();
+        }
+        catch(PDOException $pdoException) {
+            if($addError) {
+                ValidationHelper::shouldAddError(true, $sessionErrorText);
+            }
+        }
+        finally {
+            $dbConnection = null;
+        }
+
+        return $user ?? new User();
+    }
     public static function getUserByRoleName(string $pRoleName): User
     {
         $user = new User();
@@ -187,7 +228,7 @@ class User extends Model
         return $user;
     }
 
-    public static function createUserByRoleName(array $postFields, string $sessionErrorText): array
+    public static function createUserByRoleName(array $postFields, bool $addError, string $sessionErrorText): array
     {
         $dBConnection = self::openDatabaseConnection();
         $isSuccessful = false;
@@ -219,8 +260,11 @@ class User extends Model
                 'newRegisteredUserId' => $userId
             ];
         } catch (PDOException $e) {
+            if($addError) {
+                ValidationHelper::shouldAddError(!$isSuccessful, $sessionErrorText);
+            }
             // Handle the exception as per your application's requirements
-            ValidationHelper::shouldAddError(!$isSuccessful, $sessionErrorText);
+
             return [
                 'isSuccessful' => false,
                 'newRegisteredUserId' => -1
@@ -233,9 +277,10 @@ class User extends Model
 
     public static function updatePersonalInfo(int $pUserId, array $postFields): void
     {
-        $dBConnection = self::openDatabaseConnection();
+
 
         try {
+            $dBConnection = self::openDatabaseConnection();
             foreach ($postFields as $key => $value) {
                 if ($value === '') {
                     $postFields[$key] = null;
@@ -265,12 +310,14 @@ class User extends Model
 
     public static function updateInsensitivePersonalInformation(int $pUserId,
                                                                 array $postArray,
+                                                                bool $addError,
                                                                 string $sessionErrorText): bool
     {
-        $dbConnection = self::openDatabaseConnection();
+
 
         $isSuccessful = false;
         try{
+            $dbConnection = self::openDatabaseConnection();
             $sqlQuery = "UPDATE user SET first_name = :firstName,
                 last_name = :lastName,
                 phone_number = :phoneNumber,
@@ -287,12 +334,14 @@ class User extends Model
             $pdoStatement->bindValue(":userId", $pUserId);
 
             $isSuccessful = $pdoStatement->execute();
+            $pdoStatement->closeCursor();
         }
         catch(PDOException $pdoException) {
-            ValidationHelper::shouldAddError(true, $sessionErrorText);
+            if($addError) {
+                ValidationHelper::shouldAddError(true, $sessionErrorText);
+            }
         }
         finally {
-            $pdoStatement->closeCursor();
             $dbConnection = null;
         }
 
@@ -316,6 +365,40 @@ class User extends Model
         } finally {
             $stmt->closeCursor();
             $dBConnection = null;
+        }
+    }
+
+    public static function changeEmailByUserId(
+        int $pUserId,
+        string $pEmailAddress,
+        bool $addError,
+        string $sessionErrorText = ""
+    ): bool
+    {
+        try {
+            $dbConnection = self::openDatabaseConnection();
+
+            $sqlQuery = "
+                UPDATE user
+                SET email = :email
+                WHERE user_id = :userId;
+            ";
+            $pdoStatement = $dbConnection->prepare($sqlQuery);
+
+            $pdoStatement->bindValue(":userId", $pUserId);
+            $pdoStatement->bindValue(":email", $pEmailAddress);
+
+            $isSuccessful = $pdoStatement->execute();
+            $pdoStatement->closeCursor();
+        }
+        catch(PDOException $pdoException) {
+            if($addError) {
+                ValidationHelper::shouldAddError(true, $sessionErrorText);
+            }
+        }
+        finally {
+            $dbConnection = null;
+            return $isSuccessful ?? false;
         }
     }
 

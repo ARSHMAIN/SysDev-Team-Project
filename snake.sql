@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 03, 2024 at 05:07 AM
+-- Generation Time: Feb 02, 2024 at 07:51 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -72,7 +72,6 @@ CREATE TABLE IF NOT EXISTS `cart` (
 --
 
 INSERT INTO `cart` (`cart_id`, `user_id`) VALUES
-(1, 1),
 (1, 2),
 (1, 3),
 (1, 4),
@@ -97,17 +96,6 @@ CREATE TABLE IF NOT EXISTS `cart_item` (
   KEY `cart_item_donation_donation_id_fk` (`donation_id`),
   KEY `cart_item_test_test_id_fk` (`test_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `cart_item`
---
-
-INSERT INTO `cart_item` (`cart_item_id`, `cart_id`, `user_id`, `donation_id`, `test_id`) VALUES
-(6, 1, 1, NULL, 6),
-(7, 1, 1, NULL, 7),
-(8, 1, 1, NULL, 8),
-(9, 1, 1, NULL, 9),
-(10, 1, 1, NULL, 10);
 
 -- --------------------------------------------------------
 
@@ -174,6 +162,57 @@ INSERT INTO `donation` (`donation_id`, `user_id`, `order_id`, `snake_id`) VALUES
 (3, 1, 5, 8),
 (4, 1, 5, 9),
 (5, 1, 5, 10);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `emailverificationtoken`
+--
+
+DROP TABLE IF EXISTS `emailverificationtoken`;
+CREATE TABLE IF NOT EXISTS `emailverificationtoken` (
+  `token_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `reset_email_hash` varchar(64) DEFAULT NULL,
+  `reset_email_hash_expires_at` datetime DEFAULT NULL,
+  `new_email` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`token_id`),
+  UNIQUE KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `emailverificationtoken`
+--
+
+INSERT INTO `emailverificationtoken` (`token_id`, `user_id`, `reset_email_hash`, `reset_email_hash_expires_at`, `new_email`) VALUES
+(1, 1, NULL, NULL, NULL);
+
+--
+-- Triggers `emailverificationtoken`
+--
+DROP TRIGGER IF EXISTS `check_email_uniqueness_insert`;
+DELIMITER $$
+CREATE TRIGGER `check_email_uniqueness_insert` BEFORE INSERT ON `emailverificationtoken` FOR EACH ROW BEGIN
+    IF EXISTS(SELECT 1 FROM user WHERE new.new_email LIKE user.email) THEN
+-- Throw an error if the new email already exists in the User table
+        SIGNAL SQLSTATE "45000"
+        SET MYSQL_ERRNO = 4000,
+        MESSAGE_TEXT = "The email address being inserted in the emailverificationtoken table already exists in the User table (update error)";
+    END IF;
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `check_email_uniqueness_update`;
+DELIMITER $$
+CREATE TRIGGER `check_email_uniqueness_update` BEFORE UPDATE ON `emailverificationtoken` FOR EACH ROW BEGIN
+    IF EXISTS(SELECT 1 FROM user WHERE new.new_email LIKE user.email) THEN
+        SIGNAL SQLSTATE "45000"
+        SET MYSQL_ERRNO = 4000,
+        MESSAGE_TEXT = "The email address being updated in the emailverificationtoken table already exists in the User table (update error)";
+    END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -285,7 +324,7 @@ CREATE TABLE IF NOT EXISTS `order` (
   PRIMARY KEY (`order_id`),
   KEY `Order_orderstatus_order_status_id_fk` (`order_status_id`),
   KEY `Order_user_user_id_fk` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `order`
@@ -294,7 +333,8 @@ CREATE TABLE IF NOT EXISTS `order` (
 INSERT INTO `order` (`order_id`, `payment_status`, `seen_status`, `order_date`, `total`, `user_id`, `order_status_id`) VALUES
 (3, 0, 0, '2023-12-22 21:49:14', 100, 1, 3),
 (4, 0, 0, '2023-12-23 04:49:10', 500, 1, 3),
-(5, 0, 0, '2023-12-23 04:57:53', 0, 1, 3);
+(5, 0, 0, '2023-12-23 04:57:53', 0, 1, 3),
+(6, 0, 0, '2024-01-30 18:15:57', 500, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -431,11 +471,11 @@ INSERT INTO `test` (`test_id`, `snake_id`, `order_id`, `user_id`) VALUES
 (3, 3, 4, 1),
 (4, 4, 4, 1),
 (5, 5, 4, 1),
-(6, 11, NULL, 1),
-(7, 12, NULL, 1),
-(8, 13, NULL, 1),
-(9, 14, NULL, 1),
-(10, 15, NULL, 1);
+(6, 11, 6, 1),
+(7, 12, 6, 1),
+(8, 13, 6, 1),
+(9, 14, 6, 1),
+(10, 15, 6, 1);
 
 -- --------------------------------------------------------
 
@@ -554,6 +594,12 @@ ALTER TABLE `donation`
   ADD CONSTRAINT `Donation_user_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `emailverificationtoken`
+--
+ALTER TABLE `emailverificationtoken`
+  ADD CONSTRAINT `EMAILVERIFICATIONTOKEN_USER_ID_FK` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `knownpossiblemorph`
 --
 ALTER TABLE `knownpossiblemorph`
@@ -593,6 +639,19 @@ ALTER TABLE `testedmorph`
 --
 ALTER TABLE `user`
   ADD CONSTRAINT `user_role_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`);
+
+DELIMITER $$
+--
+-- Events
+--
+DROP EVENT IF EXISTS `CLEAN_EXPIRED_CHANGE_EMAIL_LINKS`$$
+CREATE DEFINER=`root`@`localhost` EVENT `CLEAN_EXPIRED_CHANGE_EMAIL_LINKS` ON SCHEDULE EVERY 1 DAY STARTS '2024-02-02 02:00:00' ON COMPLETION NOT PRESERVE ENABLE COMMENT 'Sets emailverificationtoken columns to NULL when expired' DO UPDATE emailverificationtoken
+SET reset_email_hash = NULL,
+reset_email_hash_expires_at = NULL,
+new_email = NULL
+WHERE reset_email_hash_expires_at < NOW()$$
+
+DELIMITER ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

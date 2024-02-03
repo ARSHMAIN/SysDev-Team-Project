@@ -38,7 +38,7 @@
 
         // Perform empty, duplicate validation checks on morphs
         $allMorphsValidationResults = ValidationHelper::validateAllMorphTextFields();
-        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
+        ValidationHelper::checkSessionErrorExists(RedirectLocation::UpdateTest->value . $_GET["id"]);
 
         /*
             Check whether the test actually exists because the ID sent through GET parameters may not be valid
@@ -48,18 +48,18 @@
             $testExistsResults = Test::checkTestExists($_GET["id"]);
 
             ValidationHelper::shouldAddError(!$testExistsResults["testExists"], "There was an error when updating the test");
-            ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
+            ValidationHelper::checkSessionErrorExists(RedirectLocation::UpdateTest->value . $_GET["id"]);
         }
         catch(InvalidArgumentException $argumentException) {
             // An invalid argument exception could be thrown if the GET parameter is of incorrect type
             ValidationHelper::shouldAddError(true, "There was an error when updating the test");
-            ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
+            ValidationHelper::checkSessionErrorExists(RedirectLocation::UpdateTest->value . $_GET["id"]);
         }
 
 
         $sexExistsResults = Sex::checkSexExists($_POST["sex"]);
         ValidationHelper::shouldAddError(!$sexExistsResults["sexExists"], "Invalid snake sex");
-        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
+        ValidationHelper::checkSessionErrorExists(RedirectLocation::UpdateTest->value . $_GET["id"]);
 
 
 
@@ -74,7 +74,7 @@
             $customerSnakeName->getSnakeId());
         $snakeSexUpdateIsSuccessful = $snakeSexUpdateResults["isSuccessful"];
         ValidationHelper::shouldAddError(!$snakeSexUpdateIsSuccessful, "There was an error when updating the snake sex");
-        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
+        ValidationHelper::checkSessionErrorExists(RedirectLocation::UpdateTest->value . $_GET["id"]);
         /*
             Get the IDs of known morphs and tested morphs and delete those that don't exist anymore
         */
@@ -84,7 +84,7 @@
 
         KnownPossibleMorph::deleteAllRemovedKnownPossibleMorphs(
             $customerSnakeName->getSnakeId(),
-            ErrorRedirectLocation::UpdateTest->value . $testExistsResults["associatedTest"]->getTestId(),
+            RedirectLocation::UpdateTest->value . $testExistsResults["associatedTest"]->getTestId(),
             $knownMorphIdsByNameInputted,
             $possibleMorphIdsByNameInputted
         );
@@ -94,14 +94,14 @@
             $testMorphIdsByNameInputted
         );
         ValidationHelper::shouldAddError(!$deleteRemovedTestMorphIsSuccessful, "An error occurred when deleting the tested morphs");
-        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::UpdateTest->value . $testExistsResults["associatedTest"]->getTestId());
+        ValidationHelper::checkSessionErrorExists(RedirectLocation::UpdateTest->value . $testExistsResults["associatedTest"]->getTestId());
 
         /*
          * Insert known, possible, test morphs if they don't exist already
         */
         Morph::insertKnownPossibleMorphsIfNotExists(
             $customerSnakeName->getSnakeId(),
-            ErrorRedirectLocation::UpdateTest->value . $_GET["id"],
+            RedirectLocation::UpdateTest->value . $_GET["id"],
             $knownMorphIdsByNameInputted,
             $possibleMorphIdsByNameInputted,
         );
@@ -111,7 +111,7 @@
             $testMorphIdsByNameInputted
         );
         ValidationHelper::shouldAddError(!$testedMorphsInsertIsSuccessful, "An error occurred when inserting the tested morphs");
-        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
+        ValidationHelper::checkSessionErrorExists(RedirectLocation::UpdateTest->value . $_GET["id"]);
 
         header("Location: ?controller=cart&action=cart");
     }
@@ -119,5 +119,5 @@
         ValidationHelper::shouldAddError(!$postDataAccepted || !$postDataRequired,
             "Input elements sent through POST request are not as expected
              (there was an input element with an inappropriate name attribute sent through the POST request)");
-        ValidationHelper::checkSessionErrorExists(ErrorRedirectLocation::UpdateTest->value . $_GET["id"]);
+        ValidationHelper::checkSessionErrorExists(RedirectLocation::UpdateTest->value . $_GET["id"]);
     }

@@ -66,7 +66,7 @@
                         </div>
 
                         <div>
-                            <a href="">incomplete feature</a>
+                            <a href="?controller=user&action=editEmail">temporary edit email link</a>
                         </div>
                     </div>
 

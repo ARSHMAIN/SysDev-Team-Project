@@ -1,5 +1,5 @@
 <?php
-enum ErrorRedirectLocation : string {
+enum RedirectLocation : string {
     /*
         Enumeration of all error redirect locations used for
         ValidationHelper::checkErrorExists redirect location
@@ -10,5 +10,10 @@ enum ErrorRedirectLocation : string {
     case Login = "?controller=login&action=login";
 
     case EditProfile = "?controller=user&action=editProfile";
+    case EditEmail = "?controller=user&action=editEmail";
+    case ActivateAccount = "?controller=user&action=activateAccount";
+    case Home = "?controller=home&action=home";
+    case SuccessEditEmail = "?controller=user&action=successEditEmail";
+    case Contact = "?controller=contact&action=contact";
 
 }
