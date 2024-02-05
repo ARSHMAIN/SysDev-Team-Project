@@ -1,0 +1,14 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 200px; /* Adjust the margin as needed */
+}
+
+.header h2 {
+    text-align: left;
+}
+
+.snakeOptions {
+    margin: 10px;
+}

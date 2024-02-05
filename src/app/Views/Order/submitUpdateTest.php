@@ -6,6 +6,7 @@ use MyApp\Models\Sex;
 use MyApp\Models\Test;
 use MyApp\Models\TestedMorph;
 use MyApp\Models\User;
+use MyApp\Models\ValidationHelper;
 
 $currentUser        = new User($_SESSION["user_id"]);
     $snakeSex           = Sex::getSexByName($_POST["sex"]);

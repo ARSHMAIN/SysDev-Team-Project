@@ -50,11 +50,10 @@
                 <?php
                 if (!isset($_SESSION['user_id'])) {
                     echo "<a href='index.php?controller=login&action=login'>Sign In</a>";
-                }
-
-
-                if (isset($_SESSION['user_id'])) {
+                } else if ($_SESSION['userRole'] === 3) {
                     echo "<a href='index.php?controller=order&action=order'>Order</a>";
+                } else if ($_SESSION['userRole'] === 1) {
+                    echo "<a href='index.php?controller=admin&action=admin'>Admin</a>";
                 }
                 ?>
 

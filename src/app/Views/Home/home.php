@@ -36,6 +36,9 @@ include_once 'src/app/Views/Shared/navbar.php';
         <input id="submit" type="submit" name="submit">
     </form>
 -->
+<?php
+var_dump($_SESSION['user_id']);
+?>
     <a href="index.php?controller=database&action=index" class="displayBlock widthMinContent marginAuto">
         <input type="button" value="Click here to show all database contents">
     </a>

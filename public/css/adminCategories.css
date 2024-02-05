@@ -1,0 +1,8 @@
+.categories {
+    text-align: center;
+}
+
+.categories a {
+    display: inline-block;
+    margin: 20px;
+}

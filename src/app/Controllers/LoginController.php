@@ -5,6 +5,7 @@ namespace MyApp\Controllers;
 use Middleware\SessionMiddleware;
 use MyApp\Models\User;
 use Core\Controller;
+use MyApp\Models\ValidationHelper;
 
 class LoginController extends Controller
 {

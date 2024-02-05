@@ -6,6 +6,7 @@ use MyApp\Models\Snake;
 use MyApp\Models\Test;
 use MyApp\Models\TestedMorph;
 use MyApp\Models\User;
+use MyApp\Models\ValidationHelper;
 
 function getPosts(string $className): array
 {
