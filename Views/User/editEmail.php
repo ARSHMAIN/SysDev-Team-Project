@@ -4,6 +4,8 @@
         <title>Edit Email</title>
         <link rel="stylesheet" type="text/css" href="Views/Styles/shared.css">
         <link rel="stylesheet" type="text/css" href="Views/Styles/navbar.css">
+        <script src="Views/Shared/Scripts/textFieldValidation.js" defer></script>
+        <script src="Views/User/Scripts/editEmail.js" defer></script>
     </head>
 
     <body>
@@ -22,14 +24,14 @@
                     var_dump($_SESSION["error"]);
                 }
             ?>
-            <form action="?controller=user&action=submitEditEmail" method="POST">
+            <form action="?controller=user&action=submitEditEmail" method="POST" class="editEmail">
                 <div class="textAlignCenter">
                     <h1>
                         Edit Email:
                     </h1>
                     <div>
                         <div>
-                            <label for="newEmailAddress">
+                            <label class="newEmailAddressLabel" for="newEmailAddress">
                                 New email address:
                             </label>
                         </div>
@@ -41,7 +43,7 @@
 
                     <div>
                         <div>
-                            <label for="password">
+                            <label class="passwordLabel" for="password">
                                 Password:
                             </label>
                         </div>

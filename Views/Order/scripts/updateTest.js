@@ -35,7 +35,9 @@ function setUpSubmitEventHandler() {
         ) {
             submitEvent.preventDefault();
         }
-    });
+    })
+
+
 }
 
 function performEmptyValidationUpdateTest() {
